@@ -177,6 +177,10 @@ Because each later module introduces a **new mechanic**, a run is more than
 | 5 | Offline progress  | Production continues offline at 100 % until storage is full (initially ~4 h capacity, upgradable to ~8 h). |
 | 6 | Clicking          | Manual mining matters at the very start; its value diminishes as automated production takes over. Later, active play is rewarded through manually collected events instead. |
 | 7 | Saving            | Autosave to browser storage, plus export/import as text string. Every save carries a version number so old saves can be migrated. |
+| 8 | Presentation      | **Text only** for now (panels, lists, buttons). No graphics in the prototype; the Ark is shown as a text list of its 7 module slots. |
+| 9 | Number format     | **Scientific notation** with three significant digits, e.g. `1.23e6`. Values below 1,000 are shown as plain numbers. Plain JavaScript numbers until values can exceed ~1e308, then `break_infinity.js`. |
+| 10 | Story tone       | Serious with a note of hope ("the last chance of humanity"). Delivered through short radio messages and log entries, not long texts. |
+| 11 | Test hosting     | GitHub Pages, deployed automatically on every push. |
 
 ### Clicking design note
 The click value should be a fixed amount that grows only slowly (e.g. via a few
@@ -186,11 +190,4 @@ without needing an explicit cutoff.
 
 ## 4. Open questions
 - Prototype scope (see decision 3).
-- Visual presentation: UI panels only, or panels plus a simple Ark graphic with
-  the 7 module slots?
-- Number formatting: suffixes (K, M, B, T) and/or scientific notation. Plain
-  JavaScript numbers suffice until values can exceed ~1e308; then
-  `break_infinity.js`.
-- Story tone: serious (dying Earth) or light-hearted?
-- Test hosting: e.g. GitHub Pages, deployed on every push.
 - Monetization (not needed for the prototype).
