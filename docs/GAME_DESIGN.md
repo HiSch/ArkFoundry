@@ -172,7 +172,7 @@ Because each later module introduces a **new mechanic**, a run is more than
 |---|-------------------|--------------------------------------------------------------------------|
 | 1 | Platform          | Browser, **mobile first** (portrait layout; desktop must also work). A native mobile app can follow later via a wrapper such as Capacitor. |
 | 2 | Tech stack        | TypeScript + Vite + Svelte. No game engine.                              |
-| 3 | Prototype scope   | **Open** – to be decided later.                                          |
+| 3 | Prototype scope   | Phases 0–5 of `docs/ROADMAP.md`: first run up to the Hull module plus one prestige. |
 | 4 | Debug time controls | Yes: time scale (×10, ×100) and "skip +1 h", needed to test the 48 h pacing. |
 | 5 | Offline progress  | Production continues offline at 100 % until storage is full (initially ~4 h capacity, upgradable to ~8 h). |
 | 6 | Clicking          | Manual mining matters at the very start; its value diminishes as automated production takes over. Later, active play is rewarded through manually collected events instead. |
@@ -189,5 +189,4 @@ clicking dominant in the first ~15 minutes and negligible after a few hours,
 without needing an explicit cutoff.
 
 ## 4. Open questions
-- Prototype scope (see decision 3).
 - Monetization (not needed for the prototype).
