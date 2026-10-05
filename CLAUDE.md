@@ -1,6 +1,6 @@
-# SpaceCraftIdle
+# Ark Foundry
 
-Idle game about building the generation ship "Ark"; launching Ark modules is
+Repository: SpaceCraftIdle. Idle game about building the generation ship "Ark"; launching Ark modules is
 the prestige mechanic. See `docs/GAME_DESIGN.md`.
 
 ## Language

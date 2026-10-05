@@ -1,6 +1,7 @@
-# SpaceCraftIdle – Game Design
+# Ark Foundry – Game Design
 
-Working title: **SpaceCraftIdle** (final name still open).
+Game name: **Ark Foundry** (store subtitle candidate: "Idle Colony Ship Builder").
+Repository name: SpaceCraftIdle.
 
 Design goals:
 
@@ -166,7 +167,6 @@ Because each later module introduces a **new mechanic**, a run is more than
 ---
 
 ## 3. Open questions
-- Final game name (see name candidates in the project discussion).
 - Platform: browser (TypeScript + Canvas/DOM) or mobile? For large numbers
   `break_infinity.js` is a good fit.
 - Clicking elements or pure idle?
