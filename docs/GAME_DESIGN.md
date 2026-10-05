@@ -1,179 +1,175 @@
-# SpaceCraftIdle – Spielprinzip-Ideen
+# SpaceCraftIdle – Game Design
 
-Ziel dieses Dokuments: ein paar Konzepte für das Kernprinzip sammeln, eines davon
-als Empfehlung ausarbeiten und das Pacing so planen, dass
+Working title: **SpaceCraftIdle** (final name still open).
 
-- das **Spielziel sofort sichtbar** ist,
-- es aber **erst nach mehreren Prestiges** erreichbar wird,
-- der **erste Prestige nach ca. 2 Tagen aktivem bzw. 3–4 Tagen gelegentlichem Spiel** möglich ist,
-- jeder Prestige **Punkte für kleine, dauerhafte Vorteile** bringt.
+Design goals:
 
----
+- The **goal of the game is visible right away**,
+- but it can **only be reached after several prestiges**.
+- The **first prestige** takes about **2 days of active play** or **3–4 days of
+  casual / idle play**.
+- Every prestige grants **points that buy small, permanent advantages**.
 
-## 1. Drei Konzepte im Überblick
-
-### Konzept A – „Die Arche“ (Empfehlung)
-Die Heimatwelt stirbt. Ziel: das Generationenschiff **ARCHE** bauen und mit
-10.000 Kolonisten zu einem fernen Planeten schicken.
-
-- Beim Spielstart sieht man sofort den Bauplan der Arche mit **7 leeren Modul-Slots**
-  (Rumpf, Antrieb, Reaktor, Habitat, Kryo-Deck, Schild, Navigation).
-- Pro Durchlauf baut man eine Wirtschaft auf (Bergbau → Raffinerie → Werft) und
-  kann am Ende **ein Modul fertigstellen und ins Orbitaldock starten**.
-- Der Start eines Moduls ist der **Prestige**: die Kolonie wird zurückgesetzt, aber
-  das Modul bleibt im Dock. Das Ziel füllt sich also sichtbar mit jedem Prestige.
-- Spätere Module brauchen mehr Ressourcen bzw. neue Ressourcenarten, als ein Lauf
-  ohne Prestige-Boni liefern kann.
-
-**Stärke:** Ziel und Fortschritt sind ein einziges Bild – man sieht, wie die Arche
-wächst. Jeder Prestige fühlt sich wie ein Erfolg an, nicht wie ein Verlust.
-
-### Konzept B – „Sprung ins Unbekannte“
-Man beginnt in einem Sonnensystem und will das **galaktische Zentrum** erreichen.
-Die Sternkarte mit dem Weg (z. B. 10 Systeme) ist von Anfang an sichtbar.
-
-- Jeder Prestige = **Sprung ins nächste System**. Dort startet man mit einer
-  kleinen Flotte neu.
-- Jedes System hat Modifikatoren (z. B. „Eisreich: +50 % Wasser, −30 % Metall“,
-  „Neutronenstern: Energie ×3, Bauten verfallen“).
-- Prestige-Punkte = gesammelte Navigationsdaten.
-
-**Stärke:** viel Abwechslung pro Durchlauf. **Schwäche:** Balancing aufwendiger.
-
-### Konzept C – „Zeitschleife“
-Die Sonne wird in 72 h zur Supernova. Man muss ein Fluchtschiff bauen,
-schafft es aber nicht – die Schleife startet neu, das Wissen bleibt.
-
-- Prestige = Schleife neu starten; Punkte = „Erinnerungen“.
-- Sehr starke Story und klarer Druck, passt aber weniger zu entspanntem Idle-Spiel
-  (Countdown kann Gelegenheitsspieler stressen).
-
-### Kombination
-A als Hauptspiel. B kann später als **Endgame / New Game+** dienen: Wenn die Arche
-fliegt, reist man durch Systeme mit Modifikatoren (zweite Prestige-Ebene).
+**Decision:** The game uses the **Ark** story (concept A below). Building and
+launching Ark modules is the prestige mechanic.
 
 ---
 
-## 2. Ausgearbeitet: „Die Arche“
+## 1. Concepts considered
 
-### 2.1 Ressourcen-Kette
+### Concept A – "The Ark" (chosen)
+The home world is dying. The goal: build the generation ship **ARK** and send
+10,000 colonists to a distant planet.
 
-| Stufe | Ressource      | Quelle                              | Freigeschaltet |
-|-------|----------------|-------------------------------------|----------------|
-| 1     | Erz            | Klick, später Bergbau-Drohnen       | sofort         |
-| 2     | Energie        | Solarfelder                         | ~5 min         |
-| 3     | Metall         | Raffinerie (Erz + Energie)          | ~15 min        |
-| 4     | Credits        | Handel / Verkauf von Metall         | ~30 min        |
-| 5     | Forschung      | Labore, Forschung läuft in Echtzeit | ~1 h           |
-| 6     | Legierungen    | Schmelze (Metall + Energie)         | ~4 h           |
-| 7     | Bauteile       | Orbitalwerft                        | ~10 h          |
-| 8     | Helium-3       | Mond-/Asteroidenbergbau             | ~20 h          |
-| 9     | Exotische Materie | ab 3. Modul / späteren Prestiges | Prestige 2+   |
+- From the very first screen the player sees the Ark blueprint with
+  **7 empty module slots** (Hull, Reactor, Engine, Habitat, Cryo Deck, Shield,
+  Navigation).
+- In each run the player builds up an economy (mining → refinery → shipyard)
+  and at the end can **complete one module and launch it into the orbital dock**.
+- Launching a module **is the prestige**: the colony resets, but the module
+  stays in the dock. The goal fills up visibly with every prestige.
+- Later modules need more resources or new resource types than a run without
+  prestige bonuses can produce.
 
-Jedes Arche-Modul kostet eine Mischung aus Bauteilen, Legierungen und ab
-Modul 3 auch Helium-3 / Exotische Materie.
+**Strength:** goal and progress are a single picture – the player watches the
+Ark grow. A prestige feels like an achievement, not a loss.
 
-### 2.2 Pacing des ersten Durchlaufs (Ziel: 2 Tage aktiv / 3–4 Tage gelegentlich)
+### Concept B – "Jump into the Unknown"
+Start in one star system and travel to the **galactic core**. The star map
+(e.g. 10 systems) is visible from the start. Each prestige is a jump to the
+next system, which has modifiers (e.g. "Ice-rich: +50 % water, −30 % metal",
+"Neutron star: energy ×3, buildings decay").
 
-Das Pacing wird über **zwei Hebel** gesteuert:
+**Use:** candidate for the **endgame / New Game+** after the Ark launches.
 
-1. **Forschung in Echtzeit (Untergrenze):** Der kritische Forschungspfad bis zur
-   Orbitalwerft dauert in Summe ca. **36–40 h Echtzeit**. Forschung läuft auch
-   offline weiter. Damit kann selbst ein Dauerspieler den ersten Prestige nicht
-   wesentlich vor ~1,5–2 Tagen erreichen.
-2. **Lagerkapazität / Offline-Limit (Strafe für Inaktivität):** Produktion läuft
-   offline mit 100 %, aber nur bis die Lager voll sind (Start: ca. 4 h Kapazität,
-   ausbaubar auf ~8 h). Wer selten reinschaut, verliert Produktion und braucht
-   eher 3–4 Tage.
+### Concept C – "Time Loop"
+The sun goes supernova in 72 h; the player fails to escape and the loop
+restarts, keeping knowledge. Strong story, but a countdown can stress casual
+players. Not pursued.
 
-Aktive Spieler bekommen zusätzlich kleine Boni, die aber nicht dominieren:
-Klicks am Anfang, zufällige Ereignisse (Meteoritenschauer, Händler, Notruf), die
-man manuell einsammeln muss, und das rechtzeitige Leeren der Lager.
+---
 
-| Zeit (aktiv)   | Phase                                                         |
-|----------------|---------------------------------------------------------------|
-| 0–15 min       | Erz klicken, erste Drohnen, Solarfeld                         |
-| 15 min – 2 h   | Raffinerie, Credits, erste Automatisierung                    |
-| 2 – 8 h        | Labore, Forschungsbaum, Schmelze                              |
-| 8 – 24 h       | Orbitalwerft (Forschung), Lagerausbau, Ereignisse             |
-| 24 – 40 h      | Helium-3-Bergbau, Bauteil-Produktion                          |
-| 40 – 48 h      | Rumpf-Modul bauen → **erster Prestige verfügbar**             |
+## 2. Detailed design: "The Ark"
 
-Kostenkurve als Ausgangspunkt: Gebäudekosten `basis × 1,12^n`,
-Produktionsboni in Stufen (×2 bei 25/50/100 Gebäuden). Die Zahlen werden später
-mit einer Simulation (aktiver vs. gelegentlicher Spieler) feinjustiert.
+### 2.1 Resource chain
 
-### 2.3 Prestige: „Modul starten“
+| Tier | Resource       | Source                                 | Unlocked     |
+|------|----------------|----------------------------------------|--------------|
+| 1    | Ore            | Clicking, later mining drones          | immediately  |
+| 2    | Energy         | Solar fields                           | ~5 min       |
+| 3    | Metal          | Refinery (ore + energy)                | ~15 min      |
+| 4    | Credits        | Trading / selling metal                | ~30 min      |
+| 5    | Research       | Labs; research runs in real time       | ~1 h         |
+| 6    | Alloys         | Smelter (metal + energy)               | ~4 h         |
+| 7    | Components     | Orbital shipyard                       | ~10 h        |
+| 8    | Helium-3       | Lunar / asteroid mining                | ~20 h        |
+| 9    | Exotic matter  | From module 3 / later prestiges        | prestige 2+  |
 
-Beim Prestige:
+Each Ark module costs a mix of components and alloys, and from module 3 on
+also Helium-3 / exotic matter.
 
-- **Bleibt:** Arche-Module im Dock, Prestige-Punkte, gekaufte Prestige-Upgrades,
-  Statistik/Erfolge.
-- **Wird zurückgesetzt:** Ressourcen, Gebäude, Forschung.
+### 2.2 Pacing of the first run (target: 2 days active / 3–4 days casual)
 
-**Prestige-Punkte = Sternkarten (SK)**
+Pacing is controlled by **two levers**:
+
+1. **Real-time research (lower bound):** the critical research path to the
+   orbital shipyard takes about **36–40 h of real time** in total. Research
+   continues offline. Even a very active player cannot reach the first
+   prestige much earlier than ~1.5–2 days.
+2. **Storage capacity / offline limit (cost of inactivity):** production runs
+   offline at 100 %, but only until storage is full (initially ~4 h of
+   capacity, upgradable to ~8 h). Players who check in rarely lose production
+   and need more like 3–4 days.
+
+Active players get small extra bonuses that do not dominate: clicking early on,
+random events (meteor showers, traders, distress calls) that must be collected
+manually, and emptying storage in time.
+
+| Time (active)  | Phase                                                      |
+|----------------|------------------------------------------------------------|
+| 0–15 min       | Click ore, first drones, solar field                       |
+| 15 min – 2 h   | Refinery, credits, first automation                        |
+| 2 – 8 h        | Labs, research tree, smelter                               |
+| 8 – 24 h       | Orbital shipyard (research), storage upgrades, events      |
+| 24 – 40 h      | Helium-3 mining, component production                      |
+| 40 – 48 h      | Build hull module → **first prestige available**           |
+
+Starting cost curve: building cost `base × 1.12^n`, production multipliers in
+steps (×2 at 25/50/100 buildings). Numbers will be tuned later with a
+simulation (active vs. casual player).
+
+### 2.3 Prestige: "Launch module"
+
+On prestige:
+
+- **Kept:** Ark modules in the dock, prestige points, purchased prestige
+  upgrades, statistics / achievements.
+- **Reset:** resources, buildings, research.
+
+**Prestige points = Star Charts (SC)**
 
 ```
-SK = floor( 10 × sqrt( Gesamt-Legierungen dieses Laufs / 1e9 ) ) + Modul-Bonus
+SC = floor( 10 × sqrt( total alloys produced this run / 1e9 ) ) + module bonus
 ```
 
-- Erster Prestige ergibt ca. **10–15 SK**.
-- Wer länger im Lauf bleibt, bekommt mehr SK (Wurzel → abnehmender Ertrag),
-  sodass „zu frühes“ und „zu spätes“ Prestigen beides nicht optimal ist.
-- Jede SK gibt passiv **+1 % Produktion** (klein, aber spürbar), zusätzlich
-  können SK im Prestige-Baum ausgegeben werden – ausgegebene SK behalten den
-  passiven Bonus (keine Zwickmühle zwischen Sparen und Ausgeben).
+- The first prestige yields about **10–15 SC**.
+- Staying longer in a run yields more SC (square root → diminishing returns),
+  so prestiging too early or too late are both suboptimal.
+- Each SC passively grants **+1 % production** (small but noticeable). SC can
+  additionally be spent in the prestige tree; spent SC keep their passive
+  bonus (no dilemma between saving and spending).
 
-### 2.4 Prestige-Baum (kleine Vorteile)
+### 2.4 Prestige tree (small advantages)
 
-| Upgrade                    | Wirkung                                        | Kosten (SK) |
-|----------------------------|------------------------------------------------|-------------|
-| Startkapital               | Start mit 5 Drohnen und 500 Credits            | 2           |
-| Erfahrene Ingenieure       | Forschung +10 % schneller (stapelbar 5×)       | 3 / Stufe   |
-| Größere Silos              | Offline-/Lagerkapazität +1 h (stapelbar 4×)    | 3 / Stufe   |
-| Auto-Käufer: Drohnen       | Kauft Drohnen automatisch                      | 5           |
-| Bauplan-Archiv             | Erste 3 Forschungen sofort fertig              | 5           |
-| Händlerkontakte            | Handelsereignisse häufiger und besser          | 4           |
-| Effiziente Raffinerie      | Raffinerie verbraucht 10 % weniger Erz         | 4           |
-| Dock-Synergie              | Jedes fertige Modul: +5 % auf alles            | 8           |
-| Auto-Käufer: Gebäude       | Automatischer Bau aller Grundgebäude           | 12          |
-| Exotik-Forschung           | Schaltet Exotische Materie frei (für Modul 4+) | 15          |
+| Upgrade                 | Effect                                          | Cost (SC)  |
+|-------------------------|-------------------------------------------------|------------|
+| Seed Capital            | Start with 5 drones and 500 credits             | 2          |
+| Veteran Engineers       | Research +10 % faster (stacks 5×)               | 3 / level  |
+| Bigger Silos            | Offline / storage capacity +1 h (stacks 4×)     | 3 / level  |
+| Auto-Buyer: Drones      | Buys drones automatically                       | 5          |
+| Blueprint Archive       | First 3 research projects complete instantly    | 5          |
+| Trade Contacts          | Trade events more frequent and better           | 4          |
+| Efficient Refinery      | Refinery uses 10 % less ore                     | 4          |
+| Dock Synergy            | Each completed module: +5 % to everything       | 8          |
+| Auto-Buyer: Buildings   | Automatically builds all basic buildings        | 12         |
+| Exotic Research         | Unlocks exotic matter (needed for module 4+)    | 15         |
 
-Die Vorteile sind einzeln klein, verkürzen aber in Summe die frühen Phasen
-deutlich – das Spiel fühlt sich nach jedem Prestige schneller an.
+Each advantage is small on its own, but together they noticeably shorten the
+early phases – the game feels faster after every prestige.
 
-### 2.5 Langzeitbogen bis zum Ziel
+### 2.5 Long-term arc towards the goal
 
-| Modul (Prestige) | Neue Anforderung              | Ungefähre Laufdauer |
-|------------------|-------------------------------|---------------------|
-| 1 Rumpf          | Bauteile                      | 2 Tage (3–4 casual) |
-| 2 Reaktor        | mehr Energie                  | ~1,5 Tage           |
-| 3 Antrieb        | Helium-3 in großen Mengen     | ~1,5 Tage           |
-| 4 Habitat        | Exotische Materie             | ~1–2 Tage           |
-| 5 Kryo-Deck      | Kolonisten (neue Ressource)   | ~1–2 Tage           |
-| 6 Schild         | alle Ketten gleichzeitig      | ~2 Tage             |
-| 7 Navigation     | Großprojekt, mehrere Läufe    | 2–3 Läufe           |
+| Module (prestige) | New requirement                  | Approx. run length   |
+|-------------------|----------------------------------|----------------------|
+| 1 Hull            | Components                       | 2 days (3–4 casual)  |
+| 2 Reactor         | Much more energy                 | ~1.5 days            |
+| 3 Engine          | Helium-3 in large amounts        | ~1.5 days            |
+| 4 Habitat         | Exotic matter                    | ~1–2 days            |
+| 5 Cryo Deck       | Colonists (new resource)         | ~1–2 days            |
+| 6 Shield          | All production chains at once    | ~2 days              |
+| 7 Navigation      | Mega project, spans several runs | 2–3 runs             |
 
-→ Arche fertig nach etwa **9–12 Prestiges**, ca. **3–5 Wochen** Spielzeit.
-Optionale Zusatzprestiges (Module verbessern, mehr SK farmen) helfen bei
-Modulen, an denen man hängt.
+→ The Ark is complete after roughly **9–12 prestiges**, about **3–5 weeks** of
+play. Optional extra prestiges (upgrading modules, farming SC) help with
+modules the player is stuck on.
 
-Da spätere Module jeweils eine **neue Mechanik** einführen, ist jeder Lauf mehr
-als „das Gleiche nur schneller“.
+Because each later module introduces a **new mechanic**, a run is more than
+"the same thing, just faster".
 
-### 2.6 Endgame-Ideen
-- **Der Start der Arche:** Abspann + Statistik, dann New Game+ nach Konzept B
-  (Reise durch Systeme mit Modifikatoren, zweite Prestige-Währung).
-- **Herausforderungs-Läufe:** z. B. „ohne Solarenergie“, „Lager halbiert“ –
-  geben einmalig besondere SK-Boni.
-- **Erfolge** mit kleinen permanenten Boni (+1 % je 10 Erfolge).
+### 2.6 Endgame ideas
+- **The Ark launch:** credits + statistics, then New Game+ based on concept B
+  (journey through star systems with modifiers, second prestige currency).
+- **Challenge runs:** e.g. "no solar power", "half storage" – grant one-time
+  special SC bonuses.
+- **Achievements** with small permanent bonuses (+1 % per 10 achievements).
 
 ---
 
-## 3. Offene Fragen
-- Plattform: Browser (TypeScript + Canvas/DOM) oder Mobile? Für große Zahlen
-  bietet sich `break_infinity.js` an.
-- Soll es Klick-Elemente geben oder rein Idle?
-- Soll Offline-Zeit begrenzt sein (Lager-Mechanik wie oben) oder unbegrenzt
-  mit reduzierter Effizienz?
-- Story-Ton: ernst (sterbende Erde) oder locker?
+## 3. Open questions
+- Final game name (see name candidates in the project discussion).
+- Platform: browser (TypeScript + Canvas/DOM) or mobile? For large numbers
+  `break_infinity.js` is a good fit.
+- Clicking elements or pure idle?
+- Limited offline time (storage mechanic above) or unlimited with reduced
+  efficiency?
+- Story tone: serious (dying Earth) or light-hearted?
