@@ -1,0 +1,117 @@
+import { createInitialState, type GameState } from './state'
+
+/** Current save format version. Bump it and add a migration on every format change. */
+export const SAVE_VERSION = 1
+
+export interface SaveData {
+  version: number
+  /** Unix time in milliseconds when the save was written. */
+  savedAt: number
+  state: GameState
+}
+
+/**
+ * Migrations from version N to N + 1, indexed by N. Each one receives the raw
+ * save object of version N and returns the object for version N + 1.
+ */
+const migrations: Record<number, (save: Record<string, unknown>) => Record<string, unknown>> = {}
+
+export function createSave(state: GameState, now: number): SaveData {
+  // JSON round trip instead of structuredClone: it also works on reactive proxies.
+  return { version: SAVE_VERSION, savedAt: now, state: JSON.parse(JSON.stringify(state)) }
+}
+
+export function serialize(save: SaveData): string {
+  return JSON.stringify(save)
+}
+
+/** Parses a save string, migrating older versions. Throws on invalid input. */
+export function deserialize(text: string): SaveData {
+  let raw: unknown
+  try {
+    raw = JSON.parse(text)
+  } catch {
+    throw new Error('Save data is not valid JSON')
+  }
+  if (typeof raw !== 'object' || raw === null || typeof (raw as SaveData).version !== 'number') {
+    throw new Error('Save data has no version')
+  }
+  let save = raw as Record<string, unknown>
+  let version = save.version as number
+  if (version > SAVE_VERSION) throw new Error(`Save version ${version} is newer than the game`)
+  while (version < SAVE_VERSION) {
+    const migrate = migrations[version]
+    if (!migrate) throw new Error(`No migration from save version ${version}`)
+    save = migrate(save)
+    version += 1
+    save.version = version
+  }
+  return normalize(save as unknown as SaveData)
+}
+
+/** Fills in fields missing from older or hand-edited saves with defaults. */
+function normalize(save: SaveData): SaveData {
+  const defaults = createInitialState()
+  const state = save.state ?? defaults
+  return {
+    version: SAVE_VERSION,
+    savedAt: typeof save.savedAt === 'number' ? save.savedAt : Date.now(),
+    state: {
+      ...defaults,
+      ...state,
+      resources: { ...defaults.resources, ...state.resources },
+    },
+  }
+}
+
+/** Encodes a save as a compact text string for export (base64 of JSON). */
+export function exportSave(save: SaveData): string {
+  const bytes = new TextEncoder().encode(serialize(save))
+  let binary = ''
+  for (const b of bytes) binary += String.fromCharCode(b)
+  return btoa(binary)
+}
+
+/** Decodes an exported save string. Throws on invalid input. */
+export function importSave(text: string): SaveData {
+  let json: string
+  try {
+    const binary = atob(text.trim())
+    json = new TextDecoder().decode(Uint8Array.from(binary, (c) => c.charCodeAt(0)))
+  } catch {
+    throw new Error('Save string is not valid')
+  }
+  return deserialize(json)
+}
+
+/** Minimal storage interface so saving can be tested without a browser. */
+export interface SaveStorage {
+  getItem(key: string): string | null
+  setItem(key: string, value: string): void
+  removeItem(key: string): void
+}
+
+export const SAVE_KEY = 'ark-foundry-save'
+/** Unreadable saves are moved here instead of being overwritten silently. */
+export const BROKEN_SAVE_KEY = 'ark-foundry-save-broken'
+
+export function writeSave(storage: SaveStorage, save: SaveData): void {
+  storage.setItem(SAVE_KEY, serialize(save))
+}
+
+/** Returns the stored save, or null if there is none or it cannot be read. */
+export function readSave(storage: SaveStorage): SaveData | null {
+  const text = storage.getItem(SAVE_KEY)
+  if (text === null) return null
+  try {
+    return deserialize(text)
+  } catch (error) {
+    console.error('Failed to load save, keeping a copy', error)
+    storage.setItem(BROKEN_SAVE_KEY, text)
+    return null
+  }
+}
+
+export function clearSave(storage: SaveStorage): void {
+  storage.removeItem(SAVE_KEY)
+}

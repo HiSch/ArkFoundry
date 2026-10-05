@@ -19,6 +19,7 @@ launching Ark modules is the prestige mechanic.
 ## 1. Concepts considered
 
 ### Concept A – "The Ark" (chosen)
+
 The home world is dying. The goal: build the generation ship **ARK** and send
 10,000 colonists to a distant planet.
 
@@ -36,6 +37,7 @@ The home world is dying. The goal: build the generation ship **ARK** and send
 Ark grow. A prestige feels like an achievement, not a loss.
 
 ### Concept B – "Jump into the Unknown"
+
 Start in one star system and travel to the **galactic core**. The star map
 (e.g. 10 systems) is visible from the start. Each prestige is a jump to the
 next system, which has modifiers (e.g. "Ice-rich: +50 % water, −30 % metal",
@@ -44,6 +46,7 @@ next system, which has modifiers (e.g. "Ice-rich: +50 % water, −30 % metal",
 **Use:** candidate for the **endgame / New Game+** after the Ark launches.
 
 ### Concept C – "Time Loop"
+
 The sun goes supernova in 72 h; the player fails to escape and the loop
 restarts, keeping knowledge. Strong story, but a countdown can stress casual
 players. Not pursued.
@@ -54,17 +57,17 @@ players. Not pursued.
 
 ### 2.1 Resource chain
 
-| Tier | Resource       | Source                                 | Unlocked     |
-|------|----------------|----------------------------------------|--------------|
-| 1    | Ore            | Clicking, later mining drones          | immediately  |
-| 2    | Energy         | Solar fields                           | ~5 min       |
-| 3    | Metal          | Refinery (ore + energy)                | ~15 min      |
-| 4    | Credits        | Trading / selling metal                | ~30 min      |
-| 5    | Research       | Labs; research runs in real time       | ~1 h         |
-| 6    | Alloys         | Smelter (metal + energy)               | ~4 h         |
-| 7    | Components     | Orbital shipyard                       | ~10 h        |
-| 8    | Helium-3       | Lunar / asteroid mining                | ~20 h        |
-| 9    | Exotic matter  | From module 3 / later prestiges        | prestige 2+  |
+| Tier | Resource      | Source                           | Unlocked    |
+| ---- | ------------- | -------------------------------- | ----------- |
+| 1    | Ore           | Clicking, later mining drones    | immediately |
+| 2    | Energy        | Solar fields                     | ~5 min      |
+| 3    | Metal         | Refinery (ore + energy)          | ~15 min     |
+| 4    | Credits       | Trading / selling metal          | ~30 min     |
+| 5    | Research      | Labs; research runs in real time | ~1 h        |
+| 6    | Alloys        | Smelter (metal + energy)         | ~4 h        |
+| 7    | Components    | Orbital shipyard                 | ~10 h       |
+| 8    | Helium-3      | Lunar / asteroid mining          | ~20 h       |
+| 9    | Exotic matter | From module 3 / later prestiges  | prestige 2+ |
 
 Each Ark module costs a mix of components and alloys, and from module 3 on
 also Helium-3 / exotic matter.
@@ -86,14 +89,14 @@ Active players get small extra bonuses that do not dominate: clicking early on,
 random events (meteor showers, traders, distress calls) that must be collected
 manually, and emptying storage in time.
 
-| Time (active)  | Phase                                                      |
-|----------------|------------------------------------------------------------|
-| 0–15 min       | Click ore, first drones, solar field                       |
-| 15 min – 2 h   | Refinery, credits, first automation                        |
-| 2 – 8 h        | Labs, research tree, smelter                               |
-| 8 – 24 h       | Orbital shipyard (research), storage upgrades, events      |
-| 24 – 40 h      | Helium-3 mining, component production                      |
-| 40 – 48 h      | Build hull module → **first prestige available**           |
+| Time (active) | Phase                                                 |
+| ------------- | ----------------------------------------------------- |
+| 0–15 min      | Click ore, first drones, solar field                  |
+| 15 min – 2 h  | Refinery, credits, first automation                   |
+| 2 – 8 h       | Labs, research tree, smelter                          |
+| 8 – 24 h      | Orbital shipyard (research), storage upgrades, events |
+| 24 – 40 h     | Helium-3 mining, component production                 |
+| 40 – 48 h     | Build hull module → **first prestige available**      |
 
 Starting cost curve: building cost `base × 1.12^n`, production multipliers in
 steps (×2 at 25/50/100 buildings). Numbers will be tuned later with a
@@ -122,33 +125,33 @@ SC = floor( 10 × sqrt( total alloys produced this run / 1e9 ) ) + module bonus
 
 ### 2.4 Prestige tree (small advantages)
 
-| Upgrade                 | Effect                                          | Cost (SC)  |
-|-------------------------|-------------------------------------------------|------------|
-| Seed Capital            | Start with 5 drones and 500 credits             | 2          |
-| Veteran Engineers       | Research +10 % faster (stacks 5×)               | 3 / level  |
-| Bigger Silos            | Offline / storage capacity +1 h (stacks 4×)     | 3 / level  |
-| Auto-Buyer: Drones      | Buys drones automatically                       | 5          |
-| Blueprint Archive       | First 3 research projects complete instantly    | 5          |
-| Trade Contacts          | Trade events more frequent and better           | 4          |
-| Efficient Refinery      | Refinery uses 10 % less ore                     | 4          |
-| Dock Synergy            | Each completed module: +5 % to everything       | 8          |
-| Auto-Buyer: Buildings   | Automatically builds all basic buildings        | 12         |
-| Exotic Research         | Unlocks exotic matter (needed for module 4+)    | 15         |
+| Upgrade               | Effect                                       | Cost (SC) |
+| --------------------- | -------------------------------------------- | --------- |
+| Seed Capital          | Start with 5 drones and 500 credits          | 2         |
+| Veteran Engineers     | Research +10 % faster (stacks 5×)            | 3 / level |
+| Bigger Silos          | Offline / storage capacity +1 h (stacks 4×)  | 3 / level |
+| Auto-Buyer: Drones    | Buys drones automatically                    | 5         |
+| Blueprint Archive     | First 3 research projects complete instantly | 5         |
+| Trade Contacts        | Trade events more frequent and better        | 4         |
+| Efficient Refinery    | Refinery uses 10 % less ore                  | 4         |
+| Dock Synergy          | Each completed module: +5 % to everything    | 8         |
+| Auto-Buyer: Buildings | Automatically builds all basic buildings     | 12        |
+| Exotic Research       | Unlocks exotic matter (needed for module 4+) | 15        |
 
 Each advantage is small on its own, but together they noticeably shorten the
 early phases – the game feels faster after every prestige.
 
 ### 2.5 Long-term arc towards the goal
 
-| Module (prestige) | New requirement                  | Approx. run length   |
-|-------------------|----------------------------------|----------------------|
-| 1 Hull            | Components                       | 2 days (3–4 casual)  |
-| 2 Reactor         | Much more energy                 | ~1.5 days            |
-| 3 Engine          | Helium-3 in large amounts        | ~1.5 days            |
-| 4 Habitat         | Exotic matter                    | ~1–2 days            |
-| 5 Cryo Deck       | Colonists (new resource)         | ~1–2 days            |
-| 6 Shield          | All production chains at once    | ~2 days              |
-| 7 Navigation      | Mega project, spans several runs | 2–3 runs             |
+| Module (prestige) | New requirement                  | Approx. run length  |
+| ----------------- | -------------------------------- | ------------------- |
+| 1 Hull            | Components                       | 2 days (3–4 casual) |
+| 2 Reactor         | Much more energy                 | ~1.5 days           |
+| 3 Engine          | Helium-3 in large amounts        | ~1.5 days           |
+| 4 Habitat         | Exotic matter                    | ~1–2 days           |
+| 5 Cryo Deck       | Colonists (new resource)         | ~1–2 days           |
+| 6 Shield          | All production chains at once    | ~2 days             |
+| 7 Navigation      | Mega project, spans several runs | 2–3 runs            |
 
 → The Ark is complete after roughly **9–12 prestiges**, about **3–5 weeks** of
 play. Optional extra prestiges (upgrading modules, farming SC) help with
@@ -158,6 +161,7 @@ Because each later module introduces a **new mechanic**, a run is more than
 "the same thing, just faster".
 
 ### 2.6 Endgame ideas
+
 - **The Ark launch:** credits + statistics, then New Game+ based on concept B
   (journey through star systems with modifiers, second prestige currency).
 - **Challenge runs:** e.g. "no solar power", "half storage" – grant one-time
@@ -168,25 +172,27 @@ Because each later module introduces a **new mechanic**, a run is more than
 
 ## 3. Technical and prototype decisions
 
-| # | Topic             | Decision                                                                 |
-|---|-------------------|--------------------------------------------------------------------------|
-| 1 | Platform          | Browser, **mobile first** (portrait layout; desktop must also work). A native mobile app can follow later via a wrapper such as Capacitor. |
-| 2 | Tech stack        | TypeScript + Vite + Svelte. No game engine.                              |
-| 3 | Prototype scope   | Phases 0–5 of `docs/ROADMAP.md`: first run up to the Hull module plus one prestige. |
-| 4 | Debug time controls | Yes: time scale (×10, ×100) and "skip +1 h", needed to test the 48 h pacing. |
-| 5 | Offline progress  | Production continues offline at 100 % until storage is full (initially ~4 h capacity, upgradable to ~8 h). |
-| 6 | Clicking          | Manual mining matters at the very start; its value diminishes as automated production takes over. Later, active play is rewarded through manually collected events instead. |
-| 7 | Saving            | Autosave to browser storage, plus export/import as text string. Every save carries a version number so old saves can be migrated. |
-| 8 | Presentation      | **Text only** for now (panels, lists, buttons). No graphics in the prototype; the Ark is shown as a text list of its 7 module slots. |
-| 9 | Number format     | **Scientific notation** with three significant digits, e.g. `1.23e6`. Values below 1,000 are shown as plain numbers. Plain JavaScript numbers until values can exceed ~1e308, then `break_infinity.js`. |
-| 10 | Story tone       | Serious with a note of hope ("the last chance of humanity"). Delivered through short radio messages and log entries, not long texts. |
-| 11 | Test hosting     | GitHub Pages, deployed automatically on every push. |
+| #   | Topic               | Decision                                                                                                                                                                                                |
+| --- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Platform            | Browser, **mobile first** (portrait layout; desktop must also work). A native mobile app can follow later via a wrapper such as Capacitor.                                                              |
+| 2   | Tech stack          | TypeScript + Vite + Svelte. No game engine.                                                                                                                                                             |
+| 3   | Prototype scope     | Phases 0–5 of `docs/ROADMAP.md`: first run up to the Hull module plus one prestige.                                                                                                                     |
+| 4   | Debug time controls | Yes: time scale (×10, ×100) and "skip +1 h", needed to test the 48 h pacing.                                                                                                                            |
+| 5   | Offline progress    | Production continues offline at 100 % until storage is full (initially ~4 h capacity, upgradable to ~8 h).                                                                                              |
+| 6   | Clicking            | Manual mining matters at the very start; its value diminishes as automated production takes over. Later, active play is rewarded through manually collected events instead.                             |
+| 7   | Saving              | Autosave to browser storage, plus export/import as text string. Every save carries a version number so old saves can be migrated.                                                                       |
+| 8   | Presentation        | **Text only** for now (panels, lists, buttons). No graphics in the prototype; the Ark is shown as a text list of its 7 module slots.                                                                    |
+| 9   | Number format       | **Scientific notation** with three significant digits, e.g. `1.23e6`. Values below 1,000 are shown as plain numbers. Plain JavaScript numbers until values can exceed ~1e308, then `break_infinity.js`. |
+| 10  | Story tone          | Serious with a note of hope ("the last chance of humanity"). Delivered through short radio messages and log entries, not long texts.                                                                    |
+| 11  | Test hosting        | GitHub Pages, deployed automatically on every push.                                                                                                                                                     |
 
 ### Clicking design note
+
 The click value should be a fixed amount that grows only slowly (e.g. via a few
 early upgrades), while automated production grows exponentially. This makes
 clicking dominant in the first ~15 minutes and negligible after a few hours,
 without needing an explicit cutoff.
 
 ## 4. Open questions
+
 - Monetization (not needed for the prototype).
