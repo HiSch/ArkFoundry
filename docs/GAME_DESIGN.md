@@ -1,7 +1,6 @@
 # Ark Foundry – Game Design
 
 Game name: **Ark Foundry** (store subtitle candidate: "Idle Colony Ship Builder").
-Repository name: SpaceCraftIdle.
 
 Design goals:
 
