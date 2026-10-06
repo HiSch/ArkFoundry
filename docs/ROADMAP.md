@@ -39,7 +39,7 @@ work and the value survives a page reload.
 
 ---
 
-## Phase 1 – Core loop (first noticeable gameplay)
+## Phase 1 – Core loop (first noticeable gameplay) ✅ done
 
 | Module                   | Content                                                                            |
 | ------------------------ | ---------------------------------------------------------------------------------- |

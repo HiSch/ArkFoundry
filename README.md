@@ -22,8 +22,12 @@ npm run build    # production build into dist/
 
 ## Project structure
 
-- `src/core/` – game logic in plain TypeScript (state, tick, saving, formatting).
+- `src/core/` – game logic in plain TypeScript (state, tick, production, purchases,
+  unlocks, saving, formatting).
   No UI or browser dependencies, so it can be unit tested and simulated headless.
+- `src/content/` – game content as data (resources, buildings, upgrades).
+  Balancing means editing numbers here; the values are preliminary until the
+  balancing phase.
 - `src/ui/` – Svelte components and the browser game controller (frame loop,
   autosave).
 

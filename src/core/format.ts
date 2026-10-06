@@ -9,6 +9,22 @@ export function formatNumber(value: number): string {
   return value.toExponential(2).replace('e+', 'e')
 }
 
+/** Formats a cost: like `formatNumber`, but rounds up so the shown amount is enough. */
+export function formatCost(value: number): string {
+  return formatNumber(Math.abs(value) < 1000 ? Math.ceil(value - 1e-9) : value)
+}
+
+/**
+ * Formats a rate or other small fractional value: up to two decimals below
+ * 10, one below 100, none below 1,000, scientific notation above.
+ */
+export function formatRate(value: number): string {
+  const abs = Math.abs(value)
+  if (abs >= 1000) return formatNumber(value)
+  const decimals = abs < 10 ? 2 : abs < 100 ? 1 : 0
+  return Number(value.toFixed(decimals)).toString()
+}
+
 /** Formats a duration in seconds as e.g. "2d 3h", "4h 12m", "5m 3s" or "42s". */
 export function formatDuration(seconds: number): string {
   const s = Math.max(0, Math.floor(seconds))

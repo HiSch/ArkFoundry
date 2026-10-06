@@ -28,6 +28,8 @@ describe('save', () => {
   it('round-trips through serialize and deserialize', () => {
     const state = createInitialState()
     state.resources.ore = 123.5
+    state.buildings.drone.count = 3
+    state.upgrades.push('plasmaPick')
     state.playTime = 99
     const save = createSave(state, 1000)
     const loaded = deserialize(serialize(save))
@@ -52,6 +54,21 @@ describe('save', () => {
   it('fills in missing fields with defaults', () => {
     const loaded = deserialize(JSON.stringify({ version: SAVE_VERSION, savedAt: 1, state: {} }))
     expect(loaded.state).toEqual(createInitialState())
+  })
+
+  it('migrates phase 0 saves (version 1)', () => {
+    const v1 = { version: 1, savedAt: 3, state: { resources: { ore: 500 }, playTime: 42 } }
+    const loaded = deserialize(JSON.stringify(v1))
+    expect(loaded.version).toBe(SAVE_VERSION)
+    expect(loaded.state.playTime).toBe(42)
+    expect(loaded.state.resources.ore).toBe(0)
+    expect(loaded.state.buildings.drone.count).toBe(0)
+  })
+
+  it('drops ids of removed content', () => {
+    const state = { ...createInitialState(), upgrades: ['plasmaPick', 'removedUpgrade'] }
+    const loaded = deserialize(JSON.stringify({ version: SAVE_VERSION, savedAt: 1, state }))
+    expect(loaded.state.upgrades).toEqual(['plasmaPick'])
   })
 
   it('rejects invalid input', () => {
