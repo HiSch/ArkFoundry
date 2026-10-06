@@ -107,6 +107,22 @@ Starting cost curve: building cost `base × 1.12^n`, production multipliers in
 steps (×2 at 25/50/100 buildings). Numbers will be tuned later with a
 simulation (active vs. casual player).
 
+#### Simulated pacing (phase 7)
+
+`npm run simulate` plays the first run with three player profiles
+(`src/sim/profiles.ts`) and a bot that plays reasonably (`src/sim/bot.ts`):
+
+| Profile   | Play pattern                           | Hull complete     | Star Charts |
+| --------- | -------------------------------------- | ----------------- | ----------- |
+| Active    | Game open 08:00–23:00, asleep at night | ~47 h (1 d 23 h)  | 14          |
+| Casual    | Four 15-minute check-ins a day         | ~85 h (3 d 13 h)  | 11          |
+| Idle only | Two 5-minute check-ins a day           | ~155 h (6 d 11 h) | 12          |
+
+Both targets are met: about 2 days for active and 3–4 days for casual
+players. For active players the research gate decides (the Hull is complete
+as soon as its research is); casual players additionally lose production to
+full storage between check-ins.
+
 ### 2.3 Prestige: "Launch module"
 
 On prestige:

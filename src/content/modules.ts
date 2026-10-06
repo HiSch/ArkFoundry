@@ -11,7 +11,7 @@ export const MODULES: ModuleDef[] = [
     id: 'hull',
     name: 'Hull',
     description: 'The spine of the Ark. Everything else is mounted on it.',
-    cost: { alloys: 1000000, components: 120000, helium3: 200000 },
+    cost: { alloys: 700000, components: 85000, helium3: 140000 },
     unlock: { type: 'research', research: 'hullEngineering' },
     lockedHint: 'Requires Ark Hull Engineering research.',
   },

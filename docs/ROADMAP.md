@@ -124,7 +124,7 @@ the player through run 1.
 
 ---
 
-## Phase 7 – Balancing
+## Phase 7 – Balancing ✅ done (7.4 playtests ongoing)
 
 | Module                  | Content                                                                       |
 | ----------------------- | ----------------------------------------------------------------------------- |

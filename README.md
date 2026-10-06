@@ -18,6 +18,7 @@ npm test         # unit tests (Vitest)
 npm run lint     # ESLint + Prettier check
 npm run check    # type check (svelte-check + tsc)
 npm run build    # production build into dist/
+npm run simulate # pacing report: first run with three player profiles
 ```
 
 ## Project structure
@@ -28,6 +29,8 @@ npm run build    # production build into dist/
 - `src/content/` – game content as data (resources, buildings, upgrades).
   Balancing means editing numbers here; the values are preliminary until the
   balancing phase.
+- `src/sim/` – headless pacing simulation: player profiles and a bot that
+  plays the first run (`npm run simulate`).
 - `src/ui/` – Svelte components and the browser game controller (frame loop,
   autosave).
 
