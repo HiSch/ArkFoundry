@@ -1,7 +1,15 @@
 import type { BuildingDef } from '../core/types'
 
 export type BuildingId =
-  'drone' | 'solarField' | 'refinery' | 'tradePost' | 'excavator' | 'solarArray' | 'arcRefinery'
+  | 'drone'
+  | 'solarField'
+  | 'refinery'
+  | 'tradePost'
+  | 'excavator'
+  | 'solarArray'
+  | 'arcRefinery'
+  | 'lab'
+  | 'smelter'
 
 /**
  * All buildings. The order is also the processing order each tick: a
@@ -73,6 +81,26 @@ export const BUILDINGS: BuildingDef[] = [
     consumes: { ore: 20, energy: 8 },
     produces: { metal: 6 },
     unlock: { type: 'building', building: 'solarArray', count: 3 },
+  },
+  {
+    id: 'lab',
+    name: 'Research Lab',
+    description: 'Scientists study the old Ark blueprints. Labs need a lot of power.',
+    cost: { credits: 2000, metal: 500 },
+    costGrowth: 1.17,
+    consumes: { energy: 3 },
+    produces: { research: 0.2 },
+    unlock: { type: 'produced', resource: 'credits', amount: 2000 },
+  },
+  {
+    id: 'smelter',
+    name: 'Alloy Smelter',
+    description: 'Fuses metal into alloys strong enough for a starship hull.',
+    cost: { credits: 20000, metal: 8000 },
+    costGrowth: 1.18,
+    consumes: { metal: 5, energy: 10 },
+    produces: { alloys: 1 },
+    unlock: { type: 'research', research: 'metallurgy' },
   },
 ]
 

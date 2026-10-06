@@ -12,6 +12,8 @@ export type UpgradeId =
   | 'expandedSilos'
   | 'pressureTanks'
   | 'deepVaults'
+  | 'alloyFrames'
+  | 'reinforcedLabs'
 
 /** All one-time upgrades in display order. */
 export const UPGRADES: UpgradeDef[] = [
@@ -102,6 +104,22 @@ export const UPGRADES: UpgradeDef[] = [
     cost: { credits: 25000, metal: 8000 },
     effects: [{ type: 'storageHours', add: 2 }],
     unlock: { type: 'building', building: 'arcRefinery', count: 1 },
+  },
+  {
+    id: 'alloyFrames',
+    name: 'Alloy Frames',
+    description: 'Excavators work twice as fast.',
+    cost: { alloys: 300, credits: 50000 },
+    effects: [{ type: 'throughput', building: 'excavator', factor: 2 }],
+    unlock: { type: 'produced', resource: 'alloys', amount: 50 },
+  },
+  {
+    id: 'reinforcedLabs',
+    name: 'Reinforced Labs',
+    description: 'Research labs work twice as fast.',
+    cost: { alloys: 800, credits: 80000 },
+    effects: [{ type: 'throughput', building: 'lab', factor: 2 }],
+    unlock: { type: 'produced', resource: 'alloys', amount: 300 },
   },
 ]
 

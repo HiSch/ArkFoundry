@@ -1,4 +1,5 @@
 import type { BuildingId } from '../content/buildings'
+import type { ResearchId } from '../content/research'
 import type { ResourceId } from '../content/resources'
 import type { UpgradeId } from '../content/upgrades'
 
@@ -12,6 +13,7 @@ export type UnlockCondition =
   | { type: 'produced'; resource: ResourceId; amount: number }
   | { type: 'building'; building: BuildingId; count: number }
   | { type: 'upgrade'; upgrade: UpgradeId }
+  | { type: 'research'; research: ResearchId }
 
 export interface ResourceDef {
   id: ResourceId
@@ -32,7 +34,8 @@ export interface BuildingDef {
   unlock: UnlockCondition
 }
 
-export type UpgradeEffect =
+/** A permanent bonus granted by an upgrade or a completed research project. */
+export type Effect =
   /** Adds to the ore gained per manual mining click. */
   | { type: 'clickPower'; add: number }
   /** Multiplies inputs and outputs of a building type (it simply runs faster). */
@@ -47,6 +50,19 @@ export interface UpgradeDef {
   name: string
   description: string
   cost: Amounts
-  effects: UpgradeEffect[]
+  effects: Effect[]
   unlock: UnlockCondition
+}
+
+export interface ResearchDef {
+  id: ResearchId
+  name: string
+  description: string
+  /** Paid when the project is queued; refunded if it is cancelled. */
+  cost: Amounts
+  /** Real time in seconds the project takes once it is active. */
+  duration: number
+  /** Projects that must be completed before this one becomes available. */
+  requires: ResearchId[]
+  effects: Effect[]
 }

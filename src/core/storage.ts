@@ -1,7 +1,7 @@
 import { BUILDINGS } from '../content/buildings'
 import { RESOURCE_IDS, type ResourceId } from '../content/resources'
-import { getUpgrade } from '../content/upgrades'
 import { entries } from './amounts'
+import { activeEffects } from './effects'
 import type { Amounts } from './types'
 import { multipliers } from './production'
 import type { GameState } from './state'
@@ -14,10 +14,8 @@ export const BASE_CAPACITY = 1000
 /** How many hours of gross production the storage can hold. */
 export function storageHours(state: GameState): number {
   let hours = BASE_STORAGE_HOURS
-  for (const id of state.upgrades) {
-    for (const effect of getUpgrade(id).effects) {
-      if (effect.type === 'storageHours') hours += effect.add
-    }
+  for (const effect of activeEffects(state)) {
+    if (effect.type === 'storageHours') hours += effect.add
   }
   return hours
 }
