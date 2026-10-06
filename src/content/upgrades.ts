@@ -9,6 +9,9 @@ export type UpgradeId =
   | 'tradeContracts'
   | 'hydraulics'
   | 'mirrorCoating'
+  | 'expandedSilos'
+  | 'pressureTanks'
+  | 'deepVaults'
 
 /** All one-time upgrades in display order. */
 export const UPGRADES: UpgradeDef[] = [
@@ -75,6 +78,30 @@ export const UPGRADES: UpgradeDef[] = [
     cost: { credits: 40000, metal: 12000 },
     effects: [{ type: 'throughput', building: 'solarArray', factor: 2 }],
     unlock: { type: 'building', building: 'solarArray', count: 10 },
+  },
+  {
+    id: 'expandedSilos',
+    name: 'Expanded Silos',
+    description: 'Storage holds 1 more hour of production.',
+    cost: { ore: 2000, metal: 200 },
+    effects: [{ type: 'storageHours', add: 1 }],
+    unlock: { type: 'building', building: 'refinery', count: 3 },
+  },
+  {
+    id: 'pressureTanks',
+    name: 'Pressure Tanks',
+    description: 'Storage holds 1 more hour of production.',
+    cost: { credits: 4000, metal: 1500 },
+    effects: [{ type: 'storageHours', add: 1 }],
+    unlock: { type: 'building', building: 'excavator', count: 5 },
+  },
+  {
+    id: 'deepVaults',
+    name: 'Deep Vaults',
+    description: 'Storage holds 2 more hours of production.',
+    cost: { credits: 25000, metal: 8000 },
+    effects: [{ type: 'storageHours', add: 2 }],
+    unlock: { type: 'building', building: 'arcRefinery', count: 1 },
   },
 ]
 

@@ -55,7 +55,7 @@ at the start and becomes irrelevant as drones take over.
 
 ---
 
-## Phase 2 – Offline progress & storage
+## Phase 2 – Offline progress & storage ✅ done
 
 | Module                   | Content                                                                      |
 | ------------------------ | ---------------------------------------------------------------------------- |

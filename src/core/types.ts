@@ -39,6 +39,8 @@ export type UpgradeEffect =
   | { type: 'throughput'; building: BuildingId; factor: number }
   /** Multiplies only the outputs of a building type (better efficiency). */
   | { type: 'output'; building: BuildingId; factor: number }
+  /** Adds hours of production that storage can hold. */
+  | { type: 'storageHours'; add: number }
 
 export interface UpgradeDef {
   id: UpgradeId

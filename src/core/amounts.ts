@@ -20,11 +20,3 @@ export function pay(state: GameState, cost: Amounts): void {
     state.resources[id] = Math.max(0, state.resources[id] - amount)
   }
 }
-
-/** Adds gains to the stock and to the lifetime statistics. */
-export function gain(state: GameState, gains: Amounts): void {
-  for (const [id, amount] of entries(gains)) {
-    state.resources[id] += amount
-    if (amount > 0) state.stats.produced[id] += amount
-  }
-}
