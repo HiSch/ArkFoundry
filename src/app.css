@@ -28,6 +28,8 @@ body {
   max-width: 40rem;
   margin: 0 auto;
   padding: 1rem;
+  /* Room for the fixed tab bar at the bottom. */
+  padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
 }
 
 header h1 {

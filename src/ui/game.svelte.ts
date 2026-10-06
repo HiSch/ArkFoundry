@@ -161,7 +161,7 @@ class Game {
     this.limits = {}
     this.notice =
       `The ${getModule(id).name} is in orbit. You earned ${reward} Star Charts. ` +
-      'A new run begins – spend them in the Star Charts panel further down.'
+      'A new run begins – spend them in the Ark tab.'
     this.save()
   }
 

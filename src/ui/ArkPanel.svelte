@@ -41,7 +41,7 @@
   <p class="story">
     The sun is dying. Ten thousand colonists wait for a ship that does not exist yet. Build it.
   </p>
-  <details open={built > 0 || game.state.research.completed.includes('orbitalMechanics')}>
+  <details open>
     <summary>Modules</summary>
     {#each MODULES as def (def.id)}
       {@const module = game.state.ark.modules[def.id]}
