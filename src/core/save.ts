@@ -1,11 +1,12 @@
 import { BUILDING_IDS } from '../content/buildings'
 import { PRESTIGE_UPGRADE_IDS, type PrestigeUpgradeId } from '../content/prestige'
 import { RESEARCH_IDS } from '../content/research'
+import { STORY_IDS } from '../content/story'
 import { UPGRADE_IDS } from '../content/upgrades'
 import { createInitialState, type GameState } from './state'
 
 /** Current save format version. Bump it and add a migration on every format change. */
-export const SAVE_VERSION = 5
+export const SAVE_VERSION = 6
 
 export interface SaveData {
   version: number
@@ -40,6 +41,13 @@ const migrations: Record<number, (save: Record<string, unknown>) => Record<strin
   4: (save) => {
     const state = (save.state ?? {}) as Record<string, unknown>
     return { ...save, state: { ...state, meta: createInitialState().meta } }
+  },
+  // v6 adds events, boosts and the story log. Existing players skip the intro.
+  5: (save) => {
+    const state = (save.state ?? {}) as Record<string, unknown>
+    const fresh = createInitialState()
+    const meta = { ...fresh.meta, ...(state.meta as object), introSeen: true }
+    return { ...save, state: { ...state, events: fresh.events, boosts: [], meta } }
   },
 }
 
@@ -111,6 +119,7 @@ function normalize(save: SaveData): SaveData {
       meta: {
         ...defaults.meta,
         ...state.meta,
+        storyLog: (state.meta?.storyLog ?? []).filter((id) => STORY_IDS.includes(id)),
         prestigeUpgrades: Object.fromEntries(
           Object.entries(state.meta?.prestigeUpgrades ?? {}).filter(([id]) =>
             PRESTIGE_UPGRADE_IDS.includes(id as PrestigeUpgradeId),

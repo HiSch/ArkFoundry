@@ -111,7 +111,7 @@ module (with time scale for testing).
 
 ---
 
-## Phase 6 – Events & story
+## Phase 6 – Events & story ✅ done
 
 | Module           | Content                                                                              |
 | ---------------- | ------------------------------------------------------------------------------------ |

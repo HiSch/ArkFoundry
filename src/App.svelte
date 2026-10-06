@@ -3,14 +3,18 @@
   import ArkPanel from './ui/ArkPanel.svelte'
   import BuildingsPanel from './ui/BuildingsPanel.svelte'
   import DebugPanel from './ui/DebugPanel.svelte'
+  import EventBanner from './ui/EventBanner.svelte'
+  import IntroPanel from './ui/IntroPanel.svelte'
   import MinePanel from './ui/MinePanel.svelte'
   import NoticePanel from './ui/NoticePanel.svelte'
   import OfflineReport from './ui/OfflineReport.svelte'
   import PrestigePanel from './ui/PrestigePanel.svelte'
+  import RadioLog from './ui/RadioLog.svelte'
   import ResearchPanel from './ui/ResearchPanel.svelte'
   import ResourcePanel from './ui/ResourcePanel.svelte'
   import SavePanel from './ui/SavePanel.svelte'
   import TabBar from './ui/TabBar.svelte'
+  import TransmissionBanner from './ui/TransmissionBanner.svelte'
   import UpgradesPanel from './ui/UpgradesPanel.svelte'
   import { game } from './ui/game.svelte'
   import { preferences } from './ui/preferences.svelte'
@@ -34,8 +38,11 @@
 
 <main>
   <ResourcePanel />
+  <IntroPanel />
   <NoticePanel />
   <OfflineReport />
+  <EventBanner />
+  <TransmissionBanner />
   {#if tab === 'colony'}
     <MinePanel />
     <BuildingsPanel />
@@ -47,6 +54,7 @@
     <ArkPanel />
     <PrestigePanel />
   {:else}
+    <RadioLog />
     <SavePanel />
     <DebugPanel />
   {/if}

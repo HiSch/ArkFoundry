@@ -85,8 +85,24 @@ describe('save', () => {
     const ark = state.ark as { modules: Record<string, Record<string, unknown>> }
     delete ark.modules.hull.launched
     const loaded = deserialize(JSON.stringify({ version: 4, savedAt: 1, state }))
-    expect(loaded.state.meta).toEqual(createInitialState().meta)
+    // Later migrations mark the intro as seen for existing players.
+    expect(loaded.state.meta).toEqual({ ...createInitialState().meta, introSeen: true })
     expect(loaded.state.ark.modules.hull.launched).toBe(false)
+  })
+
+  it('migrates version 5 saves by adding events and the story log', () => {
+    const state = createInitialState() as unknown as Record<string, unknown>
+    delete state.events
+    delete state.boosts
+    const meta = state.meta as Record<string, unknown>
+    delete meta.storyLog
+    delete meta.storyRead
+    delete meta.introSeen
+    const loaded = deserialize(JSON.stringify({ version: 5, savedAt: 1, state }))
+    expect(loaded.state.events).toEqual(createInitialState().events)
+    expect(loaded.state.boosts).toEqual([])
+    expect(loaded.state.meta.storyLog).toEqual([])
+    expect(loaded.state.meta.introSeen).toBe(true)
   })
 
   it('drops ids of removed content', () => {

@@ -1,4 +1,5 @@
 import type { BuildingId } from '../content/buildings'
+import { getEvent } from '../content/events'
 import { getModule, type ModuleId } from '../content/modules'
 import type { PrestigeUpgradeId } from '../content/prestige'
 import type { ResearchId } from '../content/research'
@@ -6,6 +7,7 @@ import { RESOURCE_IDS, type ResourceId } from '../content/resources'
 import type { UpgradeId } from '../content/upgrades'
 import { buyBuilding, buyUpgrade, mine, setBuildingEnabled, type BuyAmount } from '../core/actions'
 import { deliverToModule } from '../core/ark'
+import { collectEvent, eventResources, updateEvents } from '../core/events'
 import { catchUp, REPORT_THRESHOLD_SECONDS, type OfflineReport } from '../core/offline'
 import { buyPrestigeUpgrade, launchModule, setAutoBuy } from '../core/prestige'
 import { computeFlows, type Limit } from '../core/production'
@@ -13,6 +15,7 @@ import { cancelResearch, startResearch } from '../core/research'
 import { clearSave, createSave, exportSave, importSave, readSave, writeSave } from '../core/save'
 import { createInitialState, type GameState } from '../core/state'
 import { capacities } from '../core/storage'
+import { markMessagesRead } from '../core/story'
 import { advance, type Totals } from '../core/tick'
 import { updateUnlocks } from '../core/unlocks'
 
@@ -93,6 +96,7 @@ class Game {
     } else {
       const gameSeconds = gap * this.timeScale
       this.record(advance(this.state, gameSeconds), gameSeconds)
+      updateEvents(this.state, gameSeconds, Math.random, true)
     }
     if (now - this.window.started >= RATE_WINDOW_MS) this.publishRates(now)
     this.frameHandle = requestAnimationFrame(this.frame)
@@ -109,6 +113,7 @@ class Game {
   private handleAbsence(seconds: number): void {
     if (seconds <= 0) return
     const report = catchUp(this.state, seconds)
+    updateEvents(this.state, seconds, Math.random, false)
     if (report.seconds >= REPORT_THRESHOLD_SECONDS) this.offlineReport = report
   }
 
@@ -201,6 +206,39 @@ class Game {
   /** Debug: simulate `seconds` of game time instantly. */
   skip(seconds: number): void {
     advance(this.state, seconds)
+    updateEvents(this.state, seconds, Math.random, false)
+  }
+
+  /** Debug: make the next event appear right away. */
+  spawnEvent(): void {
+    this.state.events.active = null
+    this.state.events.nextIn = 0
+    updateEvents(this.state, 0, Math.random, true)
+  }
+
+  collectEvent(): void {
+    const active = this.state.events.active
+    if (!active) return
+    const def = collectEvent(this.state)
+    if (!def) return
+    if (def.reward.type === 'boost') {
+      this.notice = `${def.name}: all buildings run ${def.reward.factor}× faster for ${Math.round(def.reward.duration / 60)} minutes.`
+    }
+  }
+
+  /** Preview of what collecting the active event gives. */
+  eventPreview(): ReturnType<typeof eventResources> {
+    const active = this.state.events.active
+    if (!active) return {}
+    return eventResources(this.state, getEvent(active.id))
+  }
+
+  readMessages(): void {
+    markMessagesRead(this.state)
+  }
+
+  dismissIntro(): void {
+    this.state.meta.introSeen = true
   }
 
   /** Debug: pretend the player was away for `seconds`, including the summary. */

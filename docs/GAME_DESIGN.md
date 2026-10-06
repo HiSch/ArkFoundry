@@ -88,6 +88,12 @@ Active players get small extra bonuses that do not dominate: clicking early on,
 random events (meteor showers, traders, distress calls) that must be collected
 manually, and emptying storage in time.
 
+Events (implemented): one appears every 6–12 minutes of live play (the first
+after 5 minutes) and disappears after 3 minutes if not collected. Rewards are
+10–15 minutes of the gross production of a resource, or a 10-minute ×1.5
+boost to all buildings. Events never appear during offline time. The story
+is told through one-time radio messages at milestones and a short intro.
+
 | Time (active) | Phase                                                 |
 | ------------- | ----------------------------------------------------- |
 | 0–15 min      | Click ore, first drones, solar field                  |

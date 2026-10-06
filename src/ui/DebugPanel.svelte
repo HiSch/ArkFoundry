@@ -40,6 +40,10 @@
       <button onclick={() => game.simulateAbsence(absence.seconds)}>{absence.label}</button>
     {/each}
   </div>
+  <p class="label">Events</p>
+  <div class="row">
+    <button onclick={() => game.spawnEvent()}>Spawn event</button>
+  </div>
   <div class="row">
     <button class="danger" onclick={reset}>Reset game</button>
   </div>

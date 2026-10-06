@@ -1,6 +1,8 @@
 import type { BuildingId } from '../content/buildings'
 import type { ModuleId } from '../content/modules'
+import type { EventId } from '../content/events'
 import type { PrestigeUpgradeId } from '../content/prestige'
+import type { StoryId } from '../content/story'
 import type { ResearchId } from '../content/research'
 import type { ResourceId } from '../content/resources'
 import type { UpgradeId } from '../content/upgrades'
@@ -19,6 +21,7 @@ export type UnlockCondition =
   /** Content that exists in the design but is not available yet. */
   | { type: 'never' }
   | { type: 'moduleLaunched'; module: ModuleId }
+  | { type: 'moduleCompleted'; module: ModuleId }
   /** All of the listed conditions. */
   | { type: 'all'; conditions: UnlockCondition[] }
 
@@ -109,4 +112,29 @@ export interface PrestigeUpgradeDef {
   maxLevel: number
   /** Effects granted per level. */
   effects: Effect[]
+}
+
+export type EventReward =
+  /** A lump sum worth `seconds` of the resource's gross production, at least `minimum`. */
+  | { type: 'resource'; resource: ResourceId; seconds: number; minimum: number }
+  /** All buildings run `factor` times faster for `duration` seconds. */
+  | { type: 'boost'; factor: number; duration: number }
+
+export interface EventDef {
+  id: EventId
+  name: string
+  icon: string
+  description: string
+  reward: EventReward
+  /** The event only happens once this resource has been produced in the run. */
+  requires?: ResourceId
+}
+
+export interface StoryDef {
+  id: StoryId
+  /** Who is speaking, e.g. "Mission Control". */
+  from: string
+  title: string
+  text: string
+  trigger: UnlockCondition
 }
