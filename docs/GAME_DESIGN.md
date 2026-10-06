@@ -183,9 +183,28 @@ early phases – the game feels faster after every prestige.
 
 Every module's blueprint research requires the previous module in orbit.
 
-→ The Ark is complete after roughly **9–12 prestiges**, about **3–5 weeks** of
-play. Optional extra prestiges (upgrading modules, farming SC) help with
-modules the player is stuck on.
+Campaign simulation (`npm run campaign`, phase 8):
+
+| Run | Module     | Active   | Casual   |
+| --- | ---------- | -------- | -------- |
+| 1   | Hull       | 1 d 23 h | 3 d 13 h |
+| 2   | Reactor    | 2 d 0 h  | 5 d 20 h |
+| 3   | Engine     | 1 d 12 h | 4 d 18 h |
+| 4   | Habitat    | 2 d 11 h | 3 d 19 h |
+| 5   | Cryo Deck  | 2 d 0 h  | 4 d 14 h |
+| 6   | Shield     | 2 d 1 h  | 5 d 0 h  |
+| 7–9 | Navigation | 7 d 2 h  | 9 d 20 h |
+|     | **Total**  | **19 d** | **37 d** |
+
+The Ark is complete after 9 launches (6 modules, 2 supply launches, the
+final Navigation launch): about 2.7 weeks for active and 5.3 weeks for
+casual players, around the 3–5 week target. Active players are limited by
+research; casual players also by research progress between check-ins. The
+casual results vary by several days between simulation settings, so later
+tuning should rely on playtests.
+
+→ Target: the Ark is complete after roughly **9–12 prestiges**, about
+**3–5 weeks** of play.
 
 Because each later module introduces a **new mechanic**, a run is more than
 "the same thing, just faster".
