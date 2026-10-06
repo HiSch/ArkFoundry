@@ -1,9 +1,10 @@
 import { BUILDING_IDS } from '../content/buildings'
+import { RESEARCH_IDS } from '../content/research'
 import { UPGRADE_IDS } from '../content/upgrades'
 import { createInitialState, type GameState } from './state'
 
 /** Current save format version. Bump it and add a migration on every format change. */
-export const SAVE_VERSION = 2
+export const SAVE_VERSION = 3
 
 export interface SaveData {
   version: number
@@ -23,6 +24,11 @@ const migrations: Record<number, (save: Record<string, unknown>) => Record<strin
     const state = createInitialState()
     state.playTime = typeof old.playTime === 'number' ? old.playTime : 0
     return { ...save, state }
+  },
+  // v3 adds research.
+  2: (save) => {
+    const state = (save.state ?? {}) as Record<string, unknown>
+    return { ...save, state: { ...state, research: { completed: [], queue: [] } } }
   },
 }
 
@@ -82,6 +88,10 @@ function normalize(save: SaveData): SaveData {
       upgrades: (state.upgrades ?? []).filter((id) => UPGRADE_IDS.includes(id)),
       unlockedBuildings: (state.unlockedBuildings ?? []).filter((id) => BUILDING_IDS.includes(id)),
       unlockedUpgrades: (state.unlockedUpgrades ?? []).filter((id) => UPGRADE_IDS.includes(id)),
+      research: {
+        completed: (state.research?.completed ?? []).filter((id) => RESEARCH_IDS.includes(id)),
+        queue: (state.research?.queue ?? []).filter((entry) => RESEARCH_IDS.includes(entry.id)),
+      },
       stats: {
         ...defaults.stats,
         ...state.stats,

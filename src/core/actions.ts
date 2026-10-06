@@ -2,6 +2,7 @@ import { getBuilding, type BuildingId } from '../content/buildings'
 import { getUpgrade, type UpgradeId } from '../content/upgrades'
 import { canAfford, pay } from './amounts'
 import { buildingCost, maxAffordable } from './costs'
+import { activeEffects } from './effects'
 import type { GameState } from './state'
 import { addResources } from './storage'
 import { updateUnlocks } from './unlocks'
@@ -9,10 +10,8 @@ import { updateUnlocks } from './unlocks'
 /** Ore gained per manual mining click. */
 export function clickPower(state: GameState): number {
   let power = 1
-  for (const id of state.upgrades) {
-    for (const effect of getUpgrade(id).effects) {
-      if (effect.type === 'clickPower') power += effect.add
-    }
+  for (const effect of activeEffects(state)) {
+    if (effect.type === 'clickPower') power += effect.add
   }
   return power
 }

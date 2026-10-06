@@ -7,6 +7,7 @@
   --accent: #5ccfe6;
   --danger: #ff6b6b;
   --warning: #ffcb6b;
+  --accent-bg: rgba(92, 207, 230, 0.12);
   color-scheme: dark;
   font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
   font-size: 16px;
@@ -111,6 +112,17 @@ button:hover:not(:disabled) {
 button:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+}
+
+/* Purchase buttons: make affordable and unaffordable clearly distinct. */
+button.buy:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+button.buy:disabled {
+  opacity: 0.3;
+  border-style: dashed;
 }
 
 button[aria-pressed='true'] {

@@ -1,7 +1,7 @@
 import { BUILDINGS, type BuildingId } from '../content/buildings'
 import { RESOURCE_IDS, type ResourceId } from '../content/resources'
-import { getUpgrade } from '../content/upgrades'
 import { entries } from './amounts'
+import { activeEffects } from './effects'
 import type { GameState } from './state'
 
 /** Building counts at which a building type doubles its throughput. */
@@ -18,11 +18,9 @@ export function multipliers(state: GameState, id: BuildingId): Multipliers {
   const count = state.buildings[id].count
   let throughput = Math.pow(2, MILESTONES.filter((m) => count >= m).length)
   let output = 1
-  for (const upgradeId of state.upgrades) {
-    for (const effect of getUpgrade(upgradeId).effects) {
-      if (effect.type === 'throughput' && effect.building === id) throughput *= effect.factor
-      if (effect.type === 'output' && effect.building === id) output *= effect.factor
-    }
+  for (const effect of activeEffects(state)) {
+    if (effect.type === 'throughput' && effect.building === id) throughput *= effect.factor
+    if (effect.type === 'output' && effect.building === id) output *= effect.factor
   }
   return { throughput, output }
 }

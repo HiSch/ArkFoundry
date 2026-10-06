@@ -13,6 +13,8 @@ export function isMet(state: GameState, condition: UnlockCondition): boolean {
       return state.buildings[condition.building].count >= condition.count
     case 'upgrade':
       return state.upgrades.includes(condition.upgrade)
+    case 'research':
+      return state.research.completed.includes(condition.research)
   }
 }
 

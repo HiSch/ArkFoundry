@@ -1,5 +1,6 @@
 import { RESOURCE_IDS, type ResourceId } from '../content/resources'
 import { computeFlows } from './production'
+import { progressResearch } from './research'
 import type { GameState } from './state'
 import { capacities, clampToCapacity } from './storage'
 import { updateUnlocks } from './unlocks'
@@ -40,6 +41,7 @@ export function tick(state: GameState, dt: number): Totals | null {
     totals.lost[id] = lost
     state.stats.produced[id] += Math.max(0, flows.produced[id] - lost)
   }
+  progressResearch(state, dt)
   state.playTime += dt
   updateUnlocks(state)
   return totals

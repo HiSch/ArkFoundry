@@ -1,9 +1,11 @@
 import type { BuildingId } from '../content/buildings'
+import type { ResearchId } from '../content/research'
 import { RESOURCE_IDS, type ResourceId } from '../content/resources'
 import type { UpgradeId } from '../content/upgrades'
 import { buyBuilding, buyUpgrade, mine, setBuildingEnabled, type BuyAmount } from '../core/actions'
 import { catchUp, REPORT_THRESHOLD_SECONDS, type OfflineReport } from '../core/offline'
 import { computeFlows } from '../core/production'
+import { cancelResearch, startResearch } from '../core/research'
 import { clearSave, createSave, exportSave, importSave, readSave, writeSave } from '../core/save'
 import { createInitialState, type GameState } from '../core/state'
 import { advance, type Totals } from '../core/tick'
@@ -133,6 +135,14 @@ class Game {
 
   buyUpgrade(id: UpgradeId): void {
     buyUpgrade(this.state, id)
+  }
+
+  startResearch(id: ResearchId): void {
+    startResearch(this.state, id)
+  }
+
+  cancelResearch(id: ResearchId): void {
+    cancelResearch(this.state, id)
   }
 
   setEnabled(id: BuildingId, enabled: boolean): void {

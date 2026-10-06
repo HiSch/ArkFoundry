@@ -69,7 +69,7 @@ Full storage visibly costs production.
 
 ---
 
-## Phase 3 – Research
+## Phase 3 – Research ✅ done
 
 | Module                       | Content                                                             |
 | ---------------------------- | ------------------------------------------------------------------- |
