@@ -148,34 +148,40 @@ SC = floor( sqrt( alloys produced this run / 50,000 ) ) + 5 (launch bonus)
 
 ### 2.4 Prestige tree (small advantages)
 
-| Upgrade               | Effect                                       | Cost (SC) |
-| --------------------- | -------------------------------------------- | --------- |
-| Seed Capital          | Start with 5 drones and 500 credits          | 2         |
-| Veteran Engineers     | Research +10 % faster (stacks 5×)            | 3 / level |
-| Bigger Silos          | Offline / storage capacity +1 h (stacks 4×)  | 3 / level |
-| Auto-Buyer: Drones    | Buys drones automatically                    | 5         |
-| Blueprint Archive     | First 3 research projects complete instantly | 5         |
-| Auto-Pause            | Buildings pause when output storage is full  | 3         |
-| Trade Contacts        | Trade events more frequent and better        | 4         |
-| Efficient Refinery    | Refinery uses 10 % less ore                  | 4         |
-| Dock Synergy          | Each completed module: +5 % to everything    | 8         |
-| Auto-Buyer: Buildings | Automatically builds all basic buildings     | 12        |
-| Exotic Research       | Unlocks exotic matter (needed for module 4+) | 15        |
+| Upgrade               | Effect                                                    | Cost (SC) |
+| --------------------- | --------------------------------------------------------- | --------- |
+| Seed Capital          | Start with 5 drones, 500 ore and 500 credits              | 2         |
+| Veteran Engineers     | Research +10 % faster (stacks 5×)                         | 3 / level |
+| Bigger Silos          | Storage +1 h (stacks 4×)                                  | 3 / level |
+| Auto-Buyer: Drones    | Buys drones while they cost ≤ 10 % of the stock           | 5         |
+| Blueprint Archive     | Three basic research projects known from the start        | 5         |
+| Auto-Pause            | Buildings pause when output storage is full               | 3         |
+| Trade Contacts        | Event rewards +50 %                                       | 4         |
+| Efficient Refining    | Refineries use 10 % less input (stacks 3×)                | 4 / level |
+| Dock Synergy          | Each module in orbit: +5 % to all buildings               | 8         |
+| Auto-Buyer: Producers | Buys solar fields, excavators and solar arrays            | 12        |
+| Exotic Research       | Opens exotic matter research (needed from the Habitat on) | 15        |
+
+Further permanent bonuses: every Star Chart ever earned +1 % to all
+buildings, every achievement (18) +1 %, and research completed in an earlier
+run takes half the time.
 
 Each advantage is small on its own, but together they noticeably shorten the
 early phases – the game feels faster after every prestige.
 
 ### 2.5 Long-term arc towards the goal
 
-| Module (prestige) | New requirement                  | Approx. run length  |
-| ----------------- | -------------------------------- | ------------------- |
-| 1 Hull            | Components                       | 2 days (3–4 casual) |
-| 2 Reactor         | Much more energy                 | ~1.5 days           |
-| 3 Engine          | Helium-3 in large amounts        | ~1.5 days           |
-| 4 Habitat         | Exotic matter                    | ~1–2 days           |
-| 5 Cryo Deck       | Colonists (new resource)         | ~1–2 days           |
-| 6 Shield          | All production chains at once    | ~2 days             |
-| 7 Navigation      | Mega project, spans several runs | 2–3 runs            |
+| Module (run) | New mechanic                                                        |
+| ------------ | ------------------------------------------------------------------- |
+| 1 Hull       | Components, Helium-3                                                |
+| 2 Reactor    | Fusion Reactors (Helium-3 → energy); the module needs 5e7 energy    |
+| 3 Engine     | Gas Giant Skimmers (large Helium-3 supply)                          |
+| 4 Habitat    | Exotic matter from Particle Colliders (Exotic Research upgrade)     |
+| 5 Cryo Deck  | Colonists from Survivor Camps (credits + energy → colonists)        |
+| 6 Shield     | Needs every production chain at once                                |
+| 7 Navigation | At most 34 % can be delivered per run → three runs, supply launches |
+
+Every module's blueprint research requires the previous module in orbit.
 
 → The Ark is complete after roughly **9–12 prestiges**, about **3–5 weeks** of
 play. Optional extra prestiges (upgrading modules, farming SC) help with

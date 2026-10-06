@@ -65,11 +65,11 @@ export const MODULES: ModuleDef[] = [
   {
     id: 'navigation',
     name: 'Navigation',
-    description: 'Charts the course to a new home. Too big for one run.',
-    cost: { exotic: 11000, components: 2.7e6, alloys: 1.1e7, helium3: 1.1e7, research: 1.1e7 },
+    description: 'Charts the course to a new home. Too big for one run: built over three runs.',
+    cost: { exotic: 6000, components: 1.5e6, alloys: 6e6, helium3: 6e6, research: 6e6 },
     unlock: { type: 'research', research: 'starNavigation' },
     lockedHint: 'Requires the Shield in orbit and Star Navigation research.',
-    supplyLaunchShare: 0.3,
+    supplyLaunchShare: 0.34,
   },
 ]
 

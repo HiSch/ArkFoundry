@@ -38,8 +38,14 @@ export function deliverToModule(state: GameState, id: ModuleId): Amounts {
   const moved: Amounts = {}
   if (!canBuildModule(state, id)) return moved
   const module = state.ark.modules[id]
+  const def = getModule(id)
   for (const [r, missing] of entries(moduleRemaining(state, id))) {
-    const amount = Math.min(missing, state.resources[r])
+    let amount = Math.min(missing, state.resources[r])
+    if (def.supplyLaunchShare) {
+      // Only a share of a multi-run module can be delivered per run.
+      const allowed = (def.cost[r] ?? 0) * def.supplyLaunchShare - (module.deliveredThisRun[r] ?? 0)
+      amount = Math.min(amount, Math.max(0, allowed))
+    }
     if (amount <= 0) continue
     state.resources[r] -= amount
     module.delivered[r] = (module.delivered[r] ?? 0) + amount
@@ -78,5 +84,5 @@ export function runProgress(state: GameState, id: ModuleId): number {
 export function canSupplyLaunch(state: GameState, id: ModuleId): boolean {
   const share = getModule(id).supplyLaunchShare
   const module = state.ark.modules[id]
-  return !!share && !module.completed && runProgress(state, id) >= share
+  return !!share && !module.completed && runProgress(state, id) >= share - 1e-9
 }

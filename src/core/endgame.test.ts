@@ -94,6 +94,34 @@ describe('supply launches', () => {
     expect(runProgress(state, 'navigation')).toBe(0)
   })
 
+  it('cap deliveries per run so the module takes several runs', () => {
+    const state = launchedUpTo(6)
+    state.research.completed.push('starNavigation')
+    const cost = getModule('navigation').cost
+    const share = getModule('navigation').supplyLaunchShare!
+    for (const [r, need] of Object.entries(cost)) {
+      state.resources[r as keyof typeof cost] = (need ?? 0) * 10
+    }
+    deliverToModule(state, 'navigation')
+    expect(runProgress(state, 'navigation')).toBeCloseTo(share)
+    expect(state.ark.modules.navigation.completed).toBe(false)
+    expect(state.resources.exotic).toBeCloseTo(cost.exotic! * (10 - share))
+    // Three runs complete it (each new run needs the research again).
+    supplyLaunch(state, 'navigation')
+    state.research.completed.push('starNavigation')
+    for (const [r, need] of Object.entries(cost)) {
+      state.resources[r as keyof typeof cost] = (need ?? 0) * 10
+    }
+    deliverToModule(state, 'navigation')
+    supplyLaunch(state, 'navigation')
+    state.research.completed.push('starNavigation')
+    for (const [r, need] of Object.entries(cost)) {
+      state.resources[r as keyof typeof cost] = (need ?? 0) * 10
+    }
+    deliverToModule(state, 'navigation')
+    expect(state.ark.modules.navigation.completed).toBe(true)
+  })
+
   it('are not possible for normal modules', () => {
     const state = createInitialState()
     state.research.completed.push('hullEngineering')

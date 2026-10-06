@@ -103,9 +103,9 @@
           {#if def.supplyLaunchShare}
             {@const share = def.supplyLaunchShare}
             <p class="detail">
-              Too big for one run. Delivered this run: {(
-                Math.floor(runProgress(game.state, def.id) * 1000) / 10
-              ).toFixed(1)} % – a supply launch is possible from {Math.round(share * 100)} %.
+              Too big for one run: at most {Math.round(share * 100)} % can be delivered per run. Delivered
+              this run: {(Math.floor(runProgress(game.state, def.id) * 1000) / 10).toFixed(1)} %. Once
+              the run's share is delivered, a supply launch keeps it in orbit.
             </p>
             <div class="row">
               <button

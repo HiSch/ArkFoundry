@@ -118,8 +118,9 @@ export interface ModuleDef {
   /** Shown while the module cannot be built yet. */
   lockedHint: string
   /**
-   * Too big for one run: once this share of the cost has been delivered in a
-   * run, a supply launch (a prestige) keeps the deliveries for later runs.
+   * Too big for one run: at most this share of the cost can be delivered per
+   * run. Once it is delivered, a supply launch (a prestige) keeps the
+   * deliveries for later runs.
    */
   supplyLaunchShare?: number
 }
