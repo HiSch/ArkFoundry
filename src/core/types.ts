@@ -1,5 +1,6 @@
 import type { BuildingId } from '../content/buildings'
 import type { ModuleId } from '../content/modules'
+import type { PrestigeUpgradeId } from '../content/prestige'
 import type { ResearchId } from '../content/research'
 import type { ResourceId } from '../content/resources'
 import type { UpgradeId } from '../content/upgrades'
@@ -17,6 +18,9 @@ export type UnlockCondition =
   | { type: 'research'; research: ResearchId }
   /** Content that exists in the design but is not available yet. */
   | { type: 'never' }
+  | { type: 'moduleLaunched'; module: ModuleId }
+  /** All of the listed conditions. */
+  | { type: 'all'; conditions: UnlockCondition[] }
 
 export interface ResourceDef {
   id: ResourceId
@@ -49,6 +53,16 @@ export type Effect =
   | { type: 'output'; building: BuildingId; factor: number }
   /** Adds hours of production that storage can hold. */
   | { type: 'storageHours'; add: number }
+  /** Research progresses faster by this share (0.1 = 10 % faster). */
+  | { type: 'researchSpeed'; add: number }
+  /** Resources granted at the start of every run. */
+  | { type: 'startResources'; resources: Amounts }
+  /** Buildings granted at the start of every run. */
+  | { type: 'startBuildings'; building: BuildingId; count: number }
+  /** Research projects completed at the start of every run. */
+  | { type: 'startResearch'; research: ResearchId[] }
+  /** Allows switching on an automatic buyer for a building type. */
+  | { type: 'autoBuy'; building: BuildingId }
 
 export interface UpgradeDef {
   id: UpgradeId
@@ -82,4 +96,15 @@ export interface ModuleDef {
   unlock: UnlockCondition
   /** Shown while the module cannot be built yet. */
   lockedHint: string
+}
+
+export interface PrestigeUpgradeDef {
+  id: PrestigeUpgradeId
+  name: string
+  description: string
+  /** Star Charts per level. */
+  cost: number
+  maxLevel: number
+  /** Effects granted per level. */
+  effects: Effect[]
 }

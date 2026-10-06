@@ -4,6 +4,9 @@ import { entries } from './amounts'
 import { activeEffects } from './effects'
 import type { GameState } from './state'
 
+/** Passive throughput bonus per Star Chart ever earned (see `core/prestige.ts`). */
+export const STAR_CHART_BONUS = 0.01
+
 /** Building counts at which a building type doubles its throughput. */
 export const MILESTONES = [25, 50, 100, 150, 200, 300, 400, 500]
 
@@ -16,7 +19,9 @@ export interface Multipliers {
 
 export function multipliers(state: GameState, id: BuildingId): Multipliers {
   const count = state.buildings[id].count
-  let throughput = Math.pow(2, MILESTONES.filter((m) => count >= m).length)
+  let throughput =
+    Math.pow(2, MILESTONES.filter((m) => count >= m).length) *
+    (1 + STAR_CHART_BONUS * state.meta.starChartsEarned)
   let output = 1
   for (const effect of activeEffects(state)) {
     if (effect.type === 'throughput' && effect.building === id) throughput *= effect.factor

@@ -1,5 +1,6 @@
 import { BUILDING_IDS, type BuildingId } from '../content/buildings'
 import { MODULE_IDS, type ModuleId } from '../content/modules'
+import type { PrestigeUpgradeId } from '../content/prestige'
 import type { ResearchId } from '../content/research'
 import { RESOURCE_IDS, type ResourceId } from '../content/resources'
 import type { UpgradeId } from '../content/upgrades'
@@ -21,6 +22,22 @@ export interface ModuleState {
   /** Resources delivered so far. */
   delivered: Amounts
   completed: boolean
+  /** Launched into orbit. Launching a module is the prestige. */
+  launched: boolean
+}
+
+/** Progress that survives launches (prestige). */
+export interface MetaState {
+  /** Unspent Star Charts. */
+  starCharts: number
+  /** All Star Charts ever earned; each gives a passive production bonus. */
+  starChartsEarned: number
+  prestigeUpgrades: Partial<Record<PrestigeUpgradeId, number>>
+  /** Automatic buyers the player switched on. */
+  autoBuy: Partial<Record<BuildingId, boolean>>
+  launches: number
+  /** Play time of all finished runs, in seconds. */
+  pastPlayTime: number
 }
 
 export interface GameState {
@@ -45,8 +62,9 @@ export interface GameState {
     produced: Record<ResourceId, number>
     clicks: number
   }
-  /** Total simulated game time in seconds (includes debug time skips). */
+  /** Simulated game time of this run in seconds (includes debug time skips). */
   playTime: number
+  meta: MetaState
 }
 
 function perResource(value: number): Record<ResourceId, number> {
@@ -65,10 +83,18 @@ export function createInitialState(): GameState {
     research: { completed: [], queue: [] },
     ark: {
       modules: Object.fromEntries(
-        MODULE_IDS.map((id) => [id, { delivered: {}, completed: false }]),
+        MODULE_IDS.map((id) => [id, { delivered: {}, completed: false, launched: false }]),
       ) as Record<ModuleId, ModuleState>,
     },
     stats: { produced: perResource(0), clicks: 0 },
     playTime: 0,
+    meta: {
+      starCharts: 0,
+      starChartsEarned: 0,
+      prestigeUpgrades: {},
+      autoBuy: {},
+      launches: 0,
+      pastPlayTime: 0,
+    },
   }
 }

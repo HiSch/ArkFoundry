@@ -79,6 +79,16 @@ describe('save', () => {
     expect(loaded.state.ark).toEqual(createInitialState().ark)
   })
 
+  it('migrates version 4 saves by adding prestige progress', () => {
+    const state = createInitialState() as unknown as Record<string, unknown>
+    delete state.meta
+    const ark = state.ark as { modules: Record<string, Record<string, unknown>> }
+    delete ark.modules.hull.launched
+    const loaded = deserialize(JSON.stringify({ version: 4, savedAt: 1, state }))
+    expect(loaded.state.meta).toEqual(createInitialState().meta)
+    expect(loaded.state.ark.modules.hull.launched).toBe(false)
+  })
+
   it('drops ids of removed content', () => {
     const state = { ...createInitialState(), upgrades: ['plasmaPick', 'removedUpgrade'] }
     const loaded = deserialize(JSON.stringify({ version: SAVE_VERSION, savedAt: 1, state }))

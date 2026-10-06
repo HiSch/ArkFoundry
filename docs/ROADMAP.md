@@ -97,7 +97,7 @@ module (with time scale for testing).
 
 ---
 
-## Phase 5 – Prestige (prototype complete)
+## Phase 5 – Prestige (prototype complete) ✅ done
 
 | Module             | Content                                                                                                   |
 | ------------------ | --------------------------------------------------------------------------------------------------------- |

@@ -19,9 +19,16 @@ export const MODULES: ModuleDef[] = [
     id: 'reactor',
     name: 'Reactor',
     description: 'Powers the Ark for a journey of centuries.',
-    cost: {},
-    unlock: { type: 'never' },
-    lockedHint: LATER,
+    // Placeholder cost until the reactor gets its own mechanic (phase 8).
+    cost: { alloys: 1200000, components: 150000, helium3: 250000 },
+    unlock: {
+      type: 'all',
+      conditions: [
+        { type: 'moduleLaunched', module: 'hull' },
+        { type: 'research', research: 'fusionContainment' },
+      ],
+    },
+    lockedHint: 'Requires the Hull in orbit and Fusion Containment research.',
   },
   {
     id: 'engine',
