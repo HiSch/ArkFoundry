@@ -174,7 +174,7 @@ early phases – the game feels faster after every prestige.
 | Module (run) | New mechanic                                                        |
 | ------------ | ------------------------------------------------------------------- |
 | 1 Hull       | Components, Helium-3                                                |
-| 2 Reactor    | Fusion Reactors (Helium-3 → energy); the module needs 5e7 energy    |
+| 2 Reactor    | Fusion Reactors (Helium-3 → energy); the module needs 2.5e7 energy    |
 | 3 Engine     | Gas Giant Skimmers (large Helium-3 supply)                          |
 | 4 Habitat    | Exotic matter from Particle Colliders (Exotic Research upgrade)     |
 | 5 Cryo Deck  | Colonists from Survivor Camps (credits + energy → colonists)        |
