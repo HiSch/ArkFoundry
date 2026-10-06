@@ -7,7 +7,7 @@
   const changes = $derived(
     report ? RESOURCES.filter((r) => Math.abs(report.change[r.id]) >= 1) : [],
   )
-  const losses = $derived(report ? RESOURCES.filter((r) => report.lost[r.id] >= 1) : [])
+  const losses = $derived(report ? RESOURCES.filter((r) => report.missed[r.id] >= 1) : [])
 
   function signed(value: number): string {
     return value > 0 ? `+${formatNumber(value)}` : `-${formatNumber(-value)}`
@@ -29,11 +29,11 @@
       <p class="label">Nothing was produced.</p>
     {/if}
     {#if losses.length}
-      <p class="warning">Lost to full storage:</p>
+      <p class="warning">Missed because storage was full:</p>
       <dl class="lost">
         {#each losses as resource (resource.id)}
           <dt>{resource.name}</dt>
-          <dd>{formatNumber(report.lost[resource.id])}</dd>
+          <dd>{formatNumber(report.missed[resource.id])}</dd>
         {/each}
       </dl>
       <p class="label">Check in more often or upgrade your storage.</p>

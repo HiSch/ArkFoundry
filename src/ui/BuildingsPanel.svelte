@@ -23,13 +23,23 @@
     return { affordable: quantity > 0, shown, cost: formatAmounts(buildingCost(def, owned, shown)) }
   }
 
-  function shortage(def: BuildingDef, id: BuildingId): string | null {
+  /** Explains why a building runs below full speed, or null if it runs at full speed. */
+  function slowdown(def: BuildingDef, id: BuildingId): string | null {
     const efficiency = game.efficiency[id]
-    if (!def.consumes || efficiency === undefined || efficiency > 0.995) return null
-    const inputs = Object.keys(def.consumes)
-      .map((r) => resourceName(r as keyof typeof def.consumes & string))
+    const limit = game.limits[id]
+    if (efficiency === undefined || limit === undefined) return null
+    const outputs = Object.keys(def.produces)
+      .map((r) => resourceName(r as keyof typeof def.produces & string))
       .join(' / ')
-    return `Running at ${Math.round(efficiency * 100)} % – not enough ${inputs}`
+    if (limit === 'overflow') {
+      return `${outputs} storage is full – output is lost (the Auto-Pause prestige upgrade prevents this)`
+    }
+    const status = efficiency < 0.005 ? 'Paused' : `Running at ${Math.round(efficiency * 100)} %`
+    if (limit === 'storage') return `${status} – ${outputs} storage is full`
+    const inputs = Object.keys(def.consumes ?? {})
+      .map((r) => resourceName(r as keyof typeof def.produces & string))
+      .join(' / ')
+    return `${status} – not enough ${inputs}`
   }
 </script>
 
@@ -52,7 +62,7 @@
     {@const building = game.state.buildings[def.id]}
     {@const rates = perBuildingRates(game.state, def.id)}
     {@const current = offer(def)}
-    {@const warning = shortage(def, def.id)}
+    {@const warning = slowdown(def, def.id)}
     {@const milestone = nextMilestone(building.count)}
     <article>
       <h3>{def.name} <span class="count">×{building.count}</span></h3>

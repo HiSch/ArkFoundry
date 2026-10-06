@@ -1,7 +1,12 @@
 import type { PrestigeUpgradeDef } from '../core/types'
 
 export type PrestigeUpgradeId =
-  'seedCapital' | 'veteranEngineers' | 'biggerSilos' | 'autoDrones' | 'blueprintArchive'
+  | 'seedCapital'
+  | 'veteranEngineers'
+  | 'biggerSilos'
+  | 'autoDrones'
+  | 'blueprintArchive'
+  | 'autoPause'
 
 /** Permanent upgrades bought with Star Charts. They survive every launch. */
 export const PRESTIGE_UPGRADES: PrestigeUpgradeDef[] = [
@@ -47,6 +52,15 @@ export const PRESTIGE_UPGRADES: PrestigeUpgradeDef[] = [
     cost: 5,
     maxLevel: 1,
     effects: [{ type: 'startResearch', research: ['automation', 'marketAnalysis', 'metallurgy'] }],
+  },
+  {
+    id: 'autoPause',
+    name: 'Auto-Pause',
+    description:
+      'Buildings pause when their output storage is full instead of wasting output, and keep their inputs.',
+    cost: 3,
+    maxLevel: 1,
+    effects: [{ type: 'pauseWhenFull' }],
   },
 ]
 

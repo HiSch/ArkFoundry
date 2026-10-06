@@ -14,7 +14,7 @@ describe('catchUp', () => {
     const report = catchUp(state, 3600)
     expect(report.seconds).toBe(3600)
     expect(report.change.ore).toBeCloseTo(10 * droneOre * 3600)
-    expect(report.lost.ore).toBe(0)
+    expect(report.missed.ore).toBe(0)
     expect(state.playTime).toBeCloseTo(3600)
   })
 
@@ -41,7 +41,7 @@ describe('catchUp', () => {
     const hours = BASE_STORAGE_HOURS + 4
     const report = catchUp(state, hours * 3600)
     expect(state.resources.ore).toBeCloseTo(capacities(state).ore)
-    expect(report.lost.ore).toBeCloseTo(10 * droneOre * 4 * 3600, -1)
+    expect(report.missed.ore).toBeCloseTo(10 * droneOre * 4 * 3600, -1)
   })
 
   it('ignores negative time and limits very long absences', () => {

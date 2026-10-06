@@ -8,10 +8,11 @@ import { buyBuilding, buyUpgrade, mine, setBuildingEnabled, type BuyAmount } fro
 import { deliverToModule } from '../core/ark'
 import { catchUp, REPORT_THRESHOLD_SECONDS, type OfflineReport } from '../core/offline'
 import { buyPrestigeUpgrade, launchModule, setAutoBuy } from '../core/prestige'
-import { computeFlows } from '../core/production'
+import { computeFlows, type Limit } from '../core/production'
 import { cancelResearch, startResearch } from '../core/research'
 import { clearSave, createSave, exportSave, importSave, readSave, writeSave } from '../core/save'
 import { createInitialState, type GameState } from '../core/state'
+import { capacities } from '../core/storage'
 import { advance, type Totals } from '../core/tick'
 import { updateUnlocks } from '../core/unlocks'
 
@@ -43,6 +44,8 @@ class Game {
   rates: Record<ResourceId, number> = $state(zeroRates())
   /** Share of full speed per building (0–1), limited by inputs. */
   efficiency: Partial<Record<BuildingId, number>> = $state({})
+  /** What slows down each building that runs below full speed. */
+  limits: Partial<Record<BuildingId, Limit>> = $state({})
   /** Summary of the last absence, shown until dismissed. */
   offlineReport: OfflineReport | null = $state(null)
   /** Short message shown at the top until dismissed (e.g. after a launch). */
@@ -98,7 +101,7 @@ class Game {
   private record(totals: Totals, seconds: number): void {
     this.window.seconds += seconds
     for (const id of RESOURCE_IDS) {
-      this.window.net[id] += totals.produced[id] - totals.consumed[id] - totals.lost[id]
+      this.window.net[id] += totals.produced[id] - totals.consumed[id]
     }
   }
 
@@ -121,7 +124,9 @@ class Game {
         number
       >
     }
-    this.efficiency = computeFlows(this.state, 0.1).efficiency
+    const flows = computeFlows(this.state, 0.1, capacities(this.state))
+    this.efficiency = flows.efficiency
+    this.limits = flows.limit
     this.window = { started: now, seconds: 0, net: zeroRates() }
   }
 
@@ -153,6 +158,7 @@ class Game {
     if (reward === 0) return
     this.rates = zeroRates()
     this.efficiency = {}
+    this.limits = {}
     this.notice =
       `The ${getModule(id).name} is in orbit. You earned ${reward} Star Charts. ` +
       'A new run begins – spend them in the Star Charts panel further down.'
