@@ -1,5 +1,6 @@
 import { BUILDING_IDS, type BuildingId } from '../content/buildings'
 import { MODULE_IDS, type ModuleId } from '../content/modules'
+import type { AchievementId } from '../content/achievements'
 import type { EventId } from '../content/events'
 import type { PrestigeUpgradeId } from '../content/prestige'
 import type { ResearchId } from '../content/research'
@@ -23,6 +24,8 @@ export interface QueuedResearch {
 export interface ModuleState {
   /** Resources delivered so far. */
   delivered: Amounts
+  /** Delivered in the current run; decides when a supply launch is possible. */
+  deliveredThisRun: Amounts
   completed: boolean
   /** Launched into orbit. Launching a module is the prestige. */
   launched: boolean
@@ -45,6 +48,12 @@ export interface MetaState {
   /** Number of messages in `storyLog` the player has read. */
   storyRead: number
   introSeen: boolean
+  /** Research completed in any earlier run; it goes faster in later runs. */
+  knownResearch: ResearchId[]
+  achievements: AchievementId[]
+  eventsCollected: number
+  /** The ending was shown after the last module was launched. */
+  endingSeen: boolean
 }
 
 export interface ActiveEvent {
@@ -111,7 +120,10 @@ export function createInitialState(): GameState {
     research: { completed: [], queue: [] },
     ark: {
       modules: Object.fromEntries(
-        MODULE_IDS.map((id) => [id, { delivered: {}, completed: false, launched: false }]),
+        MODULE_IDS.map((id) => [
+          id,
+          { delivered: {}, deliveredThisRun: {}, completed: false, launched: false },
+        ]),
       ) as Record<ModuleId, ModuleState>,
     },
     stats: { produced: perResource(0), clicks: 0 },
@@ -128,6 +140,10 @@ export function createInitialState(): GameState {
       storyLog: [],
       storyRead: 0,
       introSeen: false,
+      knownResearch: [],
+      achievements: [],
+      eventsCollected: 0,
+      endingSeen: false,
     },
   }
 }

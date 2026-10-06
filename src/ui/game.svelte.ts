@@ -9,7 +9,7 @@ import { buyBuilding, buyUpgrade, mine, setBuildingEnabled, type BuyAmount } fro
 import { deliverToModule } from '../core/ark'
 import { collectEvent, eventResources, updateEvents } from '../core/events'
 import { catchUp, REPORT_THRESHOLD_SECONDS, type OfflineReport } from '../core/offline'
-import { buyPrestigeUpgrade, launchModule, setAutoBuy } from '../core/prestige'
+import { buyPrestigeUpgrade, launchModule, setAutoBuy, supplyLaunch } from '../core/prestige'
 import { computeFlows, type Limit } from '../core/production'
 import { cancelResearch, startResearch } from '../core/research'
 import { clearSave, createSave, exportSave, importSave, readSave, writeSave } from '../core/save'
@@ -168,6 +168,23 @@ class Game {
       `The ${getModule(id).name} is in orbit. You earned ${reward} Star Charts. ` +
       'A new run begins – spend them in the Ark tab.'
     this.save()
+  }
+
+  /** Sends a supply launch for a module that spans several runs. */
+  supplyLaunch(id: ModuleId): void {
+    const reward = supplyLaunch(this.state, id)
+    if (reward === 0) return
+    this.rates = zeroRates()
+    this.efficiency = {}
+    this.limits = {}
+    this.notice =
+      `Supplies for the ${getModule(id).name} are in orbit. You earned ${reward} Star Charts. ` +
+      'A new run begins – spend them in the Ark tab.'
+    this.save()
+  }
+
+  dismissEnding(): void {
+    this.state.meta.endingSeen = true
   }
 
   dismissNotice(): void {

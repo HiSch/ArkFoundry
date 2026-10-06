@@ -22,6 +22,14 @@ export type UnlockCondition =
   | { type: 'never' }
   | { type: 'moduleLaunched'; module: ModuleId }
   | { type: 'moduleCompleted'; module: ModuleId }
+  | { type: 'prestigeUpgrade'; upgrade: PrestigeUpgradeId }
+  /** Number of modules launched over the whole game. */
+  | { type: 'launches'; count: number }
+  /** Star Charts earned over the whole game. */
+  | { type: 'starCharts'; count: number }
+  /** Events collected over the whole game. */
+  | { type: 'eventsCollected'; count: number }
+  | { type: 'clicks'; count: number }
   /** All of the listed conditions. */
   | { type: 'all'; conditions: UnlockCondition[] }
 
@@ -68,6 +76,12 @@ export type Effect =
   | { type: 'autoBuy'; building: BuildingId }
   /** Buildings pause instead of wasting output when their output storage is full. */
   | { type: 'pauseWhenFull' }
+  /** Multiplies the inputs of a building type (0.9 = uses 10 % less). */
+  | { type: 'inputs'; building: BuildingId; factor: number }
+  /** All buildings run faster by this share per module in orbit. */
+  | { type: 'dockSynergy'; add: number }
+  /** Event rewards are larger by this share. */
+  | { type: 'eventRewards'; add: number }
 
 export interface UpgradeDef {
   id: UpgradeId
@@ -88,6 +102,8 @@ export interface ResearchDef {
   duration: number
   /** Projects that must be completed before this one becomes available. */
   requires: ResearchId[]
+  /** Further condition, e.g. a module that must be in orbit first. */
+  condition?: UnlockCondition
   effects: Effect[]
 }
 
@@ -101,6 +117,12 @@ export interface ModuleDef {
   unlock: UnlockCondition
   /** Shown while the module cannot be built yet. */
   lockedHint: string
+  /**
+   * Too big for one run: at most this share of the cost can be delivered per
+   * run. Once it is delivered, a supply launch (a prestige) keeps the
+   * deliveries for later runs.
+   */
+  supplyLaunchShare?: number
 }
 
 export interface PrestigeUpgradeDef {

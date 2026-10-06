@@ -107,6 +107,22 @@ Starting cost curve: building cost `base × 1.12^n`, production multipliers in
 steps (×2 at 25/50/100 buildings). Numbers will be tuned later with a
 simulation (active vs. casual player).
 
+#### Simulated pacing (phase 7)
+
+`npm run simulate` plays the first run with three player profiles
+(`src/sim/profiles.ts`) and a bot that plays reasonably (`src/sim/bot.ts`):
+
+| Profile   | Play pattern                           | Hull complete     | Star Charts |
+| --------- | -------------------------------------- | ----------------- | ----------- |
+| Active    | Game open 08:00–23:00, asleep at night | ~47 h (1 d 23 h)  | 14          |
+| Casual    | Four 15-minute check-ins a day         | ~85 h (3 d 13 h)  | 11          |
+| Idle only | Two 5-minute check-ins a day           | ~155 h (6 d 11 h) | 12          |
+
+Both targets are met: about 2 days for active and 3–4 days for casual
+players. For active players the research gate decides (the Hull is complete
+as soon as its research is); casual players additionally lose production to
+full storage between check-ins.
+
 ### 2.3 Prestige: "Launch module"
 
 On prestige:
@@ -132,38 +148,63 @@ SC = floor( sqrt( alloys produced this run / 50,000 ) ) + 5 (launch bonus)
 
 ### 2.4 Prestige tree (small advantages)
 
-| Upgrade               | Effect                                       | Cost (SC) |
-| --------------------- | -------------------------------------------- | --------- |
-| Seed Capital          | Start with 5 drones and 500 credits          | 2         |
-| Veteran Engineers     | Research +10 % faster (stacks 5×)            | 3 / level |
-| Bigger Silos          | Offline / storage capacity +1 h (stacks 4×)  | 3 / level |
-| Auto-Buyer: Drones    | Buys drones automatically                    | 5         |
-| Blueprint Archive     | First 3 research projects complete instantly | 5         |
-| Auto-Pause            | Buildings pause when output storage is full  | 3         |
-| Trade Contacts        | Trade events more frequent and better        | 4         |
-| Efficient Refinery    | Refinery uses 10 % less ore                  | 4         |
-| Dock Synergy          | Each completed module: +5 % to everything    | 8         |
-| Auto-Buyer: Buildings | Automatically builds all basic buildings     | 12        |
-| Exotic Research       | Unlocks exotic matter (needed for module 4+) | 15        |
+| Upgrade               | Effect                                                    | Cost (SC) |
+| --------------------- | --------------------------------------------------------- | --------- |
+| Seed Capital          | Start with 5 drones, 500 ore and 500 credits              | 2         |
+| Veteran Engineers     | Research +10 % faster (stacks 5×)                         | 3 / level |
+| Bigger Silos          | Storage +1 h (stacks 4×)                                  | 3 / level |
+| Auto-Buyer: Drones    | Buys drones while they cost ≤ 10 % of the stock           | 5         |
+| Blueprint Archive     | Three basic research projects known from the start        | 5         |
+| Auto-Pause            | Buildings pause when output storage is full               | 3         |
+| Trade Contacts        | Event rewards +50 %                                       | 4         |
+| Efficient Refining    | Refineries use 10 % less input (stacks 3×)                | 4 / level |
+| Dock Synergy          | Each module in orbit: +5 % to all buildings               | 8         |
+| Auto-Buyer: Producers | Buys solar fields, excavators and solar arrays            | 12        |
+| Exotic Research       | Opens exotic matter research (needed from the Habitat on) | 15        |
+
+Further permanent bonuses: every Star Chart ever earned +1 % to all
+buildings, every achievement (18) +1 %, and research completed in an earlier
+run takes half the time.
 
 Each advantage is small on its own, but together they noticeably shorten the
 early phases – the game feels faster after every prestige.
 
 ### 2.5 Long-term arc towards the goal
 
-| Module (prestige) | New requirement                  | Approx. run length  |
-| ----------------- | -------------------------------- | ------------------- |
-| 1 Hull            | Components                       | 2 days (3–4 casual) |
-| 2 Reactor         | Much more energy                 | ~1.5 days           |
-| 3 Engine          | Helium-3 in large amounts        | ~1.5 days           |
-| 4 Habitat         | Exotic matter                    | ~1–2 days           |
-| 5 Cryo Deck       | Colonists (new resource)         | ~1–2 days           |
-| 6 Shield          | All production chains at once    | ~2 days             |
-| 7 Navigation      | Mega project, spans several runs | 2–3 runs            |
+| Module (run) | New mechanic                                                        |
+| ------------ | ------------------------------------------------------------------- |
+| 1 Hull       | Components, Helium-3                                                |
+| 2 Reactor    | Fusion Reactors (Helium-3 → energy); the module needs 2.5e7 energy  |
+| 3 Engine     | Gas Giant Skimmers (large Helium-3 supply)                          |
+| 4 Habitat    | Exotic matter from Particle Colliders (Exotic Research upgrade)     |
+| 5 Cryo Deck  | Colonists from Survivor Camps (credits + energy → colonists)        |
+| 6 Shield     | Needs every production chain at once                                |
+| 7 Navigation | At most 34 % can be delivered per run → three runs, supply launches |
 
-→ The Ark is complete after roughly **9–12 prestiges**, about **3–5 weeks** of
-play. Optional extra prestiges (upgrading modules, farming SC) help with
-modules the player is stuck on.
+Every module's blueprint research requires the previous module in orbit.
+
+Campaign simulation (`npm run campaign`, phase 8):
+
+| Run | Module     | Active   | Casual   |
+| --- | ---------- | -------- | -------- |
+| 1   | Hull       | 1 d 23 h | 3 d 13 h |
+| 2   | Reactor    | 2 d 0 h  | 5 d 20 h |
+| 3   | Engine     | 1 d 12 h | 4 d 18 h |
+| 4   | Habitat    | 2 d 11 h | 3 d 19 h |
+| 5   | Cryo Deck  | 2 d 0 h  | 4 d 14 h |
+| 6   | Shield     | 2 d 1 h  | 5 d 0 h  |
+| 7–9 | Navigation | 7 d 2 h  | 9 d 20 h |
+|     | **Total**  | **19 d** | **37 d** |
+
+The Ark is complete after 9 launches (6 modules, 2 supply launches, the
+final Navigation launch): about 2.7 weeks for active and 5.3 weeks for
+casual players, around the 3–5 week target. Active players are limited by
+research; casual players also by research progress between check-ins. The
+casual results vary by several days between simulation settings, so later
+tuning should rely on playtests.
+
+→ Target: the Ark is complete after roughly **9–12 prestiges**, about
+**3–5 weeks** of play.
 
 Because each later module introduces a **new mechanic**, a run is more than
 "the same thing, just faster".

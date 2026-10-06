@@ -1,3 +1,4 @@
+import { ACHIEVEMENT_IDS } from '../content/achievements'
 import { BUILDING_IDS } from '../content/buildings'
 import { PRESTIGE_UPGRADE_IDS, type PrestigeUpgradeId } from '../content/prestige'
 import { RESEARCH_IDS } from '../content/research'
@@ -6,7 +7,7 @@ import { UPGRADE_IDS } from '../content/upgrades'
 import { createInitialState, type GameState } from './state'
 
 /** Current save format version. Bump it and add a migration on every format change. */
-export const SAVE_VERSION = 6
+export const SAVE_VERSION = 7
 
 export interface SaveData {
   version: number
@@ -48,6 +49,20 @@ const migrations: Record<number, (save: Record<string, unknown>) => Record<strin
     const fresh = createInitialState()
     const meta = { ...fresh.meta, ...(state.meta as object), introSeen: true }
     return { ...save, state: { ...state, events: fresh.events, boosts: [], meta } }
+  },
+  // v7 adds known research, achievements, an event counter, the ending flag
+  // and per-run module deliveries (filled in by normalize).
+  6: (save) => {
+    const state = (save.state ?? {}) as Record<string, unknown>
+    const fresh = createInitialState().meta
+    const meta = {
+      ...(state.meta as object),
+      knownResearch: [],
+      achievements: [],
+      eventsCollected: 0,
+      endingSeen: fresh.endingSeen,
+    }
+    return { ...save, state: { ...state, meta } }
   },
 }
 
@@ -120,6 +135,8 @@ function normalize(save: SaveData): SaveData {
         ...defaults.meta,
         ...state.meta,
         storyLog: (state.meta?.storyLog ?? []).filter((id) => STORY_IDS.includes(id)),
+        knownResearch: (state.meta?.knownResearch ?? []).filter((id) => RESEARCH_IDS.includes(id)),
+        achievements: (state.meta?.achievements ?? []).filter((id) => ACHIEVEMENT_IDS.includes(id)),
         prestigeUpgrades: Object.fromEntries(
           Object.entries(state.meta?.prestigeUpgrades ?? {}).filter(([id]) =>
             PRESTIGE_UPGRADE_IDS.includes(id as PrestigeUpgradeId),

@@ -88,7 +88,11 @@ describe('multipliers', () => {
     const catalysts = getUpgrade('catalysts').effects[0]
     if (drill.type !== 'throughput' || catalysts.type !== 'output') throw new Error('unexpected')
     expect(multipliers(state, 'drone').throughput).toBe(drill.factor)
-    expect(multipliers(state, 'refinery')).toEqual({ throughput: 1, output: catalysts.factor })
+    expect(multipliers(state, 'refinery')).toEqual({
+      throughput: 1,
+      output: catalysts.factor,
+      input: 1,
+    })
   })
 
   it('shows per-building rates with multipliers', () => {
