@@ -1,4 +1,5 @@
 import type { BuildingId } from '../content/buildings'
+import type { ModuleId } from '../content/modules'
 import type { ResearchId } from '../content/research'
 import type { ResourceId } from '../content/resources'
 import type { UpgradeId } from '../content/upgrades'
@@ -14,6 +15,8 @@ export type UnlockCondition =
   | { type: 'building'; building: BuildingId; count: number }
   | { type: 'upgrade'; upgrade: UpgradeId }
   | { type: 'research'; research: ResearchId }
+  /** Content that exists in the design but is not available yet. */
+  | { type: 'never' }
 
 export interface ResourceDef {
   id: ResourceId
@@ -65,4 +68,16 @@ export interface ResearchDef {
   /** Projects that must be completed before this one becomes available. */
   requires: ResearchId[]
   effects: Effect[]
+}
+
+export interface ModuleDef {
+  id: ModuleId
+  name: string
+  description: string
+  /** Resources that must be delivered to complete the module. */
+  cost: Amounts
+  /** When construction may start. */
+  unlock: UnlockCondition
+  /** Shown while the module cannot be built yet. */
+  lockedHint: string
 }

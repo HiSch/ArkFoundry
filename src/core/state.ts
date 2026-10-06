@@ -1,7 +1,9 @@
 import { BUILDING_IDS, type BuildingId } from '../content/buildings'
+import { MODULE_IDS, type ModuleId } from '../content/modules'
 import type { ResearchId } from '../content/research'
 import { RESOURCE_IDS, type ResourceId } from '../content/resources'
 import type { UpgradeId } from '../content/upgrades'
+import type { Amounts } from './types'
 
 export interface BuildingState {
   count: number
@@ -13,6 +15,12 @@ export interface QueuedResearch {
   id: ResearchId
   /** Seconds already spent on the project; only the first queue entry advances. */
   progress: number
+}
+
+export interface ModuleState {
+  /** Resources delivered so far. */
+  delivered: Amounts
+  completed: boolean
 }
 
 export interface GameState {
@@ -28,6 +36,9 @@ export interface GameState {
     completed: ResearchId[]
     /** Paid projects in order; the first one is active. */
     queue: QueuedResearch[]
+  }
+  ark: {
+    modules: Record<ModuleId, ModuleState>
   }
   stats: {
     /** Total amount ever gained per resource in this run. */
@@ -52,6 +63,11 @@ export function createInitialState(): GameState {
     unlockedBuildings: [],
     unlockedUpgrades: [],
     research: { completed: [], queue: [] },
+    ark: {
+      modules: Object.fromEntries(
+        MODULE_IDS.map((id) => [id, { delivered: {}, completed: false }]),
+      ) as Record<ModuleId, ModuleState>,
+    },
     stats: { produced: perResource(0), clicks: 0 },
     playTime: 0,
   }

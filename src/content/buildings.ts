@@ -10,6 +10,8 @@ export type BuildingId =
   | 'arcRefinery'
   | 'lab'
   | 'smelter'
+  | 'he3Extractor'
+  | 'shipyard'
 
 /**
  * All buildings. The order is also the processing order each tick: a
@@ -101,6 +103,26 @@ export const BUILDINGS: BuildingDef[] = [
     consumes: { metal: 5, energy: 10 },
     produces: { alloys: 1 },
     unlock: { type: 'research', research: 'metallurgy' },
+  },
+  {
+    id: 'he3Extractor',
+    name: 'Helium-3 Extractor',
+    description: 'Lunar crawlers bake Helium-3 out of the regolith. Fuel for the Ark.',
+    cost: { credits: 150000, alloys: 1500 },
+    costGrowth: 1.2,
+    consumes: { energy: 15 },
+    produces: { helium3: 0.5 },
+    unlock: { type: 'research', research: 'lunarMining' },
+  },
+  {
+    id: 'shipyard',
+    name: 'Orbital Shipyard',
+    description: 'Assembles starship components in zero gravity.',
+    cost: { credits: 200000, alloys: 2000 },
+    costGrowth: 1.2,
+    consumes: { alloys: 2, metal: 10, energy: 20 },
+    produces: { components: 0.5 },
+    unlock: { type: 'research', research: 'orbitalConstruction' },
   },
 ]
 

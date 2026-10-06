@@ -4,7 +4,7 @@ import { UPGRADE_IDS } from '../content/upgrades'
 import { createInitialState, type GameState } from './state'
 
 /** Current save format version. Bump it and add a migration on every format change. */
-export const SAVE_VERSION = 3
+export const SAVE_VERSION = 4
 
 export interface SaveData {
   version: number
@@ -29,6 +29,11 @@ const migrations: Record<number, (save: Record<string, unknown>) => Record<strin
   2: (save) => {
     const state = (save.state ?? {}) as Record<string, unknown>
     return { ...save, state: { ...state, research: { completed: [], queue: [] } } }
+  },
+  // v4 adds the Ark and its modules.
+  3: (save) => {
+    const state = (save.state ?? {}) as Record<string, unknown>
+    return { ...save, state: { ...state, ark: createInitialState().ark } }
   },
 }
 
@@ -76,6 +81,10 @@ function normalize(save: SaveData): SaveData {
   for (const id of Object.keys(buildings) as (keyof typeof buildings)[]) {
     buildings[id] = { ...defaults.buildings[id], ...state.buildings?.[id] }
   }
+  const modules = { ...defaults.ark.modules }
+  for (const id of Object.keys(modules) as (keyof typeof modules)[]) {
+    modules[id] = { ...defaults.ark.modules[id], ...state.ark?.modules?.[id] }
+  }
   return {
     version: SAVE_VERSION,
     savedAt: typeof save.savedAt === 'number' ? save.savedAt : Date.now(),
@@ -92,6 +101,7 @@ function normalize(save: SaveData): SaveData {
         completed: (state.research?.completed ?? []).filter((id) => RESEARCH_IDS.includes(id)),
         queue: (state.research?.queue ?? []).filter((entry) => RESEARCH_IDS.includes(entry.id)),
       },
+      ark: { modules },
       stats: {
         ...defaults.stats,
         ...state.stats,

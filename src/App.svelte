@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte'
+  import ArkPanel from './ui/ArkPanel.svelte'
   import BuildingsPanel from './ui/BuildingsPanel.svelte'
   import DebugPanel from './ui/DebugPanel.svelte'
   import MinePanel from './ui/MinePanel.svelte'
@@ -24,6 +25,7 @@
 <main>
   <ResourcePanel />
   <OfflineReport />
+  <ArkPanel />
   <MinePanel />
   <BuildingsPanel />
   <ResearchPanel />

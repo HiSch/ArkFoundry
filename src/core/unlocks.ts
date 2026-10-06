@@ -15,6 +15,8 @@ export function isMet(state: GameState, condition: UnlockCondition): boolean {
       return state.upgrades.includes(condition.upgrade)
     case 'research':
       return state.research.completed.includes(condition.research)
+    case 'never':
+      return false
   }
 }
 
