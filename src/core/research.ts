@@ -1,5 +1,6 @@
 import { getResearch, RESEARCH, type ResearchId } from '../content/research'
 import { canAfford, entries, pay } from './amounts'
+import { activeEffects } from './effects'
 import type { GameState } from './state'
 import type { ResearchDef } from './types'
 import { updateUnlocks } from './unlocks'
@@ -63,7 +64,7 @@ export function cancelResearch(state: GameState, id: ResearchId): boolean {
  * after finishing a project goes to the next one in the queue.
  */
 export function progressResearch(state: GameState, dt: number): void {
-  let remaining = dt
+  let remaining = dt * researchSpeed(state)
   while (remaining > 0 && state.research.queue.length > 0) {
     const active = state.research.queue[0]
     const duration = getResearch(active.id).duration
@@ -79,10 +80,23 @@ export function progressResearch(state: GameState, dt: number): void {
   }
 }
 
-/** Seconds until every queued project is finished. */
+/** Multiplier on research progress per real second. */
+export function researchSpeed(state: GameState): number {
+  let speed = 1
+  for (const effect of activeEffects(state)) {
+    if (effect.type === 'researchSpeed') speed += effect.add
+  }
+  return speed
+}
+
+/** Real seconds until a queued project finishes, given the current research speed. */
+export function projectTimeRemaining(state: GameState, id: ResearchId): number {
+  const entry = state.research.queue.find((e) => e.id === id)
+  const progress = entry?.progress ?? 0
+  return (getResearch(id).duration - progress) / researchSpeed(state)
+}
+
+/** Real seconds until every queued project is finished. */
 export function queueTimeRemaining(state: GameState): number {
-  return state.research.queue.reduce(
-    (sum, entry) => sum + getResearch(entry.id).duration - entry.progress,
-    0,
-  )
+  return state.research.queue.reduce((sum, entry) => sum + projectTimeRemaining(state, entry.id), 0)
 }

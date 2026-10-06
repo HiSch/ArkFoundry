@@ -1,10 +1,11 @@
 import { BUILDING_IDS } from '../content/buildings'
+import { PRESTIGE_UPGRADE_IDS, type PrestigeUpgradeId } from '../content/prestige'
 import { RESEARCH_IDS } from '../content/research'
 import { UPGRADE_IDS } from '../content/upgrades'
 import { createInitialState, type GameState } from './state'
 
 /** Current save format version. Bump it and add a migration on every format change. */
-export const SAVE_VERSION = 4
+export const SAVE_VERSION = 5
 
 export interface SaveData {
   version: number
@@ -34,6 +35,11 @@ const migrations: Record<number, (save: Record<string, unknown>) => Record<strin
   3: (save) => {
     const state = (save.state ?? {}) as Record<string, unknown>
     return { ...save, state: { ...state, ark: createInitialState().ark } }
+  },
+  // v5 adds prestige progress; module launch flags are filled in by normalize.
+  4: (save) => {
+    const state = (save.state ?? {}) as Record<string, unknown>
+    return { ...save, state: { ...state, meta: createInitialState().meta } }
   },
 }
 
@@ -102,6 +108,15 @@ function normalize(save: SaveData): SaveData {
         queue: (state.research?.queue ?? []).filter((entry) => RESEARCH_IDS.includes(entry.id)),
       },
       ark: { modules },
+      meta: {
+        ...defaults.meta,
+        ...state.meta,
+        prestigeUpgrades: Object.fromEntries(
+          Object.entries(state.meta?.prestigeUpgrades ?? {}).filter(([id]) =>
+            PRESTIGE_UPGRADE_IDS.includes(id as PrestigeUpgradeId),
+          ),
+        ),
+      },
       stats: {
         ...defaults.stats,
         ...state.stats,

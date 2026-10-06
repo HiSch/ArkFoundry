@@ -1,11 +1,13 @@
 import type { BuildingId } from '../content/buildings'
-import type { ModuleId } from '../content/modules'
+import { getModule, type ModuleId } from '../content/modules'
+import type { PrestigeUpgradeId } from '../content/prestige'
 import type { ResearchId } from '../content/research'
 import { RESOURCE_IDS, type ResourceId } from '../content/resources'
 import type { UpgradeId } from '../content/upgrades'
 import { buyBuilding, buyUpgrade, mine, setBuildingEnabled, type BuyAmount } from '../core/actions'
 import { deliverToModule } from '../core/ark'
 import { catchUp, REPORT_THRESHOLD_SECONDS, type OfflineReport } from '../core/offline'
+import { buyPrestigeUpgrade, launchModule, setAutoBuy } from '../core/prestige'
 import { computeFlows } from '../core/production'
 import { cancelResearch, startResearch } from '../core/research'
 import { clearSave, createSave, exportSave, importSave, readSave, writeSave } from '../core/save'
@@ -43,6 +45,8 @@ class Game {
   efficiency: Partial<Record<BuildingId, number>> = $state({})
   /** Summary of the last absence, shown until dismissed. */
   offlineReport: OfflineReport | null = $state(null)
+  /** Short message shown at the top until dismissed (e.g. after a launch). */
+  notice: string | null = $state(null)
 
   private frameHandle = 0
   private lastFrame = 0
@@ -143,6 +147,30 @@ class Game {
     deliverToModule(this.state, id)
   }
 
+  /** Launches a completed module: earns Star Charts and starts a new run. */
+  launch(id: ModuleId): void {
+    const reward = launchModule(this.state, id)
+    if (reward === 0) return
+    this.rates = zeroRates()
+    this.efficiency = {}
+    this.notice =
+      `The ${getModule(id).name} is in orbit. You earned ${reward} Star Charts. ` +
+      'A new run begins – spend them in the Star Charts panel further down.'
+    this.save()
+  }
+
+  dismissNotice(): void {
+    this.notice = null
+  }
+
+  buyPrestigeUpgrade(id: PrestigeUpgradeId): void {
+    buyPrestigeUpgrade(this.state, id)
+  }
+
+  setAutoBuy(id: BuildingId, enabled: boolean): void {
+    setAutoBuy(this.state, id, enabled)
+  }
+
   startResearch(id: ResearchId): void {
     startResearch(this.state, id)
   }
@@ -182,6 +210,7 @@ class Game {
     this.timeScale = 1
     this.rates = zeroRates()
     this.offlineReport = null
+    this.notice = null
     this.save()
   }
 

@@ -1,20 +1,30 @@
 <script lang="ts">
   import { MODULES } from '../content/modules'
   import { entries } from '../core/amounts'
-  import { canBuildModule, completedModules, moduleProgress } from '../core/ark'
+  import { canBuildModule, launchedModules, moduleProgress } from '../core/ark'
+  import { launchReward } from '../core/prestige'
   import { formatNumber } from '../core/format'
   import { game } from './game.svelte'
   import { resourceName } from './names'
 
   const BAR_WIDTH = 20
 
-  const built = $derived(completedModules(game.state))
+  const built = $derived(launchedModules(game.state))
 
   function bar(share: number): string {
     const filled = Math.floor(share * BAR_WIDTH)
     // One decimal: module costs are large, so progress moves slowly.
     const percent = (Math.floor(share * 1000) / 10).toFixed(1)
     return `[${'#'.repeat(filled)}${'-'.repeat(BAR_WIDTH - filled)}] ${percent} %`
+  }
+
+  function launch(id: (typeof MODULES)[number]['id'], name: string): void {
+    const reward = launchReward(game.state)
+    const message =
+      `Launch the ${name} into orbit?\n\nYou earn ${reward} Star Charts. ` +
+      'Your colony starts over: resources, buildings, upgrades and research are reset. ' +
+      'The Ark, Star Charts and prestige upgrades stay.'
+    if (confirm(message)) game.launch(id)
   }
 
   function canDeliver(cost: [string, number][], delivered: Record<string, number | undefined>) {
@@ -27,7 +37,7 @@
 </script>
 
 <section class="panel ark">
-  <h2>The Ark · {built}/{MODULES.length} modules</h2>
+  <h2>The Ark · {built}/{MODULES.length} modules in orbit</h2>
   <p class="story">
     The sun is dying. Ten thousand colonists wait for a ship that does not exist yet. Build it.
   </p>
@@ -38,12 +48,23 @@
       {@const buildable = canBuildModule(game.state, def.id)}
       <article>
         <h3>
-          <span class="mark">{module.completed ? '[x]' : '[ ]'}</span>
+          <span class="mark">{module.launched ? '[x]' : module.completed ? '[+]' : '[ ]'}</span>
           {def.name}
         </h3>
         <p class="detail">{def.description}</p>
-        {#if module.completed}
-          <p class="done">Complete. Ready for launch – launching arrives in the next update.</p>
+        {#if module.launched}
+          <p class="done">In orbit.</p>
+        {:else if module.completed}
+          <p class="done">Complete and ready for launch.</p>
+          <p class="detail">
+            Launching earns {launchReward(game.state)} Star Charts and starts a new run. More alloys produced
+            in this run mean more Star Charts.
+          </p>
+          <div class="row">
+            <button class="buy launch" onclick={() => launch(def.id, def.name)}>
+              Launch {def.name}
+            </button>
+          </div>
         {:else if buildable}
           {@const cost = entries(def.cost)}
           <p class="progress">{bar(moduleProgress(game.state, def.id))}</p>
@@ -137,5 +158,9 @@
 
   .buy {
     flex: 1;
+  }
+
+  .launch {
+    font-weight: bold;
   }
 </style>

@@ -106,16 +106,18 @@ simulation (active vs. casual player).
 On prestige:
 
 - **Kept:** Ark modules in the dock, prestige points, purchased prestige
-  upgrades, statistics / achievements.
+  upgrades, auto-buyer switches, statistics / achievements.
 - **Reset:** resources, buildings, research.
 
 **Prestige points = Star Charts (SC)**
 
 ```
-SC = floor( 10 × sqrt( total alloys produced this run / 1e9 ) ) + module bonus
+SC = floor( sqrt( alloys produced this run / 50,000 ) ) + 5 (launch bonus)
 ```
 
-- The first prestige yields about **10–15 SC**.
+- The first prestige yields about **10–15 SC** (simulation: 11 SC after ~41 h).
+- The second run is noticeably faster (simulation with 3 prestige upgrades:
+  Reactor after ~33 h instead of ~41 h for the Hull).
 - Staying longer in a run yields more SC (square root → diminishing returns),
   so prestiging too early or too late are both suboptimal.
 - Each SC passively grants **+1 % production** (small but noticeable). SC can

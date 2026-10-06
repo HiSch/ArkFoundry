@@ -4,7 +4,9 @@
   import BuildingsPanel from './ui/BuildingsPanel.svelte'
   import DebugPanel from './ui/DebugPanel.svelte'
   import MinePanel from './ui/MinePanel.svelte'
+  import NoticePanel from './ui/NoticePanel.svelte'
   import OfflineReport from './ui/OfflineReport.svelte'
+  import PrestigePanel from './ui/PrestigePanel.svelte'
   import ResearchPanel from './ui/ResearchPanel.svelte'
   import ResourcePanel from './ui/ResourcePanel.svelte'
   import SavePanel from './ui/SavePanel.svelte'
@@ -24,12 +26,14 @@
 
 <main>
   <ResourcePanel />
+  <NoticePanel />
   <OfflineReport />
   <ArkPanel />
   <MinePanel />
   <BuildingsPanel />
   <ResearchPanel />
   <UpgradesPanel />
+  <PrestigePanel />
   <SavePanel />
   <DebugPanel />
 </main>

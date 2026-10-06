@@ -54,3 +54,8 @@ export function deliverToModule(state: GameState, id: ModuleId): Amounts {
 export function completedModules(state: GameState): number {
   return MODULES.filter((m) => state.ark.modules[m.id].completed).length
 }
+
+/** Modules launched into orbit; they make up the Ark. */
+export function launchedModules(state: GameState): number {
+  return MODULES.filter((m) => state.ark.modules[m.id].launched).length
+}

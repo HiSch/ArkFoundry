@@ -80,7 +80,7 @@
         {/each}
       </dl>
       <p class="label">
-        Day {Math.floor(game.state.playTime / 86400) + 1} · {formatDuration(game.state.playTime)} · Storage:
+        Run {game.state.meta.launches + 1} · {formatDuration(game.state.playTime)} · Storage:
         {storageHours(game.state)} h
       </p>
     {/if}
