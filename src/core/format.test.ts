@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatDuration, formatNumber } from './format'
+import { formatCost, formatDuration, formatNumber, formatRate } from './format'
 
 describe('formatNumber', () => {
   it('shows plain integers below 1,000', () => {
@@ -28,5 +28,24 @@ describe('formatDuration', () => {
     expect(formatDuration(303)).toBe('5m 3s')
     expect(formatDuration(4 * 3600 + 12 * 60)).toBe('4h 12m')
     expect(formatDuration(2 * 86400 + 3 * 3600 + 59)).toBe('2d 3h')
+  })
+})
+
+describe('formatCost', () => {
+  it('rounds small costs up', () => {
+    expect(formatCost(11.2)).toBe('12')
+    expect(formatCost(12)).toBe('12')
+    expect(formatCost(2500)).toBe('2.50e3')
+  })
+})
+
+describe('formatRate', () => {
+  it('keeps decimals for small values', () => {
+    expect(formatRate(0.4)).toBe('0.4')
+    expect(formatRate(1.234)).toBe('1.23')
+    expect(formatRate(12.34)).toBe('12.3')
+    expect(formatRate(-0.5)).toBe('-0.5')
+    expect(formatRate(456.7)).toBe('457')
+    expect(formatRate(12345)).toBe('1.23e4')
   })
 })

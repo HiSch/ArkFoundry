@@ -1,7 +1,9 @@
+import { BUILDING_IDS } from '../content/buildings'
+import { UPGRADE_IDS } from '../content/upgrades'
 import { createInitialState, type GameState } from './state'
 
 /** Current save format version. Bump it and add a migration on every format change. */
-export const SAVE_VERSION = 1
+export const SAVE_VERSION = 2
 
 export interface SaveData {
   version: number
@@ -14,7 +16,15 @@ export interface SaveData {
  * Migrations from version N to N + 1, indexed by N. Each one receives the raw
  * save object of version N and returns the object for version N + 1.
  */
-const migrations: Record<number, (save: Record<string, unknown>) => Record<string, unknown>> = {}
+const migrations: Record<number, (save: Record<string, unknown>) => Record<string, unknown>> = {
+  // v1 (phase 0) only had a placeholder ore counter. Keep play time, start the economy fresh.
+  1: (save) => {
+    const old = (save.state ?? {}) as { playTime?: number }
+    const state = createInitialState()
+    state.playTime = typeof old.playTime === 'number' ? old.playTime : 0
+    return { ...save, state }
+  },
+}
 
 export function createSave(state: GameState, now: number): SaveData {
   // JSON round trip instead of structuredClone: it also works on reactive proxies.
@@ -49,10 +59,17 @@ export function deserialize(text: string): SaveData {
   return normalize(save as unknown as SaveData)
 }
 
-/** Fills in fields missing from older or hand-edited saves with defaults. */
+/**
+ * Fills in fields missing from hand-edited saves or added by new content
+ * (e.g. a new building) with defaults. Structural changes still need a migration.
+ */
 function normalize(save: SaveData): SaveData {
   const defaults = createInitialState()
-  const state = save.state ?? defaults
+  const state: Partial<GameState> = save.state ?? {}
+  const buildings = { ...defaults.buildings }
+  for (const id of Object.keys(buildings) as (keyof typeof buildings)[]) {
+    buildings[id] = { ...defaults.buildings[id], ...state.buildings?.[id] }
+  }
   return {
     version: SAVE_VERSION,
     savedAt: typeof save.savedAt === 'number' ? save.savedAt : Date.now(),
@@ -60,6 +77,16 @@ function normalize(save: SaveData): SaveData {
       ...defaults,
       ...state,
       resources: { ...defaults.resources, ...state.resources },
+      buildings,
+      // Drop ids of content that no longer exists.
+      upgrades: (state.upgrades ?? []).filter((id) => UPGRADE_IDS.includes(id)),
+      unlockedBuildings: (state.unlockedBuildings ?? []).filter((id) => BUILDING_IDS.includes(id)),
+      unlockedUpgrades: (state.unlockedUpgrades ?? []).filter((id) => UPGRADE_IDS.includes(id)),
+      stats: {
+        ...defaults.stats,
+        ...state.stats,
+        produced: { ...defaults.stats.produced, ...state.stats?.produced },
+      },
     },
   }
 }

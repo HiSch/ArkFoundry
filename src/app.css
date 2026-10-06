@@ -6,6 +6,7 @@
   --muted: #8592a8;
   --accent: #5ccfe6;
   --danger: #ff6b6b;
+  --warning: #ffcb6b;
   color-scheme: dark;
   font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
   font-size: 16px;
@@ -103,8 +104,13 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+button:hover:not(:disabled) {
   border-color: var(--accent);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 button[aria-pressed='true'] {
