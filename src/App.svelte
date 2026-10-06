@@ -10,8 +10,16 @@
   import ResearchPanel from './ui/ResearchPanel.svelte'
   import ResourcePanel from './ui/ResourcePanel.svelte'
   import SavePanel from './ui/SavePanel.svelte'
+  import TabBar from './ui/TabBar.svelte'
   import UpgradesPanel from './ui/UpgradesPanel.svelte'
   import { game } from './ui/game.svelte'
+  import { preferences } from './ui/preferences.svelte'
+  import { visibleTabs } from './ui/tabs'
+
+  // Fall back to the colony tab if the stored tab is not available (e.g. after a launch).
+  const tab = $derived(
+    visibleTabs(game.state).some((t) => t.id === preferences.tab) ? preferences.tab : 'colony',
+  )
 
   onMount(() => {
     game.start()
@@ -28,12 +36,20 @@
   <ResourcePanel />
   <NoticePanel />
   <OfflineReport />
-  <ArkPanel />
-  <MinePanel />
-  <BuildingsPanel />
-  <ResearchPanel />
-  <UpgradesPanel />
-  <PrestigePanel />
-  <SavePanel />
-  <DebugPanel />
+  {#if tab === 'colony'}
+    <MinePanel />
+    <BuildingsPanel />
+  {:else if tab === 'research'}
+    <ResearchPanel />
+  {:else if tab === 'upgrades'}
+    <UpgradesPanel />
+  {:else if tab === 'ark'}
+    <ArkPanel />
+    <PrestigePanel />
+  {:else}
+    <SavePanel />
+    <DebugPanel />
+  {/if}
 </main>
+
+<TabBar />

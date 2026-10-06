@@ -5,15 +5,23 @@
 
 export type ResourceView = 'expanded' | 'mini' | 'collapsed'
 
+export type TabId = 'colony' | 'research' | 'upgrades' | 'ark' | 'more'
+
 const KEY = 'ark-foundry-preferences'
 
 interface Preferences {
   resourceView: ResourceView
   /** View to restore when a collapsed resource bar is opened again. */
   lastOpenResourceView: Exclude<ResourceView, 'collapsed'>
+  /** Tab shown in the main area. */
+  tab: TabId
 }
 
-const defaults: Preferences = { resourceView: 'expanded', lastOpenResourceView: 'expanded' }
+const defaults: Preferences = {
+  resourceView: 'expanded',
+  lastOpenResourceView: 'expanded',
+  tab: 'colony',
+}
 
 function load(): Preferences {
   try {
@@ -34,6 +42,15 @@ class PreferenceStore {
   setResourceView(view: ResourceView): void {
     this.values.resourceView = view
     if (view !== 'collapsed') this.values.lastOpenResourceView = view
+    this.persist()
+  }
+
+  get tab(): TabId {
+    return this.values.tab
+  }
+
+  setTab(tab: TabId): void {
+    this.values.tab = tab
     this.persist()
   }
 

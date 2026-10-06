@@ -18,11 +18,12 @@
 </script>
 
 {#if visible}
-  <section class="panel">
-    <h2>Star Charts</h2>
-    <p class="summary">
-      <strong>{meta.starCharts}</strong> to spend · {meta.starChartsEarned} earned in total
-    </p>
+  <details class="panel" open>
+    <summary>
+      <h2>Star Charts</h2>
+      <span class="summary"><strong>{meta.starCharts}</strong> to spend</span>
+    </summary>
+    <p class="detail">{meta.starChartsEarned} earned in total.</p>
     <p class="detail">
       Every Star Chart ever earned speeds up all buildings by 1 % (now +{Math.round(
         (starChartBonus(game.state) - 1) * 100,
@@ -73,12 +74,27 @@
       {/each}
       <p class="detail">Buys one building whenever it costs at most 10 % of your stock.</p>
     {/if}
-  </section>
+  </details>
 {/if}
 
 <style>
+  summary {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    cursor: pointer;
+  }
+
+  summary h2 {
+    display: inline;
+    margin: 0;
+    font-size: 1rem;
+  }
+
   .summary {
-    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.875rem;
   }
 
   strong {
