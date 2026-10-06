@@ -1,6 +1,7 @@
 import { getBuilding, type BuildingId } from '../content/buildings'
 import type { ModuleId } from '../content/modules'
 import { getPrestigeUpgrade, type PrestigeUpgradeId } from '../content/prestige'
+import { canSupplyLaunch } from './ark'
 import { buildingCost } from './costs'
 import { activeEffects, prestigeEffects } from './effects'
 import { STAR_CHART_BONUS } from './production'
@@ -42,12 +43,30 @@ export function canLaunch(state: GameState, id: ModuleId): boolean {
  */
 export function launchModule(state: GameState, id: ModuleId): number {
   if (!canLaunch(state, id)) return 0
-  const reward = launchReward(state)
   state.ark.modules[id].launched = true
+  return finishRun(state)
+}
+
+/**
+ * Launches supplies for a module that is too big for one run: earns Star
+ * Charts and starts a new run like a normal launch, but the module stays in
+ * the dock with its deliveries. Returns the Star Charts earned, or 0.
+ */
+export function supplyLaunch(state: GameState, id: ModuleId): number {
+  if (!canSupplyLaunch(state, id)) return 0
+  return finishRun(state)
+}
+
+/** Rewards the run and starts a new one. */
+function finishRun(state: GameState): number {
+  const reward = launchReward(state)
   state.meta.starCharts += reward
   state.meta.starChartsEarned += reward
   state.meta.launches += 1
   state.meta.pastPlayTime += state.playTime
+  for (const id of state.research.completed) {
+    if (!state.meta.knownResearch.includes(id)) state.meta.knownResearch.push(id)
+  }
   startNewRun(state)
   return reward
 }
@@ -57,6 +76,7 @@ export function startNewRun(state: GameState): void {
   const fresh = createInitialState()
   const { ark, meta } = state
   Object.assign(state, fresh, { ark, meta })
+  for (const module of Object.values(state.ark.modules)) module.deliveredThisRun = {}
   for (const effect of prestigeEffects(state)) {
     if (effect.type === 'startResources') {
       for (const [r, amount] of Object.entries(effect.resources)) {

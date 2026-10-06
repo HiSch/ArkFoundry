@@ -2,7 +2,7 @@ import { MODULES } from '../content/modules'
 import { PRESTIGE_UPGRADE_IDS } from '../content/prestige'
 import { UPGRADES } from '../content/upgrades'
 import { canAfford } from '../core/amounts'
-import { canBuildModule, launchedModules } from '../core/ark'
+import { canBuildModule, canSupplyLaunch, launchedModules } from '../core/ark'
 import { canBuyPrestigeUpgrade, canLaunch } from '../core/prestige'
 import { availableResearch, researchDiscovered } from '../core/research'
 import type { GameState } from '../core/state'
@@ -52,7 +52,7 @@ export function tabNeedsAttention(state: GameState, id: TabId): boolean {
       )
     case 'ark':
       return (
-        MODULES.some((m) => canLaunch(state, m.id)) ||
+        MODULES.some((m) => canLaunch(state, m.id) || canSupplyLaunch(state, m.id)) ||
         MODULES.some(
           (m) =>
             canBuildModule(state, m.id) &&

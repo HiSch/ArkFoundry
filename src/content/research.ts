@@ -14,6 +14,16 @@ export type ResearchId =
   | 'lunarMining'
   | 'fusionContainment'
   | 'hullEngineering'
+  | 'fusionPower'
+  | 'reactorEngineering'
+  | 'gasGiantMining'
+  | 'driveEngineering'
+  | 'exoticPhysics'
+  | 'habitatDesign'
+  | 'colonyOutreach'
+  | 'cryogenics'
+  | 'shieldTheory'
+  | 'starNavigation'
 
 const MINUTE = 60
 const HOUR = 3600
@@ -138,6 +148,118 @@ export const RESEARCH: ResearchDef[] = [
     cost: { research: 100000, components: 500 },
     duration: 10 * HOUR,
     requires: ['orbitalConstruction', 'fusionContainment'],
+    effects: [],
+  },
+  // --- Reactor (run 2) ---
+  {
+    id: 'fusionPower',
+    name: 'Fusion Power',
+    description: 'Unlocks the Fusion Reactor, which turns Helium-3 into energy.',
+    cost: { research: 80000, helium3: 2000 },
+    duration: 6 * HOUR,
+    requires: ['fusionContainment'],
+    condition: { type: 'moduleLaunched', module: 'hull' },
+    effects: [],
+  },
+  {
+    id: 'reactorEngineering',
+    name: 'Reactor Engineering',
+    description: 'Blueprints for the Ark reactor. Allows building the Reactor module.',
+    cost: { research: 150000, components: 2000 },
+    duration: 10 * HOUR,
+    requires: ['fusionPower', 'orbitalConstruction'],
+    condition: { type: 'moduleLaunched', module: 'hull' },
+    effects: [],
+  },
+  // --- Engine (run 3) ---
+  {
+    id: 'gasGiantMining',
+    name: 'Gas Giant Mining',
+    description: 'Unlocks the Gas Giant Skimmer, a large source of Helium-3.',
+    cost: { research: 200000, components: 4000 },
+    duration: 8 * HOUR,
+    requires: ['lunarMining', 'orbitalConstruction'],
+    condition: { type: 'moduleLaunched', module: 'reactor' },
+    effects: [],
+  },
+  {
+    id: 'driveEngineering',
+    name: 'Drive Engineering',
+    description: 'Blueprints for the fusion drive. Allows building the Engine module.',
+    cost: { research: 300000, helium3: 20000 },
+    duration: 12 * HOUR,
+    requires: ['gasGiantMining', 'fusionContainment'],
+    condition: { type: 'moduleLaunched', module: 'reactor' },
+    effects: [],
+  },
+  // --- Habitat (run 4) ---
+  {
+    id: 'exoticPhysics',
+    name: 'Exotic Physics',
+    description: 'Unlocks the Particle Collider, which makes exotic matter.',
+    cost: { research: 400000, helium3: 30000 },
+    duration: 10 * HOUR,
+    requires: ['fusionContainment', 'orbitalConstruction'],
+    condition: {
+      type: 'all',
+      conditions: [
+        { type: 'moduleLaunched', module: 'engine' },
+        { type: 'prestigeUpgrade', upgrade: 'exoticResearch' },
+      ],
+    },
+    effects: [],
+  },
+  {
+    id: 'habitatDesign',
+    name: 'Habitat Design',
+    description: 'Blueprints for the habitat ring. Allows building the Habitat module.',
+    cost: { research: 500000, exotic: 50 },
+    duration: 12 * HOUR,
+    requires: ['exoticPhysics'],
+    condition: { type: 'moduleLaunched', module: 'engine' },
+    effects: [],
+  },
+  // --- Cryo Deck (run 5) ---
+  {
+    id: 'colonyOutreach',
+    name: 'Colony Outreach',
+    description: 'Unlocks Survivor Camps. Refugees from the cities can join the Ark.',
+    cost: { research: 300000, credits: 1000000 },
+    duration: 6 * HOUR,
+    requires: ['marketAnalysis', 'orbitalConstruction'],
+    condition: { type: 'moduleLaunched', module: 'habitat' },
+    effects: [],
+  },
+  {
+    id: 'cryogenics',
+    name: 'Cryogenics',
+    description: 'Safe long-term sleep. Allows building the Cryo Deck module.',
+    cost: { research: 600000, exotic: 100 },
+    duration: 12 * HOUR,
+    requires: ['colonyOutreach', 'exoticPhysics'],
+    condition: { type: 'moduleLaunched', module: 'habitat' },
+    effects: [],
+  },
+  // --- Shield (run 6) ---
+  {
+    id: 'shieldTheory',
+    name: 'Shield Theory',
+    description: 'Exotic matter bends radiation away. Allows building the Shield module.',
+    cost: { research: 800000, exotic: 200 },
+    duration: 14 * HOUR,
+    requires: ['exoticPhysics', 'gridTheory', 'lunarMining'],
+    condition: { type: 'moduleLaunched', module: 'cryoDeck' },
+    effects: [],
+  },
+  // --- Navigation (runs 7+) ---
+  {
+    id: 'starNavigation',
+    name: 'Star Navigation',
+    description: 'Charts a course to a habitable world. Allows building the Navigation module.',
+    cost: { research: 1000000, exotic: 300 },
+    duration: 16 * HOUR,
+    requires: ['shieldTheory', 'colonyOutreach'],
+    condition: { type: 'moduleLaunched', module: 'shield' },
     effects: [],
   },
 ]

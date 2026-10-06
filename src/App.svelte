@@ -1,8 +1,10 @@
 <script lang="ts">
   import { onMount } from 'svelte'
+  import AchievementsPanel from './ui/AchievementsPanel.svelte'
   import ArkPanel from './ui/ArkPanel.svelte'
   import BuildingsPanel from './ui/BuildingsPanel.svelte'
   import DebugPanel from './ui/DebugPanel.svelte'
+  import EndingPanel from './ui/EndingPanel.svelte'
   import EventBanner from './ui/EventBanner.svelte'
   import IntroPanel from './ui/IntroPanel.svelte'
   import MinePanel from './ui/MinePanel.svelte'
@@ -39,6 +41,7 @@
 <main>
   <ResourcePanel />
   <IntroPanel />
+  <EndingPanel />
   <NoticePanel />
   <OfflineReport />
   <EventBanner />
@@ -55,6 +58,7 @@
     <PrestigePanel />
   {:else}
     <RadioLog />
+    <AchievementsPanel />
     <SavePanel />
     <DebugPanel />
   {/if}

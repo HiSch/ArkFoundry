@@ -7,6 +7,11 @@ export type PrestigeUpgradeId =
   | 'autoDrones'
   | 'blueprintArchive'
   | 'autoPause'
+  | 'tradeContacts'
+  | 'efficientRefining'
+  | 'dockSynergy'
+  | 'autoBuildings'
+  | 'exoticResearch'
 
 /** Permanent upgrades bought with Star Charts. They survive every launch. */
 export const PRESTIGE_UPGRADES: PrestigeUpgradeDef[] = [
@@ -61,6 +66,54 @@ export const PRESTIGE_UPGRADES: PrestigeUpgradeDef[] = [
     cost: 3,
     maxLevel: 1,
     effects: [{ type: 'pauseWhenFull' }],
+  },
+  {
+    id: 'tradeContacts',
+    name: 'Trade Contacts',
+    description: 'Event rewards are 50 % larger.',
+    cost: 4,
+    maxLevel: 1,
+    effects: [{ type: 'eventRewards', add: 0.5 }],
+  },
+  {
+    id: 'efficientRefining',
+    name: 'Efficient Refining',
+    description: 'Refineries and arc refineries use 10 % less ore and energy per level.',
+    cost: 4,
+    maxLevel: 3,
+    effects: [
+      { type: 'inputs', building: 'refinery', factor: 0.9 },
+      { type: 'inputs', building: 'arcRefinery', factor: 0.9 },
+    ],
+  },
+  {
+    id: 'dockSynergy',
+    name: 'Dock Synergy',
+    description: 'Every module in orbit speeds up all buildings by 5 %.',
+    cost: 8,
+    maxLevel: 1,
+    effects: [{ type: 'dockSynergy', add: 0.05 }],
+  },
+  {
+    id: 'autoBuildings',
+    name: 'Auto-Buyer: Producers',
+    description:
+      'Can buy solar fields, excavators and solar arrays automatically while they are cheap.',
+    cost: 12,
+    maxLevel: 1,
+    effects: [
+      { type: 'autoBuy', building: 'solarField' },
+      { type: 'autoBuy', building: 'excavator' },
+      { type: 'autoBuy', building: 'solarArray' },
+    ],
+  },
+  {
+    id: 'exoticResearch',
+    name: 'Exotic Research',
+    description: 'Opens research into exotic matter, needed from the Habitat on.',
+    cost: 15,
+    maxLevel: 1,
+    effects: [],
   },
 ]
 

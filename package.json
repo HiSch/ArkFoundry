@@ -11,7 +11,8 @@
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
     "test": "vitest run",
-    "simulate": "tsx scripts/simulate.ts"
+    "simulate": "tsx scripts/simulate.ts",
+    "campaign": "tsx scripts/campaign.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

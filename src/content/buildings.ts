@@ -12,6 +12,10 @@ export type BuildingId =
   | 'smelter'
   | 'he3Extractor'
   | 'shipyard'
+  | 'fusionReactor'
+  | 'gasSkimmer'
+  | 'collider'
+  | 'survivorCamp'
 
 /**
  * All buildings. The order is also the processing order each tick: a
@@ -123,6 +127,46 @@ export const BUILDINGS: BuildingDef[] = [
     consumes: { alloys: 2, metal: 10, energy: 20 },
     produces: { components: 0.5 },
     unlock: { type: 'research', research: 'orbitalConstruction' },
+  },
+  {
+    id: 'fusionReactor',
+    name: 'Fusion Reactor',
+    description: 'Burns Helium-3 for enormous amounts of energy.',
+    cost: { credits: 500000, components: 2000 },
+    costGrowth: 1.2,
+    consumes: { helium3: 1 },
+    produces: { energy: 400 },
+    unlock: { type: 'research', research: 'fusionPower' },
+  },
+  {
+    id: 'gasSkimmer',
+    name: 'Gas Giant Skimmer',
+    description: 'Dives through the clouds of the outer giant to scoop up Helium-3.',
+    cost: { credits: 1000000, components: 5000 },
+    costGrowth: 1.2,
+    consumes: { energy: 60 },
+    produces: { helium3: 6 },
+    unlock: { type: 'research', research: 'gasGiantMining' },
+  },
+  {
+    id: 'collider',
+    name: 'Particle Collider',
+    description: 'Smashes Helium-3 nuclei until exotic matter falls out.',
+    cost: { credits: 2000000, components: 10000, alloys: 50000 },
+    costGrowth: 1.22,
+    consumes: { energy: 800, helium3: 4 },
+    produces: { exotic: 0.02 },
+    unlock: { type: 'research', research: 'exoticPhysics' },
+  },
+  {
+    id: 'survivorCamp',
+    name: 'Survivor Camp',
+    description: 'Shelter and food for refugees from the dying cities. Some join the Ark.',
+    cost: { credits: 500000, alloys: 10000 },
+    costGrowth: 1.18,
+    consumes: { credits: 40, energy: 100 },
+    produces: { colonists: 0.02 },
+    unlock: { type: 'research', research: 'colonyOutreach' },
   },
 ]
 

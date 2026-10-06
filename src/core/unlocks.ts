@@ -21,6 +21,16 @@ export function isMet(state: GameState, condition: UnlockCondition): boolean {
       return state.ark.modules[condition.module].launched
     case 'moduleCompleted':
       return state.ark.modules[condition.module].completed
+    case 'prestigeUpgrade':
+      return (state.meta.prestigeUpgrades[condition.upgrade] ?? 0) > 0
+    case 'launches':
+      return state.meta.launches >= condition.count
+    case 'starCharts':
+      return state.meta.starChartsEarned >= condition.count
+    case 'eventsCollected':
+      return state.meta.eventsCollected >= condition.count
+    case 'clicks':
+      return state.stats.clicks >= condition.count
     case 'all':
       return condition.conditions.every((c) => isMet(state, c))
   }

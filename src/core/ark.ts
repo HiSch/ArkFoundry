@@ -43,6 +43,7 @@ export function deliverToModule(state: GameState, id: ModuleId): Amounts {
     if (amount <= 0) continue
     state.resources[r] -= amount
     module.delivered[r] = (module.delivered[r] ?? 0) + amount
+    module.deliveredThisRun[r] = (module.deliveredThisRun[r] ?? 0) + amount
     moved[r] = amount
   }
   if (entries(moduleRemaining(state, id)).every(([, missing]) => missing <= 1e-9)) {
@@ -58,4 +59,24 @@ export function completedModules(state: GameState): number {
 /** Modules launched into orbit; they make up the Ark. */
 export function launchedModules(state: GameState): number {
   return MODULES.filter((m) => state.ark.modules[m.id].launched).length
+}
+
+/** Share of the module's cost delivered in the current run, averaged over its resources. */
+export function runProgress(state: GameState, id: ModuleId): number {
+  const cost = entries(getModule(id).cost)
+  if (cost.length === 0) return 0
+  const delivered = state.ark.modules[id].deliveredThisRun
+  const sum = cost.reduce((total, [r, need]) => total + Math.min(1, (delivered[r] ?? 0) / need), 0)
+  return sum / cost.length
+}
+
+/**
+ * Whether a supply launch is possible: the module is too big for one run and
+ * enough has been delivered in this run. A supply launch is a prestige that
+ * keeps the deliveries.
+ */
+export function canSupplyLaunch(state: GameState, id: ModuleId): boolean {
+  const share = getModule(id).supplyLaunchShare
+  const module = state.ark.modules[id]
+  return !!share && !module.completed && runProgress(state, id) >= share
 }

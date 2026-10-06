@@ -14,6 +14,16 @@ export type StoryId =
   | 'hullComplete'
   | 'hullLaunched'
   | 'reactorComplete'
+  | 'reactorLaunched'
+  | 'firstSkimmer'
+  | 'engineLaunched'
+  | 'exoticMatter'
+  | 'habitatLaunched'
+  | 'firstColonists'
+  | 'cryoLaunched'
+  | 'shieldLaunched'
+  | 'navigationCourse'
+  | 'arkLaunched'
 
 const CONTROL = 'Mission Control'
 const ENGINEER = 'Chief Engineer Okafor'
@@ -114,6 +124,76 @@ export const STORY: StoryDef[] = [
     title: 'A heart for the Ark',
     text: 'The reactor is built. Once it is mounted, the Ark will have power for centuries.',
     trigger: { type: 'moduleCompleted', module: 'reactor' },
+  },
+  {
+    id: 'reactorLaunched',
+    from: CONTROL,
+    title: 'The heart is beating',
+    text: 'Two modules in orbit. The reactor hums above us. Next: an engine strong enough to leave.',
+    trigger: { type: 'moduleLaunched', module: 'reactor' },
+  },
+  {
+    id: 'firstSkimmer',
+    from: ENGINEER,
+    title: 'Diving into the giant',
+    text: 'The skimmer survived its first dive. The outer giant holds more Helium-3 than the moon ever did.',
+    trigger: { type: 'building', building: 'gasSkimmer', count: 1 },
+  },
+  {
+    id: 'engineLaunched',
+    from: CONTROL,
+    title: 'It can fly',
+    text: 'Hull, reactor, engine. Technically the Ark could leave now – but nobody would survive the trip.',
+    trigger: { type: 'moduleLaunched', module: 'engine' },
+  },
+  {
+    id: 'exoticMatter',
+    from: SCIENCE,
+    title: 'Matter that should not exist',
+    text: 'The collider produced its first grams of exotic matter. It bends space a little. Handle with care.',
+    trigger: { type: 'building', building: 'collider', count: 1 },
+  },
+  {
+    id: 'habitatLaunched',
+    from: CONTROL,
+    title: 'A place to live',
+    text: 'The habitat ring turns. The waking crew will have gardens up there. Now we need the sleepers.',
+    trigger: { type: 'moduleLaunched', module: 'habitat' },
+  },
+  {
+    id: 'firstColonists',
+    from: CONTROL,
+    title: 'They are coming',
+    text: 'The first refugees reached the camp. Each one carries a name, a skill and a reason to leave.',
+    trigger: { type: 'building', building: 'survivorCamp', count: 1 },
+  },
+  {
+    id: 'cryoLaunched',
+    from: SCIENCE,
+    title: 'Ten thousand sleepers',
+    text: 'The cryo deck is in orbit and the chambers are ready. Only the shield and the course are missing.',
+    trigger: { type: 'moduleLaunched', module: 'cryoDeck' },
+  },
+  {
+    id: 'shieldLaunched',
+    from: ENGINEER,
+    title: 'Safe passage',
+    text: 'The shield holds. Radiation, dust, debris – nothing gets through. One module left.',
+    trigger: { type: 'moduleLaunched', module: 'shield' },
+  },
+  {
+    id: 'navigationCourse',
+    from: SCIENCE,
+    title: 'A course to a new home',
+    text: 'We found a world. It is far. The navigation core is too big to build at once – send supplies run by run.',
+    trigger: { type: 'research', research: 'starNavigation' },
+  },
+  {
+    id: 'arkLaunched',
+    from: CONTROL,
+    title: 'Exodus',
+    text: 'All seven modules are joined. Ten thousand colonists sleep, the engine burns, and the Ark leaves the dying sun behind. Thank you, Commander.',
+    trigger: { type: 'moduleLaunched', module: 'navigation' },
   },
 ]
 

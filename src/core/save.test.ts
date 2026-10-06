@@ -105,6 +105,23 @@ describe('save', () => {
     expect(loaded.state.meta.introSeen).toBe(true)
   })
 
+  it('migrates version 6 saves by adding late-game progress', () => {
+    const state = createInitialState() as unknown as Record<string, unknown>
+    const meta = state.meta as Record<string, unknown>
+    delete meta.knownResearch
+    delete meta.achievements
+    delete meta.eventsCollected
+    delete meta.endingSeen
+    const ark = state.ark as { modules: Record<string, Record<string, unknown>> }
+    delete ark.modules.hull.deliveredThisRun
+    const loaded = deserialize(JSON.stringify({ version: 6, savedAt: 1, state }))
+    expect(loaded.state.meta.knownResearch).toEqual([])
+    expect(loaded.state.meta.achievements).toEqual([])
+    expect(loaded.state.meta.eventsCollected).toBe(0)
+    expect(loaded.state.meta.endingSeen).toBe(false)
+    expect(loaded.state.ark.modules.hull.deliveredThisRun).toEqual({})
+  })
+
   it('drops ids of removed content', () => {
     const state = { ...createInitialState(), upgrades: ['plasmaPick', 'removedUpgrade'] }
     const loaded = deserialize(JSON.stringify({ version: SAVE_VERSION, savedAt: 1, state }))

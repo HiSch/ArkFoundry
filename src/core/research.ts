@@ -3,7 +3,16 @@ import { canAfford, entries, pay } from './amounts'
 import { activeEffects } from './effects'
 import type { GameState } from './state'
 import type { ResearchDef } from './types'
-import { updateUnlocks } from './unlocks'
+import { isMet, updateUnlocks } from './unlocks'
+
+/** Research completed in an earlier run takes this share of its normal time. */
+export const KNOWN_RESEARCH_FACTOR = 0.5
+
+/** Real seconds a project takes at normal research speed, shorter if it is already known. */
+export function researchDuration(state: GameState, id: ResearchId): number {
+  const base = getResearch(id).duration
+  return state.meta.knownResearch.includes(id) ? base * KNOWN_RESEARCH_FACTOR : base
+}
 
 /** Maximum number of projects in the queue, including the active one. */
 export const MAX_QUEUE_LENGTH = 3
@@ -24,7 +33,8 @@ export function availableResearch(state: GameState): ResearchDef[] {
     (def) =>
       !done.includes(def.id) &&
       !isQueued(state, def.id) &&
-      def.requires.every((required) => done.includes(required)),
+      def.requires.every((required) => done.includes(required)) &&
+      (!def.condition || isMet(state, def.condition)),
   )
 }
 
@@ -67,7 +77,7 @@ export function progressResearch(state: GameState, dt: number): void {
   let remaining = dt * researchSpeed(state)
   while (remaining > 0 && state.research.queue.length > 0) {
     const active = state.research.queue[0]
-    const duration = getResearch(active.id).duration
+    const duration = researchDuration(state, active.id)
     const needed = duration - active.progress
     if (remaining < needed) {
       active.progress += remaining
@@ -93,7 +103,7 @@ export function researchSpeed(state: GameState): number {
 export function projectTimeRemaining(state: GameState, id: ResearchId): number {
   const entry = state.research.queue.find((e) => e.id === id)
   const progress = entry?.progress ?? 0
-  return (getResearch(id).duration - progress) / researchSpeed(state)
+  return (researchDuration(state, id) - progress) / researchSpeed(state)
 }
 
 /** Real seconds until every queued project is finished. */

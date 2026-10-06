@@ -5,7 +5,10 @@ import { createInitialState, type GameState } from '../core/state'
 import { advance } from '../core/tick'
 import { isMet } from '../core/unlocks'
 import type { UnlockCondition } from '../core/types'
-import { playRound } from './bot'
+import { MODULES } from '../content/modules'
+import { canSupplyLaunch } from '../core/ark'
+import { launchModule, launchReward, supplyLaunch } from '../core/prestige'
+import { playRound, spendStarCharts, targetModule } from './bot'
 import type { PlayerProfile } from './profiles'
 
 /** Pacing milestones of the first run, in order. */
@@ -116,4 +119,82 @@ export function simulate(
     if (done() || now >= horizon) break
   }
   return { profile: profile.id, milestones, onlineSeconds, state }
+}
+
+export interface RunReport {
+  /** Module launched (or supplied) at the end of the run. */
+  module: string
+  supply: boolean
+  /** Real seconds the run took. */
+  seconds: number
+  starCharts: number
+}
+
+export interface CampaignResult {
+  profile: string
+  runs: RunReport[]
+  /** Real seconds until the Ark was complete, or null within the horizon. */
+  completedAt: number | null
+  state: GameState
+}
+
+/**
+ * Plays the whole game with a profile: every run builds the next module and
+ * launches it (or sends a supply launch for modules that span several runs),
+ * then spends Star Charts. Stops when the Ark is complete or after
+ * `horizonDays`.
+ */
+export function simulateCampaign(
+  profile: PlayerProfile,
+  horizonDays = 60,
+  seed = 1,
+  roundSeconds = 10,
+): CampaignResult {
+  const horizon = horizonDays * 86400
+  const state = createInitialState()
+  state.meta.introSeen = true
+  const random = seededRandom(seed)
+  const intervals = onlineIntervals(profile, horizon)
+  if (intervals.length === 0 || intervals[0][0] > 0) intervals.unshift([0, 15 * 60])
+  const runs: RunReport[] = []
+  let now = 0
+  let runStart = 0
+  let completedAt: number | null = null
+
+  const tryLaunch = (): boolean => {
+    const target = targetModule(state)
+    if (!target) return false
+    const reward = launchReward(state)
+    let supply = false
+    if (state.ark.modules[target].completed) launchModule(state, target)
+    else if (canSupplyLaunch(state, target)) {
+      supplyLaunch(state, target)
+      supply = true
+    } else return false
+    runs.push({ module: target, supply, seconds: now - runStart, starCharts: reward })
+    runStart = now
+    spendStarCharts(state)
+    if (MODULES.every((m) => state.ark.modules[m.id].launched)) completedAt = now
+    return true
+  }
+
+  for (const [start, end] of intervals) {
+    if (start > now) {
+      catchUp(state, start - now)
+      updateEvents(state, start - now, random, false)
+      now = start
+    }
+    while (now < end && completedAt === null) {
+      if (now - runStart < profile.clickMinutes * 60) {
+        for (let i = 0; i < profile.clicksPerSecond * roundSeconds; i++) mine(state)
+      }
+      playRound(state)
+      advance(state, roundSeconds, 5)
+      updateEvents(state, roundSeconds, random, true)
+      now += roundSeconds
+      tryLaunch()
+    }
+    if (completedAt !== null || now >= horizon) break
+  }
+  return { profile: profile.id, runs, completedAt, state }
 }

@@ -1,4 +1,5 @@
 import { RESOURCE_IDS, type ResourceId } from '../content/resources'
+import { updateAchievements } from './achievements'
 import { progressBoosts } from './events'
 import { computeFlows } from './production'
 import { runAutoBuyers } from './prestige'
@@ -56,6 +57,7 @@ export function tick(state: GameState, dt: number): Totals | null {
   state.playTime += dt
   updateUnlocks(state)
   updateStory(state)
+  updateAchievements(state)
   return totals
 }
 

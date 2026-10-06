@@ -84,7 +84,7 @@ describe('launching a module', () => {
     const state = completedHullState()
     launchModule(state, 'hull')
     expect(canBuildModule(state, 'reactor')).toBe(false)
-    state.research.completed.push('fusionContainment')
+    state.research.completed.push('reactorEngineering')
     expect(canBuildModule(state, 'reactor')).toBe(true)
   })
 })

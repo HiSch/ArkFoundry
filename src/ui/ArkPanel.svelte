@@ -1,7 +1,13 @@
 <script lang="ts">
   import { MODULES } from '../content/modules'
   import { entries } from '../core/amounts'
-  import { canBuildModule, launchedModules, moduleProgress } from '../core/ark'
+  import {
+    canBuildModule,
+    canSupplyLaunch,
+    launchedModules,
+    moduleProgress,
+    runProgress,
+  } from '../core/ark'
   import { launchReward } from '../core/prestige'
   import { formatNumber } from '../core/format'
   import { game } from './game.svelte'
@@ -25,6 +31,14 @@
       'Your colony starts over: resources, buildings, upgrades and research are reset. ' +
       'The Ark, Star Charts and prestige upgrades stay.'
     if (confirm(message)) game.launch(id)
+  }
+
+  function supply(id: (typeof MODULES)[number]['id'], name: string): void {
+    const reward = launchReward(game.state)
+    const message =
+      `Send this run's deliveries for the ${name} into orbit?\n\nYou earn ${reward} Star Charts ` +
+      'and start a new run. The deliveries stay in the dock; finish the module in a later run.'
+    if (confirm(message)) game.supplyLaunch(id)
   }
 
   function canDeliver(cost: [string, number][], delivered: Record<string, number | undefined>) {
@@ -86,6 +100,23 @@
               Deliver resources
             </button>
           </div>
+          {#if def.supplyLaunchShare}
+            {@const share = def.supplyLaunchShare}
+            <p class="detail">
+              Too big for one run. Delivered this run: {(
+                Math.floor(runProgress(game.state, def.id) * 1000) / 10
+              ).toFixed(1)} % – a supply launch is possible from {Math.round(share * 100)} %.
+            </p>
+            <div class="row">
+              <button
+                class="buy launch"
+                disabled={!canSupplyLaunch(game.state, def.id)}
+                onclick={() => supply(def.id, def.name)}
+              >
+                Supply launch ({launchReward(game.state)} Star Charts)
+              </button>
+            </div>
+          {/if}
         {:else}
           <p class="detail locked">{def.lockedHint}</p>
         {/if}

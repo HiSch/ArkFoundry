@@ -1,4 +1,5 @@
 import { EVENTS, getEvent } from '../content/events'
+import { activeEffects } from './effects'
 import type { GameState } from './state'
 import { addResources, grossRates } from './storage'
 import type { Amounts, EventDef } from './types'
@@ -43,7 +44,11 @@ export function updateEvents(
 export function eventResources(state: GameState, def: EventDef): Amounts {
   if (def.reward.type !== 'resource') return {}
   const { resource, seconds, minimum } = def.reward
-  return { [resource]: Math.max(minimum, grossRates(state)[resource] * seconds) }
+  let factor = 1
+  for (const effect of activeEffects(state)) {
+    if (effect.type === 'eventRewards') factor += effect.add
+  }
+  return { [resource]: Math.max(minimum, grossRates(state)[resource] * seconds) * factor }
 }
 
 /** Collects the active event. Returns its definition, or null if there was none. */
@@ -54,6 +59,7 @@ export function collectEvent(state: GameState): EventDef | null {
   if (def.reward.type === 'resource') addResources(state, eventResources(state, def))
   else state.boosts.push({ factor: def.reward.factor, remaining: def.reward.duration })
   state.events.active = null
+  state.meta.eventsCollected += 1
   return def
 }
 

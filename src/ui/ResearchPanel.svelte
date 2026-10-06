@@ -5,8 +5,11 @@
   import {
     availableResearch,
     MAX_QUEUE_LENGTH,
+    projectTimeRemaining,
     queueTimeRemaining,
     researchDiscovered,
+    researchDuration,
+    researchSpeed,
   } from '../core/research'
   import { game } from './game.svelte'
   import { formatAmounts } from './names'
@@ -38,10 +41,14 @@
         <article>
           <h4>{def.name}</h4>
           {#if index === 0}
-            <p class="progress">{bar(entry.progress / def.duration)}</p>
-            <p class="detail">{formatDuration(def.duration - entry.progress)} left</p>
+            <p class="progress">
+              {bar(entry.progress / researchDuration(game.state, entry.id))}
+            </p>
+            <p class="detail">{formatDuration(projectTimeRemaining(game.state, entry.id))} left</p>
           {:else}
-            <p class="detail">Waiting · takes {formatDuration(def.duration)}</p>
+            <p class="detail">
+              Waiting · takes {formatDuration(projectTimeRemaining(game.state, entry.id))}
+            </p>
           {/if}
           <div class="row">
             <button onclick={() => game.cancelResearch(entry.id)}>Cancel (refund)</button>
@@ -56,7 +63,12 @@
       <article>
         <h4>{def.name}</h4>
         <p class="detail">{def.description}</p>
-        <p class="detail">Takes {formatDuration(def.duration)}</p>
+        <p class="detail">
+          Takes {formatDuration(researchDuration(game.state, def.id) / researchSpeed(game.state))}
+          {#if game.state.meta.knownResearch.includes(def.id)}
+            <span class="known">· known from an earlier run (½ time)</span>
+          {/if}
+        </p>
         <div class="row">
           <button
             class="buy"
@@ -109,6 +121,10 @@
     margin: 0.25rem 0 0;
     color: var(--muted);
     font-size: 0.875rem;
+  }
+
+  .known {
+    color: var(--accent);
   }
 
   .progress {
