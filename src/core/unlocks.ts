@@ -19,6 +19,8 @@ export function isMet(state: GameState, condition: UnlockCondition): boolean {
       return false
     case 'moduleLaunched':
       return state.ark.modules[condition.module].launched
+    case 'moduleCompleted':
+      return state.ark.modules[condition.module].completed
     case 'all':
       return condition.conditions.every((c) => isMet(state, c))
   }

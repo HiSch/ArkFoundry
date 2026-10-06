@@ -1,7 +1,9 @@
 import { BUILDING_IDS, type BuildingId } from '../content/buildings'
 import { MODULE_IDS, type ModuleId } from '../content/modules'
+import type { EventId } from '../content/events'
 import type { PrestigeUpgradeId } from '../content/prestige'
 import type { ResearchId } from '../content/research'
+import type { StoryId } from '../content/story'
 import { RESOURCE_IDS, type ResourceId } from '../content/resources'
 import type { UpgradeId } from '../content/upgrades'
 import type { Amounts } from './types'
@@ -38,6 +40,23 @@ export interface MetaState {
   launches: number
   /** Play time of all finished runs, in seconds. */
   pastPlayTime: number
+  /** Radio messages received, in order. Each is sent once per game. */
+  storyLog: StoryId[]
+  /** Number of messages in `storyLog` the player has read. */
+  storyRead: number
+  introSeen: boolean
+}
+
+export interface ActiveEvent {
+  id: EventId
+  /** Seconds until the event disappears if it is not collected. */
+  remaining: number
+}
+
+/** Temporary speed-up of all buildings, e.g. from an event. */
+export interface Boost {
+  factor: number
+  remaining: number
 }
 
 export interface GameState {
@@ -62,6 +81,12 @@ export interface GameState {
     produced: Record<ResourceId, number>
     clicks: number
   }
+  events: {
+    active: ActiveEvent | null
+    /** Seconds of live play until the next event appears. */
+    nextIn: number
+  }
+  boosts: Boost[]
   /** Simulated game time of this run in seconds (includes debug time skips). */
   playTime: number
   meta: MetaState
@@ -70,6 +95,9 @@ export interface GameState {
 function perResource(value: number): Record<ResourceId, number> {
   return Object.fromEntries(RESOURCE_IDS.map((id) => [id, value])) as Record<ResourceId, number>
 }
+
+/** Seconds of live play before the first event of a run. */
+export const FIRST_EVENT_SECONDS = 5 * 60
 
 export function createInitialState(): GameState {
   return {
@@ -87,6 +115,8 @@ export function createInitialState(): GameState {
       ) as Record<ModuleId, ModuleState>,
     },
     stats: { produced: perResource(0), clicks: 0 },
+    events: { active: null, nextIn: FIRST_EVENT_SECONDS },
+    boosts: [],
     playTime: 0,
     meta: {
       starCharts: 0,
@@ -95,6 +125,9 @@ export function createInitialState(): GameState {
       autoBuy: {},
       launches: 0,
       pastPlayTime: 0,
+      storyLog: [],
+      storyRead: 0,
+      introSeen: false,
     },
   }
 }

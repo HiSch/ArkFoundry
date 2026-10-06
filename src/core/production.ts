@@ -21,7 +21,8 @@ export function multipliers(state: GameState, id: BuildingId): Multipliers {
   const count = state.buildings[id].count
   let throughput =
     Math.pow(2, MILESTONES.filter((m) => count >= m).length) *
-    (1 + STAR_CHART_BONUS * state.meta.starChartsEarned)
+    (1 + STAR_CHART_BONUS * state.meta.starChartsEarned) *
+    state.boosts.reduce((product, boost) => product * boost.factor, 1)
   let output = 1
   for (const effect of activeEffects(state)) {
     if (effect.type === 'throughput' && effect.building === id) throughput *= effect.factor
