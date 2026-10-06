@@ -1,8 +1,10 @@
 import type { BuildingId } from '../content/buildings'
+import type { ModuleId } from '../content/modules'
 import type { ResearchId } from '../content/research'
 import { RESOURCE_IDS, type ResourceId } from '../content/resources'
 import type { UpgradeId } from '../content/upgrades'
 import { buyBuilding, buyUpgrade, mine, setBuildingEnabled, type BuyAmount } from '../core/actions'
+import { deliverToModule } from '../core/ark'
 import { catchUp, REPORT_THRESHOLD_SECONDS, type OfflineReport } from '../core/offline'
 import { computeFlows } from '../core/production'
 import { cancelResearch, startResearch } from '../core/research'
@@ -135,6 +137,10 @@ class Game {
 
   buyUpgrade(id: UpgradeId): void {
     buyUpgrade(this.state, id)
+  }
+
+  deliver(id: ModuleId): void {
+    deliverToModule(this.state, id)
   }
 
   startResearch(id: ResearchId): void {

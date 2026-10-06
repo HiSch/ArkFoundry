@@ -83,7 +83,7 @@ how fast it can be played.
 
 ---
 
-## Phase 4 – Shipyard & first Ark module
+## Phase 4 – Shipyard & first Ark module ✅ done
 
 | Module                  | Content                                                              |
 | ----------------------- | -------------------------------------------------------------------- |

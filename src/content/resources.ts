@@ -1,6 +1,7 @@
 import type { ResourceDef } from '../core/types'
 
-export type ResourceId = 'ore' | 'energy' | 'metal' | 'credits' | 'research' | 'alloys'
+export type ResourceId =
+  'ore' | 'energy' | 'metal' | 'credits' | 'research' | 'alloys' | 'helium3' | 'components'
 
 /** All resources in display order. */
 export const RESOURCES: ResourceDef[] = [
@@ -10,6 +11,8 @@ export const RESOURCES: ResourceDef[] = [
   { id: 'credits', name: 'Credits' },
   { id: 'research', name: 'Research' },
   { id: 'alloys', name: 'Alloys' },
+  { id: 'helium3', name: 'Helium-3' },
+  { id: 'components', name: 'Components' },
 ]
 
 export const RESOURCE_IDS: ResourceId[] = RESOURCES.map((r) => r.id)

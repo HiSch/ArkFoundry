@@ -72,6 +72,13 @@ describe('save', () => {
     expect(loaded.state.research).toEqual({ completed: [], queue: [] })
   })
 
+  it('migrates version 3 saves by adding the Ark', () => {
+    const state = createInitialState() as unknown as Record<string, unknown>
+    delete state.ark
+    const loaded = deserialize(JSON.stringify({ version: 3, savedAt: 1, state }))
+    expect(loaded.state.ark).toEqual(createInitialState().ark)
+  })
+
   it('drops ids of removed content', () => {
     const state = { ...createInitialState(), upgrades: ['plasmaPick', 'removedUpgrade'] }
     const loaded = deserialize(JSON.stringify({ version: SAVE_VERSION, savedAt: 1, state }))
