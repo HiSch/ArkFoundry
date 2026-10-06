@@ -8,6 +8,11 @@
     { label: '+8 h', seconds: 8 * 3600 },
   ]
 
+  const absences = [
+    { label: 'Away 1 h', seconds: 3600 },
+    { label: 'Away 8 h', seconds: 8 * 3600 },
+  ]
+
   function reset(): void {
     if (confirm('Reset all progress? This cannot be undone.')) game.reset()
   }
@@ -27,6 +32,12 @@
   <div class="row">
     {#each skips as skip (skip.seconds)}
       <button onclick={() => game.skip(skip.seconds)}>{skip.label}</button>
+    {/each}
+  </div>
+  <p class="label">Simulate absence (with summary)</p>
+  <div class="row">
+    {#each absences as absence (absence.seconds)}
+      <button onclick={() => game.simulateAbsence(absence.seconds)}>{absence.label}</button>
     {/each}
   </div>
   <div class="row">

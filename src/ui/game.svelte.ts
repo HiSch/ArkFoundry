@@ -2,6 +2,7 @@ import type { BuildingId } from '../content/buildings'
 import { RESOURCE_IDS, type ResourceId } from '../content/resources'
 import type { UpgradeId } from '../content/upgrades'
 import { buyBuilding, buyUpgrade, mine, setBuildingEnabled, type BuyAmount } from '../core/actions'
+import { catchUp, REPORT_THRESHOLD_SECONDS, type OfflineReport } from '../core/offline'
 import { computeFlows } from '../core/production'
 import { clearSave, createSave, exportSave, importSave, readSave, writeSave } from '../core/save'
 import { createInitialState, type GameState } from '../core/state'
@@ -9,8 +10,11 @@ import { advance, type Totals } from '../core/tick'
 import { updateUnlocks } from '../core/unlocks'
 
 const AUTOSAVE_INTERVAL_MS = 10_000
-/** Real time per frame is capped; longer gaps are handled by offline catch-up (phase 2). */
-const MAX_FRAME_SECONDS = 1
+/**
+ * Frames further apart than this (tab in background, device asleep) are
+ * treated as an absence and handled by offline catch-up.
+ */
+const MAX_FRAME_SECONDS = 2
 /** How often the displayed rates are recalculated, in real milliseconds. */
 const RATE_WINDOW_MS = 1000
 
@@ -33,9 +37,13 @@ class Game {
   rates: Record<ResourceId, number> = $state(zeroRates())
   /** Share of full speed per building (0–1), limited by inputs. */
   efficiency: Partial<Record<BuildingId, number>> = $state({})
+  /** Summary of the last absence, shown until dismissed. */
+  offlineReport: OfflineReport | null = $state(null)
 
   private frameHandle = 0
   private lastFrame = 0
+  /** Wall-clock time of the last frame; unlike `performance.now` it keeps running during sleep. */
+  private lastWallClock = 0
   private autosaveHandle = 0
   private window = { started: 0, seconds: 0, net: zeroRates() }
 
@@ -44,9 +52,12 @@ class Game {
     if (save) {
       this.state = save.state
       this.lastSavedAt = save.savedAt
+      updateUnlocks(this.state)
+      this.handleAbsence((Date.now() - save.savedAt) / 1000)
     }
     updateUnlocks(this.state)
     this.lastFrame = performance.now()
+    this.lastWallClock = Date.now()
     this.window.started = this.lastFrame
     this.frameHandle = requestAnimationFrame(this.frame)
     this.autosaveHandle = window.setInterval(() => this.save(), AUTOSAVE_INTERVAL_MS)
@@ -62,10 +73,16 @@ class Game {
   }
 
   private frame = (now: number): void => {
-    const realSeconds = Math.min((now - this.lastFrame) / 1000, MAX_FRAME_SECONDS)
+    const wallClock = Date.now()
+    const gap = Math.max((now - this.lastFrame) / 1000, (wallClock - this.lastWallClock) / 1000)
     this.lastFrame = now
-    const gameSeconds = realSeconds * this.timeScale
-    this.record(advance(this.state, gameSeconds), gameSeconds)
+    this.lastWallClock = wallClock
+    if (gap > MAX_FRAME_SECONDS) {
+      this.handleAbsence(gap)
+    } else {
+      const gameSeconds = gap * this.timeScale
+      this.record(advance(this.state, gameSeconds), gameSeconds)
+    }
     if (now - this.window.started >= RATE_WINDOW_MS) this.publishRates(now)
     this.frameHandle = requestAnimationFrame(this.frame)
   }
@@ -73,8 +90,19 @@ class Game {
   private record(totals: Totals, seconds: number): void {
     this.window.seconds += seconds
     for (const id of RESOURCE_IDS) {
-      this.window.net[id] += totals.produced[id] - totals.consumed[id]
+      this.window.net[id] += totals.produced[id] - totals.consumed[id] - totals.lost[id]
     }
+  }
+
+  /** Catches up on time the player was away and shows a summary for longer absences. */
+  private handleAbsence(seconds: number): void {
+    if (seconds <= 0) return
+    const report = catchUp(this.state, seconds)
+    if (report.seconds >= REPORT_THRESHOLD_SECONDS) this.offlineReport = report
+  }
+
+  dismissReport(): void {
+    this.offlineReport = null
   }
 
   private publishRates(now: number): void {
@@ -112,14 +140,22 @@ class Game {
   }
 
   save(): void {
-    const now = Date.now()
-    writeSave(localStorage, createSave(this.state, now))
-    this.lastSavedAt = now
+    // Stamp the save with the time the state was last advanced, not with
+    // "now": in a background tab frames pause while autosave keeps running,
+    // and that paused time must still be caught up on the next load.
+    const advancedUntil = this.lastWallClock || Date.now()
+    writeSave(localStorage, createSave(this.state, advancedUntil))
+    this.lastSavedAt = Date.now()
   }
 
   /** Debug: simulate `seconds` of game time instantly. */
   skip(seconds: number): void {
     advance(this.state, seconds)
+  }
+
+  /** Debug: pretend the player was away for `seconds`, including the summary. */
+  simulateAbsence(seconds: number): void {
+    this.handleAbsence(seconds)
   }
 
   /** Wipes all progress and starts over. */
@@ -129,6 +165,7 @@ class Game {
     updateUnlocks(this.state)
     this.timeScale = 1
     this.rates = zeroRates()
+    this.offlineReport = null
     this.save()
   }
 

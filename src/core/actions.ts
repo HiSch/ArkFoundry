@@ -1,8 +1,9 @@
 import { getBuilding, type BuildingId } from '../content/buildings'
 import { getUpgrade, type UpgradeId } from '../content/upgrades'
-import { canAfford, gain, pay } from './amounts'
+import { canAfford, pay } from './amounts'
 import { buildingCost, maxAffordable } from './costs'
 import type { GameState } from './state'
+import { addResources } from './storage'
 import { updateUnlocks } from './unlocks'
 
 /** Ore gained per manual mining click. */
@@ -18,7 +19,7 @@ export function clickPower(state: GameState): number {
 
 /** Manual mining: one click on the "Mine ore" button. */
 export function mine(state: GameState): void {
-  gain(state, { ore: clickPower(state) })
+  addResources(state, { ore: clickPower(state) })
   state.stats.clicks += 1
   updateUnlocks(state)
 }
