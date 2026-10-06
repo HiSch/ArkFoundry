@@ -29,7 +29,7 @@
       <p class="label">Nothing was produced.</p>
     {/if}
     {#if losses.length}
-      <p class="warning">Not produced because storage was full:</p>
+      <p class="warning">Missed because storage was full:</p>
       <dl class="lost">
         {#each losses as resource (resource.id)}
           <dt>{resource.name}</dt>

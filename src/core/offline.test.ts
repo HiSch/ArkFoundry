@@ -35,7 +35,7 @@ describe('catchUp', () => {
     }
   })
 
-  it('stops production once storage is full', () => {
+  it('loses production once storage is full', () => {
     const state = createInitialState()
     state.buildings.drone.count = 10
     const hours = BASE_STORAGE_HOURS + 4

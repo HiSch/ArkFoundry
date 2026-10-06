@@ -78,8 +78,25 @@ describe('storage limits', () => {
     expect(state.stats.produced.ore).toBeCloseTo(0.1)
   })
 
-  it('pauses converters with full output storage so they keep their inputs', () => {
+  it('by default keeps converters running and loses the surplus', () => {
     const state = createInitialState()
+    state.buildings.refinery.count = 1
+    state.resources.ore = 500
+    state.resources.energy = 500
+    const cap = capacities(state).metal
+    state.resources.metal = cap
+    const totals = tick(state, 1)!
+    expect(totals.consumed.ore).toBeGreaterThan(0)
+    expect(state.resources.metal).toBe(cap)
+    expect(totals.missed.metal).toBeCloseTo(getBuilding('refinery').produces.metal!)
+    const flows = computeFlows(state, 1, capacities(state))
+    expect(flows.efficiency.refinery).toBe(1)
+    expect(flows.limit.refinery).toBe('overflow')
+  })
+
+  it('pauses converters with full output storage with the Auto-Pause upgrade', () => {
+    const state = createInitialState()
+    state.meta.prestigeUpgrades.autoPause = 1
     state.buildings.refinery.count = 1
     state.resources.ore = 500
     state.resources.energy = 500
@@ -94,8 +111,9 @@ describe('storage limits', () => {
     expect(flows.limit.refinery).toBe('storage')
   })
 
-  it('runs converters only as far as there is room for the output', () => {
+  it('with Auto-Pause runs converters only as far as there is room for the output', () => {
     const state = createInitialState()
+    state.meta.prestigeUpgrades.autoPause = 1
     state.buildings.refinery.count = 1
     state.resources.ore = 500
     state.resources.energy = 500

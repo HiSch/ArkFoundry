@@ -63,6 +63,8 @@ export type Effect =
   | { type: 'startResearch'; research: ResearchId[] }
   /** Allows switching on an automatic buyer for a building type. */
   | { type: 'autoBuy'; building: BuildingId }
+  /** Buildings pause instead of wasting output when their output storage is full. */
+  | { type: 'pauseWhenFull' }
 
 export interface UpgradeDef {
   id: UpgradeId

@@ -28,13 +28,14 @@
     const efficiency = game.efficiency[id]
     const limit = game.limits[id]
     if (efficiency === undefined || limit === undefined) return null
-    const status = efficiency < 0.005 ? 'Paused' : `Running at ${Math.round(efficiency * 100)} %`
-    if (limit === 'storage') {
-      const outputs = Object.keys(def.produces)
-        .map((r) => resourceName(r as keyof typeof def.produces & string))
-        .join(' / ')
-      return `${status} – ${outputs} storage is full`
+    const outputs = Object.keys(def.produces)
+      .map((r) => resourceName(r as keyof typeof def.produces & string))
+      .join(' / ')
+    if (limit === 'overflow') {
+      return `${outputs} storage is full – output is lost (the Auto-Pause prestige upgrade prevents this)`
     }
+    const status = efficiency < 0.005 ? 'Paused' : `Running at ${Math.round(efficiency * 100)} %`
+    if (limit === 'storage') return `${status} – ${outputs} storage is full`
     const inputs = Object.keys(def.consumes ?? {})
       .map((r) => resourceName(r as keyof typeof def.produces & string))
       .join(' / ')

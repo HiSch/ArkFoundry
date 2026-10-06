@@ -35,8 +35,13 @@ export function nextMilestone(count: number): number | null {
   return MILESTONES.find((m) => m > count) ?? null
 }
 
-/** Why a building runs below full speed. */
-export type Limit = 'inputs' | 'storage'
+/**
+ * Why a building needs attention: it runs below full speed because inputs
+ * are short ('inputs') or it was paused for full storage ('storage'), or it
+ * runs at full speed but part of its output is lost to full storage
+ * ('overflow', only without the Auto-Pause prestige upgrade).
+ */
+export type Limit = 'inputs' | 'storage' | 'overflow'
 
 export interface Flows {
   /** Amount gained per resource during the step. */
@@ -47,7 +52,7 @@ export interface Flows {
   missed: Record<ResourceId, number>
   /** Share of full speed each building ran at (0–1). */
   efficiency: Partial<Record<BuildingId, number>>
-  /** What slowed a building down, for buildings below full speed. */
+  /** What slows a building down or wastes its output, if anything. */
   limit: Partial<Record<BuildingId, Limit>>
 }
 
@@ -57,10 +62,12 @@ function zero(): Record<ResourceId, number> {
 
 /**
  * Computes what all buildings produce and consume during `dt` seconds,
- * without changing the state. Buildings run in content order. A building
- * slows down when its inputs are short, and when `capacities` are given it
- * also slows down (or pauses) when there is no storage room for its output,
- * so it does not use up inputs for output that would be lost.
+ * without changing the state. Buildings run in content order and slow down
+ * when their inputs are short. When `capacities` are given, buildings whose
+ * output does not fit into storage are reported; with the Auto-Pause
+ * prestige upgrade they also slow down (or pause) to the free room, so they
+ * do not use up inputs for output that would be lost. Without it, the
+ * surplus is lost when the step is applied.
  */
 export function computeFlows(
   state: GameState,
@@ -68,6 +75,7 @@ export function computeFlows(
   capacities?: Record<ResourceId, number>,
 ): Flows {
   const available = { ...state.resources }
+  const pauseWhenFull = activeEffects(state).some((e) => e.type === 'pauseWhenFull')
   const flows: Flows = {
     produced: zero(),
     consumed: zero(),
@@ -88,19 +96,23 @@ export function computeFlows(
     }
     byInputs = Math.max(0, Math.min(1, byInputs))
 
-    let efficiency = byInputs
+    // Share of the output that still fits into storage.
+    let byStorage = 1
     if (capacities) {
       for (const [id, amount] of entries(def.produces)) {
-        const full = amount * scale * m.output
+        const output = amount * scale * m.output * byInputs
         const room = Math.max(0, capacities[id] - available[id])
-        if (full > 0) efficiency = Math.min(efficiency, room / full)
+        if (output > 0) byStorage = Math.min(byStorage, room / output)
       }
     }
-    efficiency = Math.max(0, efficiency)
+    const efficiency = pauseWhenFull ? byInputs * Math.min(1, byStorage) : byInputs
     flows.efficiency[def.id] = efficiency
-    if (efficiency < 0.995) flows.limit[def.id] = efficiency < byInputs ? 'storage' : 'inputs'
-    for (const [id, amount] of entries(def.produces)) {
-      flows.missed[id] += amount * scale * m.output * (byInputs - efficiency)
+    if (byInputs < 0.995) flows.limit[def.id] = 'inputs'
+    else if (byStorage < 0.995) flows.limit[def.id] = pauseWhenFull ? 'storage' : 'overflow'
+    if (pauseWhenFull) {
+      for (const [id, amount] of entries(def.produces)) {
+        flows.missed[id] += amount * scale * m.output * (byInputs - efficiency)
+      }
     }
     if (efficiency === 0) continue
 

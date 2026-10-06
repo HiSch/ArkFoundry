@@ -33,8 +33,8 @@ export function emptyTotals(): Totals {
 export function tick(state: GameState, dt: number): Totals | null {
   if (dt <= 0) return null
   const caps = capacities(state)
-  // Buildings already slow down for full storage; the clamp only catches
-  // rounding and stocks that are above capacity.
+  // Surplus beyond capacity is lost here. With the Auto-Pause upgrade the
+  // buildings already slowed down, and the clamp only catches rounding.
   const flows = computeFlows(state, dt, caps)
   const totals: Totals = {
     produced: flows.produced,
