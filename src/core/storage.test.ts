@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { getBuilding } from '../content/buildings'
 import { getUpgrade } from '../content/upgrades'
 import { mine } from './actions'
+import { computeFlows } from './production'
 import { createInitialState } from './state'
 import {
   BASE_CAPACITY,
@@ -66,15 +67,51 @@ describe('capacities', () => {
 })
 
 describe('storage limits', () => {
-  it('stops production at capacity and reports the loss', () => {
+  it('stops production at capacity and reports what was missed', () => {
     const state = createInitialState()
     state.buildings.drone.count = 1
     const cap = capacities(state).ore
     state.resources.ore = cap - 0.1
     const totals = tick(state, 1)!
     expect(state.resources.ore).toBe(cap)
-    expect(totals.lost.ore).toBeCloseTo(droneOre - 0.1)
+    expect(totals.missed.ore).toBeCloseTo(droneOre - 0.1)
     expect(state.stats.produced.ore).toBeCloseTo(0.1)
+  })
+
+  it('pauses converters with full output storage so they keep their inputs', () => {
+    const state = createInitialState()
+    state.buildings.refinery.count = 1
+    state.resources.ore = 500
+    state.resources.energy = 500
+    state.resources.metal = capacities(state).metal
+    const totals = tick(state, 1)!
+    expect(totals.consumed.ore).toBe(0)
+    expect(totals.consumed.energy).toBe(0)
+    expect(state.resources.ore).toBe(500)
+    expect(totals.missed.metal).toBeGreaterThan(0)
+    const flows = computeFlows(state, 1, capacities(state))
+    expect(flows.efficiency.refinery).toBe(0)
+    expect(flows.limit.refinery).toBe('storage')
+  })
+
+  it('runs converters only as far as there is room for the output', () => {
+    const state = createInitialState()
+    state.buildings.refinery.count = 1
+    state.resources.ore = 500
+    state.resources.energy = 500
+    const metalOut = getBuilding('refinery').produces.metal!
+    state.resources.metal = capacities(state).metal - metalOut / 2
+    const flows = computeFlows(state, 1, capacities(state))
+    expect(flows.efficiency.refinery).toBeCloseTo(0.5)
+    expect(flows.produced.metal).toBeCloseTo(metalOut / 2)
+  })
+
+  it('reports input shortages as the limit when storage has room', () => {
+    const state = createInitialState()
+    state.buildings.refinery.count = 1
+    const flows = computeFlows(state, 1, capacities(state))
+    expect(flows.efficiency.refinery).toBe(0)
+    expect(flows.limit.refinery).toBe('inputs')
   })
 
   it('also limits manual mining', () => {

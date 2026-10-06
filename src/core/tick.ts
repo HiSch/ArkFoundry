@@ -8,12 +8,12 @@ import { updateUnlocks } from './unlocks'
 
 /** What happened to the resources during a period of time. */
 export interface Totals {
-  /** Amount gained per resource, including what was lost to full storage. */
+  /** Amount gained per resource. */
   produced: Record<ResourceId, number>
   /** Amount used per resource by buildings. */
   consumed: Record<ResourceId, number>
-  /** Amount lost because storage was full. */
-  lost: Record<ResourceId, number>
+  /** Amount not produced (or lost) because storage was full. */
+  missed: Record<ResourceId, number>
 }
 
 function perResource(): Record<ResourceId, number> {
@@ -21,25 +21,31 @@ function perResource(): Record<ResourceId, number> {
 }
 
 export function emptyTotals(): Totals {
-  return { produced: perResource(), consumed: perResource(), lost: perResource() }
+  return { produced: perResource(), consumed: perResource(), missed: perResource() }
 }
 
 /**
  * Advances the game by `dt` seconds. This is the single entry point for
  * time passing: live play, offline catch-up, debug skips and simulation all
  * go through it so they behave identically. Returns what was produced,
- * consumed and lost to full storage, or null if no time passed.
+ * consumed and missed because of full storage, or null if no time passed.
  */
 export function tick(state: GameState, dt: number): Totals | null {
   if (dt <= 0) return null
-  const flows = computeFlows(state, dt)
   const caps = capacities(state)
-  const totals: Totals = { produced: flows.produced, consumed: flows.consumed, lost: perResource() }
+  // Buildings already slow down for full storage; the clamp only catches
+  // rounding and stocks that are above capacity.
+  const flows = computeFlows(state, dt, caps)
+  const totals: Totals = {
+    produced: flows.produced,
+    consumed: flows.consumed,
+    missed: flows.missed,
+  }
   for (const id of RESOURCE_IDS) {
     const change = flows.produced[id] - flows.consumed[id]
     const { value, lost } = clampToCapacity(state.resources[id], change, caps[id])
     state.resources[id] = value
-    totals.lost[id] = lost
+    totals.missed[id] += lost
     state.stats.produced[id] += Math.max(0, flows.produced[id] - lost)
   }
   progressResearch(state, dt)
@@ -72,6 +78,6 @@ export function addTotals(target: Totals, source: Totals): void {
   for (const id of RESOURCE_IDS) {
     target.produced[id] += source.produced[id]
     target.consumed[id] += source.consumed[id]
-    target.lost[id] += source.lost[id]
+    target.missed[id] += source.missed[id]
   }
 }

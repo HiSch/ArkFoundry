@@ -35,13 +35,20 @@ export function nextMilestone(count: number): number | null {
   return MILESTONES.find((m) => m > count) ?? null
 }
 
+/** Why a building runs below full speed. */
+export type Limit = 'inputs' | 'storage'
+
 export interface Flows {
   /** Amount gained per resource during the step. */
   produced: Record<ResourceId, number>
   /** Amount used per resource during the step. */
   consumed: Record<ResourceId, number>
-  /** Share of full speed each building ran at (0–1), limited by inputs. */
+  /** Output that was not produced because storage was full. */
+  missed: Record<ResourceId, number>
+  /** Share of full speed each building ran at (0–1). */
   efficiency: Partial<Record<BuildingId, number>>
+  /** What slowed a building down, for buildings below full speed. */
+  limit: Partial<Record<BuildingId, Limit>>
 }
 
 function zero(): Record<ResourceId, number> {
@@ -50,25 +57,51 @@ function zero(): Record<ResourceId, number> {
 
 /**
  * Computes what all buildings produce and consume during `dt` seconds,
- * without changing the state. Buildings run in content order; a building
- * whose inputs are short runs at reduced efficiency.
+ * without changing the state. Buildings run in content order. A building
+ * slows down when its inputs are short, and when `capacities` are given it
+ * also slows down (or pauses) when there is no storage room for its output,
+ * so it does not use up inputs for output that would be lost.
  */
-export function computeFlows(state: GameState, dt: number): Flows {
+export function computeFlows(
+  state: GameState,
+  dt: number,
+  capacities?: Record<ResourceId, number>,
+): Flows {
   const available = { ...state.resources }
-  const flows: Flows = { produced: zero(), consumed: zero(), efficiency: {} }
+  const flows: Flows = {
+    produced: zero(),
+    consumed: zero(),
+    missed: zero(),
+    efficiency: {},
+    limit: {},
+  }
   for (const def of BUILDINGS) {
     const building = state.buildings[def.id]
     if (building.count === 0 || !building.enabled) continue
     const m = multipliers(state, def.id)
     const scale = building.count * m.throughput * dt
 
-    let efficiency = 1
+    let byInputs = 1
     for (const [id, amount] of entries(def.consumes ?? {})) {
       const need = amount * scale
-      if (need > 0) efficiency = Math.min(efficiency, available[id] / need)
+      if (need > 0) byInputs = Math.min(byInputs, available[id] / need)
     }
-    efficiency = Math.max(0, Math.min(1, efficiency))
+    byInputs = Math.max(0, Math.min(1, byInputs))
+
+    let efficiency = byInputs
+    if (capacities) {
+      for (const [id, amount] of entries(def.produces)) {
+        const full = amount * scale * m.output
+        const room = Math.max(0, capacities[id] - available[id])
+        if (full > 0) efficiency = Math.min(efficiency, room / full)
+      }
+    }
+    efficiency = Math.max(0, efficiency)
     flows.efficiency[def.id] = efficiency
+    if (efficiency < 0.995) flows.limit[def.id] = efficiency < byInputs ? 'storage' : 'inputs'
+    for (const [id, amount] of entries(def.produces)) {
+      flows.missed[id] += amount * scale * m.output * (byInputs - efficiency)
+    }
     if (efficiency === 0) continue
 
     for (const [id, amount] of entries(def.consumes ?? {})) {

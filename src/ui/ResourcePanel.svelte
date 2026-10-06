@@ -24,6 +24,11 @@
     return game.state.resources[id] >= caps[id] * 0.999
   }
 
+  /** Whether the stock of a resource is currently shrinking. */
+  function shrinking(id: (typeof RESOURCES)[number]['id']): boolean {
+    return game.rates[id] < -1e-9
+  }
+
   function signed(rate: number): string {
     const text = formatRate(rate)
     return rate > 0 ? `+${text}` : text
@@ -55,7 +60,11 @@
     {#if view === 'mini'}
       <ul class="chips">
         {#each visible as resource (resource.id)}
-          <li class:full={isFull(resource.id)} title={resource.name}>
+          <li
+            class:full={isFull(resource.id)}
+            class:negative={shrinking(resource.id)}
+            title={resource.name}
+          >
             <span class="icon" aria-hidden="true">{resource.icon}</span>
             <span class="sr-only">{resource.name}</span>
             {formatNumber(game.state.resources[resource.id])}
@@ -70,10 +79,13 @@
             <span class="icon" aria-hidden="true">{resource.icon}</span>{resource.name}
           </dt>
           <dd>
-            <span class:full title={full ? 'Storage full' : undefined}
+            <span
+              class:full
+              class:negative={shrinking(resource.id)}
+              title={full ? 'Storage full' : undefined}
               >{formatNumber(game.state.resources[resource.id])}</span
             ><span class="cap">/{formatNumber(caps[resource.id])}</span>
-            <span class="rate" class:negative={game.rates[resource.id] < -1e-9}>
+            <span class="rate" class:negative={shrinking(resource.id)}>
               {signed(game.rates[resource.id])}/s
             </span>
           </dd>
@@ -160,12 +172,13 @@
     font-size: 0.875rem;
   }
 
-  .negative {
-    color: var(--danger);
-  }
-
   .full {
     color: var(--warning);
+  }
+
+  /* Shrinking stocks are red; this wins over the "full" colour. */
+  .negative {
+    color: var(--danger);
   }
 
   dl {

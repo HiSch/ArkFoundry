@@ -16,8 +16,8 @@ export interface OfflineReport {
   seconds: number
   /** Net change of each resource over the absence. */
   change: Record<ResourceId, number>
-  /** Amount lost because storage was full. */
-  lost: Record<ResourceId, number>
+  /** Amount not produced because storage was full. */
+  missed: Record<ResourceId, number>
 }
 
 /**
@@ -32,5 +32,5 @@ export function catchUp(state: GameState, seconds: number): OfflineReport {
   const change = Object.fromEntries(
     RESOURCE_IDS.map((id) => [id, state.resources[id] - before[id]]),
   ) as Record<ResourceId, number>
-  return { seconds: simulated, change, lost: totals.lost }
+  return { seconds: simulated, change, missed: totals.missed }
 }
