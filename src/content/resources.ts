@@ -5,14 +5,14 @@ export type ResourceId =
 
 /** All resources in display order. */
 export const RESOURCES: ResourceDef[] = [
-  { id: 'ore', name: 'Ore' },
-  { id: 'energy', name: 'Energy' },
-  { id: 'metal', name: 'Metal' },
-  { id: 'credits', name: 'Credits' },
-  { id: 'research', name: 'Research' },
-  { id: 'alloys', name: 'Alloys' },
-  { id: 'helium3', name: 'Helium-3' },
-  { id: 'components', name: 'Components' },
+  { id: 'ore', name: 'Ore', icon: '⛏️' },
+  { id: 'energy', name: 'Energy', icon: '⚡' },
+  { id: 'metal', name: 'Metal', icon: '🔩' },
+  { id: 'credits', name: 'Credits', icon: '💰' },
+  { id: 'research', name: 'Research', icon: '🔬' },
+  { id: 'alloys', name: 'Alloys', icon: '🧱' },
+  { id: 'helium3', name: 'Helium-3', icon: '⚛️' },
+  { id: 'components', name: 'Components', icon: '⚙️' },
 ]
 
 export const RESOURCE_IDS: ResourceId[] = RESOURCES.map((r) => r.id)

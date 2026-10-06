@@ -21,6 +21,8 @@ export type UnlockCondition =
 export interface ResourceDef {
   id: ResourceId
   name: string
+  /** Short symbol for compact views. */
+  icon: string
 }
 
 export interface BuildingDef {
