@@ -65,7 +65,7 @@ function finishRun(state: GameState): number {
   state.meta.launches += 1
   state.meta.pastPlayTime += state.playTime
   for (const id of state.research.completed) {
-    if (!state.meta.knownResearch.includes(id)) state.meta.knownResearch.push(id)
+    state.meta.researchCompletions[id] = (state.meta.researchCompletions[id] ?? 0) + 1
   }
   startNewRun(state)
   return reward

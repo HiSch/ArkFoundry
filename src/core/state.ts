@@ -48,8 +48,8 @@ export interface MetaState {
   /** Number of messages in `storyLog` the player has read. */
   storyRead: number
   introSeen: boolean
-  /** Research completed in any earlier run; it goes faster in later runs. */
-  knownResearch: ResearchId[]
+  /** How often each research project was completed in earlier runs; repeats go faster. */
+  researchCompletions: Partial<Record<ResearchId, number>>
   achievements: AchievementId[]
   eventsCollected: number
   /** The ending was shown after the last module was launched. */
@@ -140,7 +140,7 @@ export function createInitialState(): GameState {
       storyLog: [],
       storyRead: 0,
       introSeen: false,
-      knownResearch: [],
+      researchCompletions: {},
       achievements: [],
       eventsCollected: 0,
       endingSeen: false,

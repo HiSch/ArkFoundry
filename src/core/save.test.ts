@@ -108,18 +108,28 @@ describe('save', () => {
   it('migrates version 6 saves by adding late-game progress', () => {
     const state = createInitialState() as unknown as Record<string, unknown>
     const meta = state.meta as Record<string, unknown>
-    delete meta.knownResearch
+    delete meta.researchCompletions
     delete meta.achievements
     delete meta.eventsCollected
     delete meta.endingSeen
     const ark = state.ark as { modules: Record<string, Record<string, unknown>> }
     delete ark.modules.hull.deliveredThisRun
     const loaded = deserialize(JSON.stringify({ version: 6, savedAt: 1, state }))
-    expect(loaded.state.meta.knownResearch).toEqual([])
+    expect(loaded.state.meta.researchCompletions).toEqual({})
     expect(loaded.state.meta.achievements).toEqual([])
     expect(loaded.state.meta.eventsCollected).toBe(0)
     expect(loaded.state.meta.endingSeen).toBe(false)
     expect(loaded.state.ark.modules.hull.deliveredThisRun).toEqual({})
+  })
+
+  it('migrates version 7 saves by counting known research once', () => {
+    const state = createInitialState() as unknown as Record<string, unknown>
+    const meta = state.meta as Record<string, unknown>
+    delete meta.researchCompletions
+    meta.knownResearch = ['automation', 'metallurgy']
+    const loaded = deserialize(JSON.stringify({ version: 7, savedAt: 1, state }))
+    expect(loaded.state.meta.researchCompletions).toEqual({ automation: 1, metallurgy: 1 })
+    expect('knownResearch' in loaded.state.meta).toBe(false)
   })
 
   it('drops ids of removed content', () => {

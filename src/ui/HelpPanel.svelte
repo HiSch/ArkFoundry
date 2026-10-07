@@ -9,7 +9,7 @@
     SPENT_STAR_CHART_BONUS,
     UNSPENT_STAR_CHART_BONUS,
   } from '../core/production'
-  import { KNOWN_RESEARCH_FACTOR, MAX_QUEUE_LENGTH } from '../core/research'
+  import { MAX_QUEUE_LENGTH, REPEAT_RESEARCH_FACTOR } from '../core/research'
   import { BASE_CAPACITY, BASE_STORAGE_HOURS } from '../core/storage'
   import { formatAmounts } from './names'
 
@@ -80,7 +80,11 @@
       </li>
       <li>A project appears once its prerequisites are done.</li>
       <li>
-        Research completed in an earlier run takes {percent(KNOWN_RESEARCH_FACTOR)} of its time.
+        Every time a project was completed in an earlier run, it takes {percent(
+          REPEAT_RESEARCH_FACTOR,
+        )} of its previous time: 100 %, then {percent(REPEAT_RESEARCH_FACTOR)}, then {percent(
+          REPEAT_RESEARCH_FACTOR ** 2,
+        )}, and so on.
       </li>
     </ul>
   </details>
@@ -120,7 +124,8 @@
     <ul>
       <li>
         Launching a finished module is the prestige. Reset: resources, buildings, upgrades and
-        research. Kept: the Ark, Star Charts, prestige upgrades, achievements and known research.
+        research. Kept: the Ark, Star Charts, prestige upgrades, achievements and how often each
+        research was completed.
       </li>
       <li>
         Star Charts earned = √(alloys produced this run ÷ {ALLOY_DIVISOR.toLocaleString('en')}),

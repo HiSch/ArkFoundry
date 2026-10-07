@@ -8,8 +8,10 @@
     projectTimeRemaining,
     queueTimeRemaining,
     researchDiscovered,
+    researchCompletions,
     researchDuration,
     researchSpeed,
+    researchTimeFactor,
   } from '../core/research'
   import { game } from './game.svelte'
   import { formatAmounts } from './names'
@@ -65,8 +67,13 @@
         <p class="detail">{def.description}</p>
         <p class="detail">
           Takes {formatDuration(researchDuration(game.state, def.id) / researchSpeed(game.state))}
-          {#if game.state.meta.knownResearch.includes(def.id)}
-            <span class="known">· known from an earlier run (½ time)</span>
+          {#if researchCompletions(game.state, def.id) > 0}
+            {@const times = researchCompletions(game.state, def.id)}
+            <span class="known">
+              · researched {times}× before ({Math.round(
+                researchTimeFactor(game.state, def.id) * 1000,
+              ) / 10} % time)
+            </span>
           {/if}
         </p>
         <div class="row">

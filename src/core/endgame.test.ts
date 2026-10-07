@@ -10,7 +10,7 @@ import { ACHIEVEMENT_BONUS, globalMultiplier, multipliers, perBuildingRates } fr
 import { launchModule, supplyLaunch } from './prestige'
 import {
   availableResearch,
-  KNOWN_RESEARCH_FACTOR,
+  REPEAT_RESEARCH_FACTOR,
   researchDuration,
   startResearch,
 } from './research'
@@ -32,21 +32,29 @@ function launchedUpTo(count: number) {
   return state
 }
 
-describe('known research', () => {
-  it('takes half the time in later runs', () => {
+describe('repeated research', () => {
+  it('halves the time for every earlier completion', () => {
     const state = createInitialState()
-    state.research.completed.push('automation')
-    state.ark.modules.hull.completed = true
-    launchModule(state, 'hull')
-    expect(state.meta.knownResearch).toContain('automation')
-    expect(researchDuration(state, 'automation')).toBe(
-      getResearch('automation').duration * KNOWN_RESEARCH_FACTOR,
-    )
+    const base = getResearch('automation').duration
+    expect(researchDuration(state, 'automation')).toBe(base)
+    for (const expected of [0.5, 0.25, 0.125]) {
+      state.research.completed.push('automation')
+      state.ark.modules.hull.completed = true
+      state.ark.modules.hull.launched = false
+      launchModule(state, 'hull')
+      expect(researchDuration(state, 'automation')).toBeCloseTo(base * expected)
+    }
+    expect(state.meta.researchCompletions.automation).toBe(3)
     expect(researchDuration(state, 'metallurgy')).toBe(getResearch('metallurgy').duration)
+  })
+
+  it('applies the shorter time to the queue', () => {
+    const state = createInitialState()
+    state.meta.researchCompletions.automation = 2
     state.buildings.lab.count = 1
     state.resources.research = 1e6
     startResearch(state, 'automation')
-    advance(state, getResearch('automation').duration * KNOWN_RESEARCH_FACTOR + 1)
+    advance(state, getResearch('automation').duration * REPEAT_RESEARCH_FACTOR ** 2 + 1)
     expect(state.research.completed).toContain('automation')
   })
 })

@@ -163,8 +163,8 @@ SC = floor( sqrt( alloys produced this run / 50,000 ) ) + 5 (launch bonus)
 | Exotic Research       | Particle colliders produce 50 % more exotic matter | 15        |
 
 Further permanent bonuses: every unspent Star Chart +2 % and every spent one
-+1 % to all buildings, every achievement (18) +1 %, and research completed in an earlier
-run takes half the time.
++1 % to all buildings, every achievement (18) +1 %, and every earlier
+completion of a research project halves its time (100 %, 50 %, 25 %, …).
 
 Each advantage is small on its own, but together they noticeably shorten the
 early phases – the game feels faster after every prestige.
