@@ -4,8 +4,17 @@ import { entries } from './amounts'
 import { activeEffects } from './effects'
 import type { GameState } from './state'
 
-/** Passive throughput bonus per Star Chart ever earned (see `core/prestige.ts`). */
-export const STAR_CHART_BONUS = 0.01
+/** Passive throughput bonus per spent Star Chart (see `core/prestige.ts`). */
+export const SPENT_STAR_CHART_BONUS = 0.01
+/** Passive throughput bonus per unspent Star Chart: saving them pays off too. */
+export const UNSPENT_STAR_CHART_BONUS = 0.02
+
+/** Multiplier on all buildings from Star Charts: spent ones give less than unspent ones. */
+export function starChartMultiplier(state: GameState): number {
+  const unspent = state.meta.starCharts
+  const spent = state.meta.starChartsEarned - unspent
+  return 1 + SPENT_STAR_CHART_BONUS * spent + UNSPENT_STAR_CHART_BONUS * unspent
+}
 
 /** Building counts at which a building type doubles its throughput. */
 export const MILESTONES = [25, 50, 100, 150, 200, 300, 400, 500]
@@ -30,7 +39,7 @@ export function globalMultiplier(state: GameState): number {
     if (effect.type === 'dockSynergy') synergy += effect.add * launched
   }
   return (
-    (1 + STAR_CHART_BONUS * state.meta.starChartsEarned) *
+    starChartMultiplier(state) *
     (1 + ACHIEVEMENT_BONUS * state.meta.achievements.length) *
     (1 + synergy) *
     state.boosts.reduce((product, boost) => product * boost.factor, 1)

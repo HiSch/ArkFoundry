@@ -8,6 +8,7 @@
     starChartBonus,
   } from '../core/prestige'
   import { formatDuration } from '../core/format'
+  import { SPENT_STAR_CHART_BONUS, UNSPENT_STAR_CHART_BONUS } from '../core/production'
   import { game } from './game.svelte'
 
   const meta = $derived(game.state.meta)
@@ -25,9 +26,10 @@
     </summary>
     <p class="detail">{meta.starChartsEarned} earned in total.</p>
     <p class="detail">
-      Every Star Chart ever earned speeds up all buildings by 1 % (now +{Math.round(
+      Each unspent Star Chart speeds up all buildings by {UNSPENT_STAR_CHART_BONUS * 100} %, each spent
+      one by {SPENT_STAR_CHART_BONUS * 100} % (now +{Math.round(
         (starChartBonus(game.state) - 1) * 100,
-      )} %). Spending them keeps the bonus.
+      )} %). Spending trades some of the bonus for an upgrade.
     </p>
     {#if meta.launches > 0}
       <p class="detail">

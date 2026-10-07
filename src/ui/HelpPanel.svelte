@@ -3,7 +3,12 @@
   import { EVENT_INTERVAL, EVENT_LIFETIME } from '../core/events'
   import { MAX_OFFLINE_SECONDS } from '../core/offline'
   import { AUTO_BUY_SHARE, LAUNCH_BONUS, ALLOY_DIVISOR } from '../core/prestige'
-  import { ACHIEVEMENT_BONUS, MILESTONES, STAR_CHART_BONUS } from '../core/production'
+  import {
+    ACHIEVEMENT_BONUS,
+    MILESTONES,
+    SPENT_STAR_CHART_BONUS,
+    UNSPENT_STAR_CHART_BONUS,
+  } from '../core/production'
   import { KNOWN_RESEARCH_FACTOR, MAX_QUEUE_LENGTH } from '../core/research'
   import { BASE_CAPACITY, BASE_STORAGE_HOURS } from '../core/storage'
   import { formatAmounts } from './names'
@@ -122,8 +127,9 @@
         rounded down, + {LAUNCH_BONUS}. Staying longer in a run pays off, but less and less.
       </li>
       <li>
-        Every Star Chart ever earned speeds up all buildings by {percent(STAR_CHART_BONUS)} – also the
-        ones you spend.
+        Each unspent Star Chart speeds up all buildings by {percent(UNSPENT_STAR_CHART_BONUS)}, each
+        spent one by {percent(SPENT_STAR_CHART_BONUS)}. Spending trades some of the bonus for a
+        permanent upgrade.
       </li>
       <li>
         Prestige upgrades can be bought at any time. None of them is required to progress, so no

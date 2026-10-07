@@ -151,3 +151,22 @@ describe('auto-buyers', () => {
     expect(state.buildings.drone.count).toBe(0)
   })
 })
+
+describe('Star Chart bonus', () => {
+  it('gives 2 % per unspent and 1 % per spent Star Chart', () => {
+    const state = createInitialState()
+    state.meta.starChartsEarned = 30
+    state.meta.starCharts = 10
+    // 20 spent × 1 % + 10 unspent × 2 % = 40 %
+    expect(multipliers(state, 'drone').throughput).toBeCloseTo(1.4)
+  })
+
+  it('shrinks when Star Charts are spent', () => {
+    const state = createInitialState()
+    state.meta.starChartsEarned = 10
+    state.meta.starCharts = 10
+    expect(multipliers(state, 'drone').throughput).toBeCloseTo(1.2)
+    buyPrestigeUpgrade(state, 'seedCapital')
+    expect(multipliers(state, 'drone').throughput).toBeCloseTo(1.18)
+  })
+})
