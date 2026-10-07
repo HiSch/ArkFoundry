@@ -4,7 +4,7 @@ import { getPrestigeUpgrade, type PrestigeUpgradeId } from '../content/prestige'
 import { canSupplyLaunch } from './ark'
 import { buildingCost } from './costs'
 import { activeEffects, prestigeEffects } from './effects'
-import { STAR_CHART_BONUS } from './production'
+import { starChartMultiplier } from './production'
 import { createInitialState, type GameState } from './state'
 import { updateUnlocks } from './unlocks'
 
@@ -25,9 +25,9 @@ export function launchReward(state: GameState): number {
   return runStarCharts(state) + LAUNCH_BONUS
 }
 
-/** Multiplier on all building throughput from Star Charts earned so far. */
+/** Multiplier on all building throughput from Star Charts (spent and unspent). */
 export function starChartBonus(state: GameState): number {
-  return 1 + STAR_CHART_BONUS * state.meta.starChartsEarned
+  return starChartMultiplier(state)
 }
 
 export function canLaunch(state: GameState, id: ModuleId): boolean {

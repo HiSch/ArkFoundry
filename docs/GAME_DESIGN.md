@@ -142,9 +142,9 @@ SC = floor( sqrt( alloys produced this run / 50,000 ) ) + 5 (launch bonus)
   Reactor after ~33 h instead of ~41 h for the Hull).
 - Staying longer in a run yields more SC (square root → diminishing returns),
   so prestiging too early or too late are both suboptimal.
-- Each SC passively grants **+1 % production** (small but noticeable). SC can
-  additionally be spent in the prestige tree; spent SC keep their passive
-  bonus (no dilemma between saving and spending).
+- Each unspent SC passively grants **+2 % production**, each spent SC **+1 %**.
+  Spending SC in the prestige tree trades half of their passive bonus for a
+  permanent upgrade, so saving and spending are both valid choices.
 
 ### 2.4 Prestige tree (small advantages)
 
@@ -162,8 +162,8 @@ SC = floor( sqrt( alloys produced this run / 50,000 ) ) + 5 (launch bonus)
 | Auto-Buyer: Producers | Buys solar fields, excavators and solar arrays     | 12        |
 | Exotic Research       | Particle colliders produce 50 % more exotic matter | 15        |
 
-Further permanent bonuses: every Star Chart ever earned +1 % to all
-buildings, every achievement (18) +1 %, and research completed in an earlier
+Further permanent bonuses: every unspent Star Chart +2 % and every spent one
++1 % to all buildings, every achievement (18) +1 %, and research completed in an earlier
 run takes half the time.
 
 Each advantage is small on its own, but together they noticeably shorten the

@@ -6,6 +6,7 @@
   import DebugPanel from './ui/DebugPanel.svelte'
   import EndingPanel from './ui/EndingPanel.svelte'
   import EventBanner from './ui/EventBanner.svelte'
+  import HelpPanel from './ui/HelpPanel.svelte'
   import IntroPanel from './ui/IntroPanel.svelte'
   import MinePanel from './ui/MinePanel.svelte'
   import NoticePanel from './ui/NoticePanel.svelte'
@@ -57,6 +58,7 @@
     <ArkPanel />
     <PrestigePanel />
   {:else}
+    <HelpPanel />
     <RadioLog />
     <AchievementsPanel />
     <SavePanel />
