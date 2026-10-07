@@ -18,8 +18,17 @@
   box-sizing: border-box;
 }
 
+html {
+  /* No double-tap zoom: fast taps (e.g. mining) must stay taps. */
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   margin: 0;
+  /* No rubber-band scrolling that drags the fixed bars around. */
+  overscroll-behavior: none;
   background: var(--bg);
   color: var(--text);
 }
@@ -140,7 +149,8 @@ textarea {
   width: 100%;
   margin-top: 0.5rem;
   font: inherit;
-  font-size: 0.75rem;
+  /* At least 16px, otherwise iOS zooms in when the field is focused. */
+  font-size: 16px;
   color: var(--text);
   background: var(--bg);
   border: 1px solid var(--border);
