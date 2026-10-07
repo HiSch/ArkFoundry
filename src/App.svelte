@@ -45,7 +45,6 @@
   <EndingPanel />
   <NoticePanel />
   <OfflineReport />
-  <EventBanner />
   <TransmissionBanner />
   {#if tab === 'colony'}
     <MinePanel />
@@ -66,4 +65,5 @@
   {/if}
 </main>
 
+<EventBanner />
 <TabBar />
