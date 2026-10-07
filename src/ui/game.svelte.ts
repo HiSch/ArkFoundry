@@ -234,13 +234,7 @@ class Game {
   }
 
   collectEvent(): void {
-    const active = this.state.events.active
-    if (!active) return
-    const def = collectEvent(this.state)
-    if (!def) return
-    if (def.reward.type === 'boost') {
-      this.notice = `${def.name}: all buildings run ${def.reward.factor}× faster for ${Math.round(def.reward.duration / 60)} minutes.`
-    }
+    collectEvent(this.state)
   }
 
   /** Preview of what collecting the active event gives. */
