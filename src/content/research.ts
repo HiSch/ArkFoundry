@@ -200,13 +200,7 @@ export const RESEARCH: ResearchDef[] = [
     cost: { research: 400000, helium3: 30000 },
     duration: 10 * HOUR,
     requires: ['fusionContainment', 'orbitalConstruction'],
-    condition: {
-      type: 'all',
-      conditions: [
-        { type: 'moduleLaunched', module: 'engine' },
-        { type: 'prestigeUpgrade', upgrade: 'exoticResearch' },
-      ],
-    },
+    condition: { type: 'moduleLaunched', module: 'engine' },
     effects: [],
   },
   {

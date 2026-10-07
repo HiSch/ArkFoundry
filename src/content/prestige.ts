@@ -110,10 +110,10 @@ export const PRESTIGE_UPGRADES: PrestigeUpgradeDef[] = [
   {
     id: 'exoticResearch',
     name: 'Exotic Research',
-    description: 'Opens research into exotic matter, needed from the Habitat on.',
+    description: 'Particle colliders produce 50 % more exotic matter.',
     cost: 15,
     maxLevel: 1,
-    effects: [],
+    effects: [{ type: 'output', building: 'collider', factor: 1.5 }],
   },
 ]
 

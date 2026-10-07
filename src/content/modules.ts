@@ -35,8 +35,7 @@ export const MODULES: ModuleDef[] = [
     description: 'Living space for the crew that stays awake.',
     cost: { exotic: 400, alloys: 1.5e6, components: 200000 },
     unlock: { type: 'research', research: 'habitatDesign' },
-    lockedHint:
-      'Requires the Engine in orbit, the Exotic Research prestige upgrade and Habitat Design research.',
+    lockedHint: 'Requires the Engine in orbit and Habitat Design research.',
   },
   {
     id: 'cryoDeck',

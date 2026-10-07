@@ -148,19 +148,19 @@ SC = floor( sqrt( alloys produced this run / 50,000 ) ) + 5 (launch bonus)
 
 ### 2.4 Prestige tree (small advantages)
 
-| Upgrade               | Effect                                                    | Cost (SC) |
-| --------------------- | --------------------------------------------------------- | --------- |
-| Seed Capital          | Start with 5 drones, 500 ore and 500 credits              | 2         |
-| Veteran Engineers     | Research +10 % faster (stacks 5×)                         | 3 / level |
-| Bigger Silos          | Storage +1 h (stacks 4×)                                  | 3 / level |
-| Auto-Buyer: Drones    | Buys drones while they cost ≤ 10 % of the stock           | 5         |
-| Blueprint Archive     | Three basic research projects known from the start        | 5         |
-| Auto-Pause            | Buildings pause when output storage is full               | 3         |
-| Trade Contacts        | Event rewards +50 %                                       | 4         |
-| Efficient Refining    | Refineries use 10 % less input (stacks 3×)                | 4 / level |
-| Dock Synergy          | Each module in orbit: +5 % to all buildings               | 8         |
-| Auto-Buyer: Producers | Buys solar fields, excavators and solar arrays            | 12        |
-| Exotic Research       | Opens exotic matter research (needed from the Habitat on) | 15        |
+| Upgrade               | Effect                                             | Cost (SC) |
+| --------------------- | -------------------------------------------------- | --------- |
+| Seed Capital          | Start with 5 drones, 500 ore and 500 credits       | 2         |
+| Veteran Engineers     | Research +10 % faster (stacks 5×)                  | 3 / level |
+| Bigger Silos          | Storage +1 h (stacks 4×)                           | 3 / level |
+| Auto-Buyer: Drones    | Buys drones while they cost ≤ 10 % of the stock    | 5         |
+| Blueprint Archive     | Three basic research projects known from the start | 5         |
+| Auto-Pause            | Buildings pause when output storage is full        | 3         |
+| Trade Contacts        | Event rewards +50 %                                | 4         |
+| Efficient Refining    | Refineries use 10 % less input (stacks 3×)         | 4 / level |
+| Dock Synergy          | Each module in orbit: +5 % to all buildings        | 8         |
+| Auto-Buyer: Producers | Buys solar fields, excavators and solar arrays     | 12        |
+| Exotic Research       | Particle colliders produce 50 % more exotic matter | 15        |
 
 Further permanent bonuses: every Star Chart ever earned +1 % to all
 buildings, every achievement (18) +1 %, and research completed in an earlier
@@ -176,12 +176,14 @@ early phases – the game feels faster after every prestige.
 | 1 Hull       | Components, Helium-3                                                |
 | 2 Reactor    | Fusion Reactors (Helium-3 → energy); the module needs 2.5e7 energy  |
 | 3 Engine     | Gas Giant Skimmers (large Helium-3 supply)                          |
-| 4 Habitat    | Exotic matter from Particle Colliders (Exotic Research upgrade)     |
+| 4 Habitat    | Exotic matter from Particle Colliders                               |
 | 5 Cryo Deck  | Colonists from Survivor Camps (credits + energy → colonists)        |
 | 6 Shield     | Needs every production chain at once                                |
 | 7 Navigation | At most 34 % can be delivered per run → three runs, supply launches |
 
 Every module's blueprint research requires the previous module in orbit.
+Progress never depends on a prestige upgrade, so spending Star Charts can
+never lock the game.
 
 Campaign simulation (`npm run campaign`, phase 8):
 
