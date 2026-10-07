@@ -1,13 +1,13 @@
 import { ACHIEVEMENT_IDS } from '../content/achievements'
 import { BUILDING_IDS } from '../content/buildings'
 import { PRESTIGE_UPGRADE_IDS, type PrestigeUpgradeId } from '../content/prestige'
-import { RESEARCH_IDS } from '../content/research'
+import { RESEARCH_IDS, type ResearchId } from '../content/research'
 import { STORY_IDS } from '../content/story'
 import { UPGRADE_IDS } from '../content/upgrades'
 import { createInitialState, type GameState } from './state'
 
 /** Current save format version. Bump it and add a migration on every format change. */
-export const SAVE_VERSION = 7
+export const SAVE_VERSION = 8
 
 export interface SaveData {
   version: number
@@ -63,6 +63,15 @@ const migrations: Record<number, (save: Record<string, unknown>) => Record<strin
       endingSeen: fresh.endingSeen,
     }
     return { ...save, state: { ...state, meta } }
+  },
+  // v8 counts research completions instead of only remembering known research.
+  7: (save) => {
+    const state = (save.state ?? {}) as Record<string, unknown>
+    const { knownResearch = [], ...meta } = (state.meta ?? {}) as Record<string, unknown> & {
+      knownResearch?: string[]
+    }
+    const researchCompletions = Object.fromEntries(knownResearch.map((id) => [id, 1]))
+    return { ...save, state: { ...state, meta: { ...meta, researchCompletions } } }
   },
 }
 
@@ -135,7 +144,11 @@ function normalize(save: SaveData): SaveData {
         ...defaults.meta,
         ...state.meta,
         storyLog: (state.meta?.storyLog ?? []).filter((id) => STORY_IDS.includes(id)),
-        knownResearch: (state.meta?.knownResearch ?? []).filter((id) => RESEARCH_IDS.includes(id)),
+        researchCompletions: Object.fromEntries(
+          Object.entries(state.meta?.researchCompletions ?? {}).filter(([id]) =>
+            RESEARCH_IDS.includes(id as ResearchId),
+          ),
+        ),
         achievements: (state.meta?.achievements ?? []).filter((id) => ACHIEVEMENT_IDS.includes(id)),
         prestigeUpgrades: Object.fromEntries(
           Object.entries(state.meta?.prestigeUpgrades ?? {}).filter(([id]) =>

@@ -1,6 +1,7 @@
 /**
  * Pacing report for the whole game: plays every run with a player profile
- * until the Ark is complete and prints how long each run took.
+ * until the Ark is complete and prints how long each run (launch or supply
+ * launch) took.
  *
  * Usage: npm run campaign [-- profileId] (default: active)
  */
@@ -17,21 +18,41 @@ const started = Date.now()
 const result = simulateCampaign(profile)
 console.error(`${profile.name}: simulated in ${((Date.now() - started) / 1000).toFixed(1)} s`)
 
+const pad = (text: string | number, width: number) => String(text).padEnd(width)
+console.log(`Profile: ${profile.name} – ${profile.description}`)
+console.log(
+  [
+    pad('Run', 4),
+    pad('Module', 11),
+    pad('Type', 7),
+    pad('Duration', 10),
+    pad('Total', 10),
+    pad('SC', 4),
+    'SC total',
+  ].join(' '),
+)
+console.log('-'.repeat(60))
 let total = 0
-console.log('Run  Module        Type      Duration     Star Charts')
-console.log('-----------------------------------------------------')
+let starCharts = 0
 result.runs.forEach((run, index) => {
   total += run.seconds
-  const name = getModule(run.module as ModuleId).name
+  starCharts += run.starCharts
   console.log(
-    `${String(index + 1).padEnd(4)} ${name.padEnd(13)} ${(run.supply ? 'supply' : 'launch').padEnd(9)} ${formatDuration(run.seconds).padEnd(12)} ${run.starCharts}`,
+    [
+      pad(index + 1, 4),
+      pad(getModule(run.module as ModuleId).name, 11),
+      pad(run.supply ? 'supply' : 'launch', 7),
+      pad(formatDuration(run.seconds), 10),
+      pad(formatDuration(total), 10),
+      pad(run.starCharts, 4),
+      starCharts,
+    ].join(' '),
   )
 })
-console.log('-----------------------------------------------------')
+console.log('-'.repeat(60))
 console.log(
   result.completedAt === null
     ? `Ark not complete after ${formatDuration(total)} (${result.runs.length} runs)`
     : `Ark complete after ${formatDuration(result.completedAt)} (${result.runs.length} runs)`,
 )
-console.log(`Star Charts earned: ${result.state.meta.starChartsEarned}`)
 console.log(`Achievements: ${result.state.meta.achievements.length}`)

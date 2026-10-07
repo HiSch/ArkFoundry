@@ -163,8 +163,8 @@ SC = floor( sqrt( alloys produced this run / 50,000 ) ) + 5 (launch bonus)
 | Exotic Research       | Particle colliders produce 50 % more exotic matter | 15        |
 
 Further permanent bonuses: every unspent Star Chart +2 % and every spent one
-+1 % to all buildings, every achievement (18) +1 %, and research completed in an earlier
-run takes half the time.
++1 % to all buildings, every achievement (18) +1 %, and every earlier
+completion of a research project halves its time (100 %, 50 %, 25 %, …).
 
 Each advantage is small on its own, but together they noticeably shorten the
 early phases – the game feels faster after every prestige.
@@ -185,25 +185,27 @@ Every module's blueprint research requires the previous module in orbit.
 Progress never depends on a prestige upgrade, so spending Star Charts can
 never lock the game.
 
-Campaign simulation (`npm run campaign`, phase 8):
+Campaign simulation (`npm run campaign`, after research times halve per
+earlier completion):
 
 | Run | Module     | Active   | Casual   |
 | --- | ---------- | -------- | -------- |
 | 1   | Hull       | 1 d 23 h | 3 d 13 h |
-| 2   | Reactor    | 2 d 0 h  | 5 d 20 h |
-| 3   | Engine     | 1 d 12 h | 4 d 18 h |
-| 4   | Habitat    | 2 d 11 h | 3 d 19 h |
-| 5   | Cryo Deck  | 2 d 0 h  | 4 d 14 h |
-| 6   | Shield     | 2 d 1 h  | 5 d 0 h  |
-| 7–9 | Navigation | 7 d 2 h  | 9 d 20 h |
-|     | **Total**  | **19 d** | **37 d** |
+| 2   | Reactor    | 2 d 0 h  | 2 d 20 h |
+| 3   | Engine     | 1 d 3 h  | 5 d 14 h |
+| 4   | Habitat    | 1 d 20 h | 6 d 10 h |
+| 5   | Cryo Deck  | 1 d 8 h  | 4 d 14 h |
+| 6   | Shield     | 1 d 23 h | 4 d 14 h |
+| 7–9 | Navigation | 3 d 21 h | 8 d 10 h |
+|     | **Total**  | **14 d** | **36 d** |
 
 The Ark is complete after 9 launches (6 modules, 2 supply launches, the
-final Navigation launch): about 2.7 weeks for active and 5.3 weeks for
-casual players, around the 3–5 week target. Active players are limited by
-research; casual players also by research progress between check-ins. The
-casual results vary by several days between simulation settings, so later
-tuning should rely on playtests.
+final Navigation launch): about 2 weeks for active and 5 weeks for casual
+players. Active players are limited by research, so repeated research
+speeds them up a lot (from 19 to 14 days). Casual players are limited by
+production between check-ins and barely change. The casual results vary by
+several days between simulation settings, so later tuning should rely on
+playtests.
 
 → Target: the Ark is complete after roughly **9–12 prestiges**, about
 **3–5 weeks** of play.

@@ -5,13 +5,22 @@ import type { GameState } from './state'
 import type { ResearchDef } from './types'
 import { isMet, updateUnlocks } from './unlocks'
 
-/** Research completed in an earlier run takes this share of its normal time. */
-export const KNOWN_RESEARCH_FACTOR = 0.5
+/** Each earlier completion of a project multiplies its time by this factor (100 %, 50 %, 25 %, …). */
+export const REPEAT_RESEARCH_FACTOR = 0.5
 
-/** Real seconds a project takes at normal research speed, shorter if it is already known. */
+/** How often a project was completed in earlier runs. */
+export function researchCompletions(state: GameState, id: ResearchId): number {
+  return state.meta.researchCompletions[id] ?? 0
+}
+
+/** Share of the normal time a project takes, halved for every earlier completion. */
+export function researchTimeFactor(state: GameState, id: ResearchId): number {
+  return Math.pow(REPEAT_RESEARCH_FACTOR, researchCompletions(state, id))
+}
+
+/** Real seconds a project takes at normal research speed. */
 export function researchDuration(state: GameState, id: ResearchId): number {
-  const base = getResearch(id).duration
-  return state.meta.knownResearch.includes(id) ? base * KNOWN_RESEARCH_FACTOR : base
+  return getResearch(id).duration * researchTimeFactor(state, id)
 }
 
 /** Maximum number of projects in the queue, including the active one. */
