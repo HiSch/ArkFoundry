@@ -61,12 +61,18 @@ describe('module-gated research', () => {
     expect(availableResearch(state).map((r) => r.id)).toContain('fusionPower')
   })
 
-  it('requires the Exotic Research prestige upgrade for exotic physics', () => {
+  it('does not require any prestige upgrade for exotic physics', () => {
     const state = launchedUpTo(3)
     state.research.completed.push('fusionContainment', 'orbitalConstruction')
-    expect(availableResearch(state).map((r) => r.id)).not.toContain('exoticPhysics')
-    state.meta.prestigeUpgrades.exoticResearch = 1
+    expect(state.meta.prestigeUpgrades.exoticResearch).toBeUndefined()
     expect(availableResearch(state).map((r) => r.id)).toContain('exoticPhysics')
+  })
+
+  it('makes the Exotic Research upgrade boost colliders', () => {
+    const state = createInitialState()
+    expect(multipliers(state, 'collider').output).toBe(1)
+    state.meta.prestigeUpgrades.exoticResearch = 1
+    expect(multipliers(state, 'collider').output).toBe(1.5)
   })
 })
 
