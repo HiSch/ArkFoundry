@@ -146,21 +146,39 @@ SC = floor( sqrt( alloys produced this run / 50,000 ) ) + 5 (launch bonus)
   Spending SC in the prestige tree trades half of their passive bonus for a
   permanent upgrade, so saving and spending are both valid choices.
 
+**Abandon colony:** once a run has produced enough alloys for 10 Star
+Charts, the current module shows an "Abandon colony" button (with a warning
+and a confirmation). It ends the run without a launch and earns Star Charts
+without the launch bonus; deliveries stay in the dock. When the module is
+complete (or a supply launch is possible), the launch button replaces it.
+
 ### 2.4 Prestige tree (small advantages)
 
-| Upgrade               | Effect                                             | Cost (SC) |
-| --------------------- | -------------------------------------------------- | --------- |
-| Seed Capital          | Start with 5 drones, 500 ore and 500 credits       | 2         |
-| Veteran Engineers     | Research +10 % faster (stacks 5×)                  | 3 / level |
-| Bigger Silos          | Storage +1 h (stacks 4×)                           | 3 / level |
-| Auto-Buyer: Drones    | Buys drones while they cost ≤ 10 % of the stock    | 5         |
-| Blueprint Archive     | Three basic research projects known from the start | 5         |
-| Auto-Pause            | Buildings pause when output storage is full        | 3         |
-| Trade Contacts        | Event rewards +50 %                                | 4         |
-| Efficient Refining    | Refineries use 10 % less input (stacks 3×)         | 4 / level |
-| Dock Synergy          | Each module in orbit: +5 % to all buildings        | 8         |
-| Auto-Buyer: Producers | Buys solar fields, excavators and solar arrays     | 12        |
-| Exotic Research       | Particle colliders produce 50 % more exotic matter | 15        |
+Upgrades are grouped by play style, so every player can pick a path:
+
+| Category            | Upgrade               | Effect                                                                    | Cost (SC) |
+| ------------------- | --------------------- | ------------------------------------------------------------------------- | --------- |
+| Run start           | Seed Capital          | Start with 5 drones, 500 ore and 500 credits                              | 2         |
+| Run start           | Blueprint Archive     | Three basic research projects known from the start                        | 5         |
+| Run start           | Prefab Colony         | Start with 10 solar fields, 3 refineries, 2 trade posts and 2,000 credits | 8         |
+| Production          | Efficient Refining    | Refineries use 10 % less input (stacks 3×)                                | 4 / level |
+| Production          | Industrial Doctrine   | Converters (buildings with inputs) +10 % output (3×)                      | 5 / level |
+| Production          | Mass Production       | All buildings cost 5 % less (stacks 3×)                                   | 4 / level |
+| Production          | Exotic Research       | Particle colliders produce 50 % more exotic matter                        | 15        |
+| Research            | Veteran Engineers     | Research +10 % faster (stacks 5×)                                         | 3 / level |
+| Research            | Research Grants       | Research costs −20 % (stacks 2×, multiplicative)                          | 4 / level |
+| Research            | Parallel Research     | One more research queue slot (stacks 2×)                                  | 6 / level |
+| Storage & idle play | Bigger Silos          | Storage +1 h (stacks 4×)                                                  | 3 / level |
+| Storage & idle play | Auto-Pause            | Buildings pause when output storage is full                               | 3         |
+| Active play         | Trade Contacts        | Event rewards +50 %                                                       | 4         |
+| Active play         | Deep-Core Drills      | Each click adds 2 s of ore production (stacks 3×)                         | 3 / level |
+| Active play         | Event Beacon          | Events appear 25 % more often (stacks 2×)                                 | 4 / level |
+| Active play         | Long-Range Comms      | Events stay twice as long                                                 | 3         |
+| Automation          | Auto-Buyer: Drones    | Buys drones while they cost ≤ 10 % of the stock                           | 5         |
+| Automation          | Auto-Buyer: Producers | Buys solar fields, excavators and solar arrays                            | 12        |
+| Automation          | Automated Logistics   | Delivers everything above 50 % of storage to the Ark (switchable)         | 8         |
+| Ark & Star Charts   | Dock Synergy          | Each module in orbit: +5 % to all buildings                               | 8         |
+| Ark & Star Charts   | Cartography           | Launches earn +10 % Star Charts (stacks 3×)                               | 6 / level |
 
 Further permanent bonuses: every unspent Star Chart +2 % and every spent one
 +1 % to all buildings, every achievement (18) +1 %, and every earlier

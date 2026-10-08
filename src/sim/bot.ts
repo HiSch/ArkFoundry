@@ -9,7 +9,7 @@ import { canBuildModule, deliverToModule } from '../core/ark'
 import { collectEvent } from '../core/events'
 import { buyPrestigeUpgrade, prestigeLevel } from '../core/prestige'
 import { computeFlows } from '../core/production'
-import { availableResearch, MAX_QUEUE_LENGTH, startResearch } from '../core/research'
+import { availableResearch, maxQueueLength, startResearch } from '../core/research'
 import type { GameState } from '../core/state'
 import { capacities } from '../core/storage'
 
@@ -69,6 +69,14 @@ const PRESTIGE_PRIORITY: PrestigeUpgradeId[] = [
   'biggerSilos',
   'efficientRefining',
   'efficientRefining',
+  'researchGrants',
+  'massProduction',
+  'industrialDoctrine',
+  'parallelResearch',
+  'cartography',
+  'researchGrants',
+  'massProduction',
+  'industrialDoctrine',
 ]
 
 /** Spends Star Charts in priority order; stops at the first upgrade it cannot afford yet. */
@@ -108,7 +116,7 @@ export function playRound(state: GameState): void {
     ...available.filter((r) => !critical.has(r.id)),
   ]
   for (const def of ordered) {
-    if (state.research.queue.length >= MAX_QUEUE_LENGTH) break
+    if (state.research.queue.length >= maxQueueLength(state)) break
     startResearch(state, def.id)
   }
 

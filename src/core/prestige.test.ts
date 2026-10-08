@@ -6,10 +6,14 @@ import { buildingCost } from './costs'
 import { canBuildModule } from './ark'
 import { multipliers } from './production'
 import {
+  ABANDON_MIN_STAR_CHARTS,
+  abandonColony,
+  abandonReward,
   ALLOY_DIVISOR,
   AUTO_BUY_SHARE,
   availableAutoBuyers,
   buyPrestigeUpgrade,
+  canAbandon,
   canLaunch,
   LAUNCH_BONUS,
   launchModule,
@@ -168,5 +172,41 @@ describe('Star Chart bonus', () => {
     expect(multipliers(state, 'drone').throughput).toBeCloseTo(1.2)
     buyPrestigeUpgrade(state, 'seedCapital')
     expect(multipliers(state, 'drone').throughput).toBeCloseTo(1.18)
+  })
+})
+
+describe('Abandoning the colony', () => {
+  function productiveRun(starCharts: number) {
+    const state = createInitialState()
+    state.stats.produced.alloys = starCharts * starCharts * ALLOY_DIVISOR
+    state.research.completed.push('hullEngineering')
+    state.ark.modules.hull.delivered.alloys = 1000
+    state.playTime = 500
+    return state
+  }
+
+  it('needs enough production for the minimum Star Charts', () => {
+    expect(canAbandon(productiveRun(ABANDON_MIN_STAR_CHARTS - 1))).toBe(false)
+    expect(canAbandon(productiveRun(ABANDON_MIN_STAR_CHARTS))).toBe(true)
+  })
+
+  it('is replaced by the launch once a module is complete', () => {
+    const state = productiveRun(20)
+    state.ark.modules.hull.completed = true
+    expect(canAbandon(state)).toBe(false)
+  })
+
+  it('earns Star Charts without the launch bonus and keeps deliveries', () => {
+    const state = productiveRun(12)
+    expect(abandonReward(state)).toBe(launchReward(state) - LAUNCH_BONUS)
+    expect(abandonColony(state)).toBe(12)
+    expect(state.meta.starCharts).toBe(12)
+    expect(state.meta.abandons).toBe(1)
+    expect(state.meta.launches).toBe(0)
+    expect(state.meta.pastPlayTime).toBe(500)
+    expect(state.stats.produced.alloys).toBe(0)
+    expect(state.ark.modules.hull.delivered.alloys).toBe(1000)
+    expect(state.ark.modules.hull.launched).toBe(false)
+    expect(abandonColony(state)).toBe(0)
   })
 })

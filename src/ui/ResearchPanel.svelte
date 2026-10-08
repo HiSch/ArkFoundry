@@ -4,11 +4,12 @@
   import { formatDuration } from '../core/format'
   import {
     availableResearch,
-    MAX_QUEUE_LENGTH,
+    maxQueueLength,
     projectTimeRemaining,
     queueTimeRemaining,
     researchDiscovered,
     researchCompletions,
+    researchCost,
     researchDuration,
     researchSpeed,
     researchTimeFactor,
@@ -22,7 +23,8 @@
   const queue = $derived(game.state.research.queue)
   const available = $derived(availableResearch(game.state))
   const completed = $derived(RESEARCH.filter((r) => game.state.research.completed.includes(r.id)))
-  const queueFull = $derived(queue.length >= MAX_QUEUE_LENGTH)
+  const queueLimit = $derived(maxQueueLength(game.state))
+  const queueFull = $derived(queue.length >= queueLimit)
 
   /** Text progress bar, e.g. "[#######-------------] 35 %". */
   function bar(share: number): string {
@@ -37,7 +39,7 @@
     <p class="label">Projects run in real time, also while you are away.</p>
 
     {#if queue.length}
-      <h3>Queue ({queue.length}/{MAX_QUEUE_LENGTH})</h3>
+      <h3>Queue ({queue.length}/{queueLimit})</h3>
       {#each queue as entry, index (entry.id)}
         {@const def = getResearch(entry.id)}
         <article>
@@ -62,6 +64,7 @@
 
     <h3>Available</h3>
     {#each available as def (def.id)}
+      {@const cost = researchCost(game.state, def.id)}
       <article>
         <h4>{def.name}</h4>
         <p class="detail">{def.description}</p>
@@ -79,11 +82,11 @@
         <div class="row">
           <button
             class="buy"
-            disabled={queueFull || !canAfford(game.state, def.cost)}
+            disabled={queueFull || !canAfford(game.state, cost)}
             onclick={() => game.startResearch(def.id)}
           >
             {queueFull ? 'Queue full' : 'Research'}
-            <span class="cost">{formatAmounts(def.cost)}</span>
+            <span class="cost">{formatAmounts(cost)}</span>
           </button>
         </div>
       </article>

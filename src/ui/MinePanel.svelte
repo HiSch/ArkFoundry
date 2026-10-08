@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { clickPower } from '../core/actions'
+  import { clickYield } from '../core/actions'
   import { formatNumber } from './format'
   import { game } from './game.svelte'
 </script>
 
 <button class="mine" onclick={() => game.mine()}>
-  Mine ore <span>+{formatNumber(clickPower(game.state))}</span>
+  Mine ore <span>+{formatNumber(clickYield(game.state))}</span>
 </button>
 
 <style>

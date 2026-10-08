@@ -92,7 +92,9 @@
         {/each}
       </dl>
       <p class="label">
-        Run {game.state.meta.launches + 1} · {formatDuration(game.state.playTime)} · Storage:
+        Run {game.state.meta.launches + game.state.meta.abandons + 1} · {formatDuration(
+          game.state.playTime,
+        )} · Storage:
         {storageHours(game.state)} h
       </p>
     {/if}

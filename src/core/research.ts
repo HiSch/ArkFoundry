@@ -1,8 +1,8 @@
 import { getResearch, RESEARCH, type ResearchId } from '../content/research'
 import { canAfford, entries, pay } from './amounts'
-import { activeEffects } from './effects'
+import { activeEffects, effectProduct, effectSum } from './effects'
 import type { GameState } from './state'
-import type { ResearchDef } from './types'
+import type { Amounts, ResearchDef } from './types'
 import { isMet, updateUnlocks } from './unlocks'
 
 /** Each earlier completion of a project multiplies its time by this factor (100 %, 50 %, 25 %, …). */
@@ -47,19 +47,32 @@ export function availableResearch(state: GameState): ResearchDef[] {
   )
 }
 
+/** Queue slots: the base size plus prestige upgrades. */
+export function maxQueueLength(state: GameState): number {
+  return MAX_QUEUE_LENGTH + effectSum(state, 'researchQueue', 'add')
+}
+
+/** Cost of a project after prestige discounts. */
+export function researchCost(state: GameState, id: ResearchId): Amounts {
+  const factor = effectProduct(state, 'researchCost', 'factor')
+  const cost: Amounts = {}
+  for (const [resource, amount] of entries(getResearch(id).cost)) cost[resource] = amount * factor
+  return cost
+}
+
 export function canStartResearch(state: GameState, id: ResearchId): boolean {
   return (
     researchDiscovered(state) &&
-    state.research.queue.length < MAX_QUEUE_LENGTH &&
+    state.research.queue.length < maxQueueLength(state) &&
     availableResearch(state).some((def) => def.id === id) &&
-    canAfford(state, getResearch(id).cost)
+    canAfford(state, researchCost(state, id))
   )
 }
 
 /** Pays for a project and appends it to the queue. Returns whether it was queued. */
 export function startResearch(state: GameState, id: ResearchId): boolean {
   if (!canStartResearch(state, id)) return false
-  pay(state, getResearch(id).cost)
+  pay(state, researchCost(state, id))
   state.research.queue.push({ id, progress: 0 })
   return true
 }
@@ -72,7 +85,7 @@ export function cancelResearch(state: GameState, id: ResearchId): boolean {
   const index = state.research.queue.findIndex((entry) => entry.id === id)
   if (index === -1) return false
   state.research.queue.splice(index, 1)
-  for (const [resource, amount] of entries(getResearch(id).cost)) {
+  for (const [resource, amount] of entries(researchCost(state, id))) {
     state.resources[resource] += amount
   }
   return true

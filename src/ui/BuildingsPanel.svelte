@@ -1,7 +1,7 @@
 <script lang="ts">
   import { BUILDINGS, type BuildingId } from '../content/buildings'
   import { purchaseQuantity, type BuyAmount } from '../core/actions'
-  import { buildingCost } from '../core/costs'
+  import { buildingCost, buildingCostFactor } from '../core/costs'
   import { nextMilestone, perBuildingRates } from '../core/production'
   import type { BuildingDef } from '../core/types'
   import { game } from './game.svelte'
@@ -20,7 +20,11 @@
     const quantity = purchaseQuantity(game.state, def.id, game.buyAmount)
     // For "Max" with nothing affordable, show the price of a single building.
     const shown = game.buyAmount === 'max' ? Math.max(1, quantity) : game.buyAmount
-    return { affordable: quantity > 0, shown, cost: formatAmounts(buildingCost(def, owned, shown)) }
+    return {
+      affordable: quantity > 0,
+      shown,
+      cost: formatAmounts(buildingCost(def, owned, shown, buildingCostFactor(game.state))),
+    }
   }
 
   /** Explains why a building runs below full speed, or null if it runs at full speed. */

@@ -6,10 +6,16 @@ import type { ResearchId } from '../content/research'
 import { RESOURCE_IDS, type ResourceId } from '../content/resources'
 import type { UpgradeId } from '../content/upgrades'
 import { buyBuilding, buyUpgrade, mine, setBuildingEnabled, type BuyAmount } from '../core/actions'
-import { deliverToModule } from '../core/ark'
+import { deliverToModule, setAutoDeliver } from '../core/ark'
 import { collectEvent, eventResources, updateEvents } from '../core/events'
 import { catchUp, REPORT_THRESHOLD_SECONDS, type OfflineReport } from '../core/offline'
-import { buyPrestigeUpgrade, launchModule, setAutoBuy, supplyLaunch } from '../core/prestige'
+import {
+  abandonColony,
+  buyPrestigeUpgrade,
+  launchModule,
+  setAutoBuy,
+  supplyLaunch,
+} from '../core/prestige'
 import { computeFlows, type Limit } from '../core/production'
 import { cancelResearch, startResearch } from '../core/research'
 import { clearSave, createSave, exportSave, importSave, readSave, writeSave } from '../core/save'
@@ -191,6 +197,19 @@ class Game {
     this.save()
   }
 
+  /** Gives up the current run without a launch: earns Star Charts and starts a new run. */
+  abandon(): void {
+    const reward = abandonColony(this.state)
+    if (reward === 0) return
+    this.rates = zeroRates()
+    this.efficiency = {}
+    this.limits = {}
+    this.notice =
+      `The colony is abandoned. Its survey data earned ${reward} Star Charts. ` +
+      'A new run begins – spend them in the Ark tab.'
+    this.save()
+  }
+
   dismissEnding(): void {
     this.state.meta.endingSeen = true
   }
@@ -205,6 +224,10 @@ class Game {
 
   setAutoBuy(id: BuildingId, enabled: boolean): void {
     setAutoBuy(this.state, id, enabled)
+  }
+
+  setAutoDeliver(enabled: boolean): void {
+    setAutoDeliver(this.state, enabled)
   }
 
   startResearch(id: ResearchId): void {

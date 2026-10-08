@@ -8,7 +8,7 @@
     moduleProgress,
     runProgress,
   } from '../core/ark'
-  import { launchReward } from '../core/prestige'
+  import { abandonReward, canAbandon, LAUNCH_BONUS, launchReward } from '../core/prestige'
   import { formatNumber } from './format'
   import { game } from './game.svelte'
   import { preferences } from './preferences.svelte'
@@ -17,6 +17,8 @@
   const BAR_WIDTH = 20
 
   const built = $derived(launchedModules(game.state))
+  /** The module this run works towards: the first one not yet in orbit. */
+  const current = $derived(MODULES.find((m) => !game.state.ark.modules[m.id].launched)?.id)
 
   function bar(share: number): string {
     const filled = Math.floor(share * BAR_WIDTH)
@@ -40,6 +42,17 @@
       `Send this run's deliveries for the ${name} into orbit?\n\nYou earn ${reward} Star Charts ` +
       'and start a new run. The deliveries stay in the dock; finish the module in a later run.'
     if (!preferences.confirmLaunch || confirm(message)) game.supplyLaunch(id)
+  }
+
+  function abandon(name: string): void {
+    const reward = abandonReward(game.state)
+    const message =
+      `Abandon the colony?\n\nThe ${name} is not finished and nothing is launched. ` +
+      `You earn only ${reward} Star Charts (no launch bonus of ${LAUNCH_BONUS}). ` +
+      'Resources, buildings, upgrades and research are reset. ' +
+      'Deliveries to the Ark stay in the dock.'
+    // Always ask: abandoning is never the natural end of a run.
+    if (confirm(message)) game.abandon()
   }
 
   function canDeliver(cost: [string, number][], delivered: Record<string, number | undefined>) {
@@ -121,6 +134,18 @@
         {:else}
           <p class="detail locked">{def.lockedHint}</p>
         {/if}
+        {#if def.id === current && !module.completed && canAbandon(game.state) && !canSupplyLaunch(game.state, def.id)}
+          <p class="detail warning">
+            The {def.name} is not finished. Abandoning the colony ends this run without a launch: you
+            earn {abandonReward(game.state)} Star Charts instead of {launchReward(game.state)}, and
+            the colony starts over. Deliveries stay in the dock.
+          </p>
+          <div class="row">
+            <button class="buy abandon" onclick={() => abandon(def.name)}>
+              Abandon colony ({abandonReward(game.state)} Star Charts)
+            </button>
+          </div>
+        {/if}
       </article>
     {/each}
   </details>
@@ -129,6 +154,15 @@
 <style>
   .ark {
     border-color: var(--accent);
+  }
+
+  .detail.warning {
+    color: var(--danger);
+  }
+
+  .buy.abandon {
+    border-color: var(--danger);
+    color: var(--danger);
   }
 
   .story {

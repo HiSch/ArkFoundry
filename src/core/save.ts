@@ -7,7 +7,7 @@ import { UPGRADE_IDS } from '../content/upgrades'
 import { createInitialState, type GameState } from './state'
 
 /** Current save format version. Bump it and add a migration on every format change. */
-export const SAVE_VERSION = 8
+export const SAVE_VERSION = 9
 
 export interface SaveData {
   version: number
@@ -72,6 +72,12 @@ const migrations: Record<number, (save: Record<string, unknown>) => Record<strin
     }
     const researchCompletions = Object.fromEntries(knownResearch.map((id) => [id, 1]))
     return { ...save, state: { ...state, meta: { ...meta, researchCompletions } } }
+  },
+  // v9 adds the Automated Logistics switch and counts abandoned colonies.
+  8: (save) => {
+    const state = (save.state ?? {}) as Record<string, unknown>
+    const meta = { ...(state.meta as object), autoDeliver: false, abandons: 0 }
+    return { ...save, state: { ...state, meta } }
   },
 }
 

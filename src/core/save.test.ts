@@ -132,6 +132,15 @@ describe('save', () => {
     expect('knownResearch' in loaded.state.meta).toBe(false)
   })
 
+  it('migrates version 8 saves with Automated Logistics switched off', () => {
+    const state = createInitialState() as unknown as Record<string, unknown>
+    delete (state.meta as Record<string, unknown>).autoDeliver
+    delete (state.meta as Record<string, unknown>).abandons
+    const loaded = deserialize(JSON.stringify({ version: 8, savedAt: 1, state }))
+    expect(loaded.state.meta.autoDeliver).toBe(false)
+    expect(loaded.state.meta.abandons).toBe(0)
+  })
+
   it('drops ids of removed content', () => {
     const state = { ...createInitialState(), upgrades: ['plasmaPick', 'removedUpgrade'] }
     const loaded = deserialize(JSON.stringify({ version: SAVE_VERSION, savedAt: 1, state }))
