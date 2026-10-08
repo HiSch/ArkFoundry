@@ -16,17 +16,23 @@
   import ResearchPanel from './ui/ResearchPanel.svelte'
   import ResourcePanel from './ui/ResourcePanel.svelte'
   import SavePanel from './ui/SavePanel.svelte'
+  import SettingsPanel from './ui/SettingsPanel.svelte'
   import TabBar from './ui/TabBar.svelte'
   import TransmissionBanner from './ui/TransmissionBanner.svelte'
   import UpgradesPanel from './ui/UpgradesPanel.svelte'
   import { game } from './ui/game.svelte'
-  import { preferences } from './ui/preferences.svelte'
+  import { FONT_SIZES, preferences } from './ui/preferences.svelte'
   import { visibleTabs } from './ui/tabs'
 
   // Fall back to the colony tab if the stored tab is not available (e.g. after a launch).
   const tab = $derived(
     visibleTabs(game.state).some((t) => t.id === preferences.tab) ? preferences.tab : 'colony',
   )
+
+  // The interface is sized in rem, so the root font size scales everything.
+  $effect(() => {
+    document.documentElement.style.fontSize = `${FONT_SIZES[preferences.fontSize]}px`
+  })
 
   onMount(() => {
     game.start()
@@ -57,6 +63,7 @@
     <ArkPanel />
     <PrestigePanel />
   {:else}
+    <SettingsPanel />
     <HelpPanel />
     <RadioLog />
     <AchievementsPanel />

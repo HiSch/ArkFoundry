@@ -49,3 +49,36 @@ describe('formatRate', () => {
     expect(formatRate(12345)).toBe('1.23e4')
   })
 })
+
+describe('notations', () => {
+  it('writes short suffixes', () => {
+    expect(formatNumber(1234, 'short')).toBe('1.23K')
+    expect(formatNumber(45_600_000, 'short')).toBe('45.6M')
+    expect(formatNumber(789e9, 'short')).toBe('789B')
+    expect(formatNumber(-2500, 'short')).toBe('-2.50K')
+  })
+
+  it('carries over when rounding reaches the next group', () => {
+    expect(formatNumber(999_999, 'short')).toBe('1.00M')
+    expect(formatNumber(999_999, 'engineering')).toBe('1.00e6')
+    expect(formatNumber(99_960, 'short')).toBe('100K')
+  })
+
+  it('falls back to scientific beyond the last suffix', () => {
+    expect(formatNumber(1e40, 'short')).toBe('1.00e40')
+  })
+
+  it('writes engineering exponents in steps of three', () => {
+    expect(formatNumber(1234, 'engineering')).toBe('1.23e3')
+    expect(formatNumber(12_345_678, 'engineering')).toBe('12.3e6')
+    expect(formatNumber(123e9, 'engineering')).toBe('123e9')
+  })
+
+  it('keeps small values plain in every notation', () => {
+    for (const notation of ['scientific', 'short', 'engineering'] as const) {
+      expect(formatNumber(742, notation)).toBe('742')
+      expect(formatRate(0.4, notation)).toBe('0.4')
+      expect(formatCost(11.2, notation)).toBe('12')
+    }
+  })
+})

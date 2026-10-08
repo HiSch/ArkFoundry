@@ -15,11 +15,11 @@ import { cancelResearch, startResearch } from '../core/research'
 import { clearSave, createSave, exportSave, importSave, readSave, writeSave } from '../core/save'
 import { createInitialState, type GameState } from '../core/state'
 import { capacities } from '../core/storage'
+import { preferences } from './preferences.svelte'
 import { markMessagesRead } from '../core/story'
 import { advance, type Totals } from '../core/tick'
 import { updateUnlocks } from '../core/unlocks'
 
-const AUTOSAVE_INTERVAL_MS = 10_000
 /**
  * Frames further apart than this (tab in background, device asleep) are
  * treated as an absence and handled by offline catch-up.
@@ -74,9 +74,15 @@ class Game {
     this.lastWallClock = Date.now()
     this.window.started = this.lastFrame
     this.frameHandle = requestAnimationFrame(this.frame)
-    this.autosaveHandle = window.setInterval(() => this.save(), AUTOSAVE_INTERVAL_MS)
+    this.restartAutosave()
     document.addEventListener('visibilitychange', this.onVisibilityChange)
     window.addEventListener('pagehide', this.onPageHide)
+  }
+
+  /** (Re)starts the autosave timer with the interval from the settings. */
+  restartAutosave(): void {
+    clearInterval(this.autosaveHandle)
+    this.autosaveHandle = window.setInterval(() => this.save(), preferences.autosaveSeconds * 1000)
   }
 
   stop(): void {
@@ -114,7 +120,9 @@ class Game {
     if (seconds <= 0) return
     const report = catchUp(this.state, seconds)
     updateEvents(this.state, seconds, Math.random, false)
-    if (report.seconds >= REPORT_THRESHOLD_SECONDS) this.offlineReport = report
+    if (report.seconds >= REPORT_THRESHOLD_SECONDS && preferences.showOfflineReport) {
+      this.offlineReport = report
+    }
   }
 
   dismissReport(): void {

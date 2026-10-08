@@ -156,14 +156,14 @@ the player through run 1.
 
 ## Phase 9 – Polish & release
 
-| Module               | Content                                                 |
-| -------------------- | ------------------------------------------------------- |
-| 9.1 Settings         | Notation options, autosave interval, confirmations      |
-| 9.2 Visuals          | Optional graphics on top of the text UI (Ark view)      |
-| 9.3 PWA / mobile app | Installable PWA, optionally Capacitor for app stores    |
-| 9.4 Accessibility    | Font sizes, contrast, screen reader labels              |
-| 9.5 Release          | itch.io page, store subtitle "Idle Colony Ship Builder" |
-| 9.6 Monetization     | Decision and implementation (if any)                    |
+| Module               | Content                                                       |
+| -------------------- | ------------------------------------------------------------- |
+| 9.1 Settings ✅      | Notation options, autosave interval, confirmations, font size |
+| 9.2 Visuals          | Optional graphics on top of the text UI (Ark view)            |
+| 9.3 PWA / mobile app | Installable PWA, optionally Capacitor for app stores          |
+| 9.4 Accessibility    | Font sizes ✅, contrast, screen reader labels                 |
+| 9.5 Release          | itch.io page, store subtitle "Idle Colony Ship Builder"       |
+| 9.6 Monetization     | Decision and implementation (if any)                          |
 
 ## Later (post-release)
 
