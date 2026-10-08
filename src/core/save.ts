@@ -73,10 +73,11 @@ const migrations: Record<number, (save: Record<string, unknown>) => Record<strin
     const researchCompletions = Object.fromEntries(knownResearch.map((id) => [id, 1]))
     return { ...save, state: { ...state, meta: { ...meta, researchCompletions } } }
   },
-  // v9 adds the Automated Logistics switch.
+  // v9 adds the Automated Logistics switch and counts abandoned colonies.
   8: (save) => {
     const state = (save.state ?? {}) as Record<string, unknown>
-    return { ...save, state: { ...state, meta: { ...(state.meta as object), autoDeliver: false } } }
+    const meta = { ...(state.meta as object), autoDeliver: false, abandons: 0 }
+    return { ...save, state: { ...state, meta } }
   },
 }
 

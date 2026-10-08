@@ -20,6 +20,10 @@
       <dd>{formatDuration(meta.pastPlayTime + game.state.playTime)}</dd>
       <dt>Launches</dt>
       <dd>{meta.launches}</dd>
+      {#if meta.abandons > 0}
+        <dt>Colonies abandoned</dt>
+        <dd>{meta.abandons}</dd>
+      {/if}
       <dt>Star Charts earned</dt>
       <dd>{meta.starChartsEarned}</dd>
       <dt>Achievements</dt>

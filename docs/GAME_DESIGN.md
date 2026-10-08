@@ -146,6 +146,12 @@ SC = floor( sqrt( alloys produced this run / 50,000 ) ) + 5 (launch bonus)
   Spending SC in the prestige tree trades half of their passive bonus for a
   permanent upgrade, so saving and spending are both valid choices.
 
+**Abandon colony:** once a run has produced enough alloys for 10 Star
+Charts, the current module shows an "Abandon colony" button (with a warning
+and a confirmation). It ends the run without a launch and earns Star Charts
+without the launch bonus; deliveries stay in the dock. When the module is
+complete (or a supply launch is possible), the launch button replaces it.
+
 ### 2.4 Prestige tree (small advantages)
 
 Upgrades are grouped by play style, so every player can pick a path:

@@ -12,6 +12,8 @@ import { updateUnlocks } from './unlocks'
 export const ALLOY_DIVISOR = 5e4
 /** Star Charts for launching a module for the first time. */
 export const LAUNCH_BONUS = 5
+/** Abandoning the colony needs at least this many Star Charts from the run's production. */
+export const ABANDON_MIN_STAR_CHARTS = 10
 /** An auto-buyer only buys when the next building costs at most this share of the stock. */
 export const AUTO_BUY_SHARE = 0.1
 
@@ -24,6 +26,34 @@ export function runStarCharts(state: GameState): number {
 export function launchReward(state: GameState): number {
   const gain = 1 + effectSum(state, 'starChartGain', 'add')
   return Math.floor((runStarCharts(state) + LAUNCH_BONUS) * gain)
+}
+
+/** Star Charts that abandoning the colony now would earn: no launch bonus. */
+export function abandonReward(state: GameState): number {
+  const gain = 1 + effectSum(state, 'starChartGain', 'add')
+  return Math.floor(runStarCharts(state) * gain)
+}
+
+/**
+ * Whether the colony can be abandoned: the run produced enough for
+ * ABANDON_MIN_STAR_CHARTS and no completed module waits for its launch.
+ */
+export function canAbandon(state: GameState): boolean {
+  return (
+    runStarCharts(state) >= ABANDON_MIN_STAR_CHARTS &&
+    !Object.values(state.ark.modules).some((m) => m.completed && !m.launched)
+  )
+}
+
+/**
+ * Gives up the current run without launching anything: earns Star Charts
+ * without the launch bonus and starts a new run. Deliveries to the Ark stay
+ * in the dock. Returns the Star Charts earned, or 0 if not allowed.
+ */
+export function abandonColony(state: GameState): number {
+  if (!canAbandon(state)) return 0
+  state.meta.abandons += 1
+  return finishRun(state, abandonReward(state))
 }
 
 /** Multiplier on all building throughput from Star Charts (spent and unspent). */
@@ -45,7 +75,8 @@ export function canLaunch(state: GameState, id: ModuleId): boolean {
 export function launchModule(state: GameState, id: ModuleId): number {
   if (!canLaunch(state, id)) return 0
   state.ark.modules[id].launched = true
-  return finishRun(state)
+  state.meta.launches += 1
+  return finishRun(state, launchReward(state))
 }
 
 /**
@@ -55,15 +86,14 @@ export function launchModule(state: GameState, id: ModuleId): number {
  */
 export function supplyLaunch(state: GameState, id: ModuleId): number {
   if (!canSupplyLaunch(state, id)) return 0
-  return finishRun(state)
+  state.meta.launches += 1
+  return finishRun(state, launchReward(state))
 }
 
 /** Rewards the run and starts a new one. */
-function finishRun(state: GameState): number {
-  const reward = launchReward(state)
+function finishRun(state: GameState, reward: number): number {
   state.meta.starCharts += reward
   state.meta.starChartsEarned += reward
-  state.meta.launches += 1
   state.meta.pastPlayTime += state.playTime
   for (const id of state.research.completed) {
     state.meta.researchCompletions[id] = (state.meta.researchCompletions[id] ?? 0) + 1

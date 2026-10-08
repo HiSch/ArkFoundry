@@ -3,7 +3,12 @@
   import { EVENT_INTERVAL, EVENT_LIFETIME } from '../core/events'
   import { MAX_OFFLINE_SECONDS } from '../core/offline'
   import { AUTO_DELIVER_KEEP_SHARE } from '../core/ark'
-  import { AUTO_BUY_SHARE, LAUNCH_BONUS, ALLOY_DIVISOR } from '../core/prestige'
+  import {
+    ABANDON_MIN_STAR_CHARTS,
+    AUTO_BUY_SHARE,
+    LAUNCH_BONUS,
+    ALLOY_DIVISOR,
+  } from '../core/prestige'
   import {
     ACHIEVEMENT_BONUS,
     MILESTONES,
@@ -136,6 +141,12 @@
         Each unspent Star Chart speeds up all buildings by {percent(UNSPENT_STAR_CHART_BONUS)}, each
         spent one by {percent(SPENT_STAR_CHART_BONUS)}. Spending trades some of the bonus for a
         permanent upgrade.
+      </li>
+      <li>
+        A run that stalls can be ended early: once it produced enough alloys for {ABANDON_MIN_STAR_CHARTS}
+        Star Charts, "Abandon colony" appears on the current module. It earns Star Charts without the
+        launch bonus of {LAUNCH_BONUS} and launches nothing; deliveries stay in the dock. It is replaced
+        by the launch as soon as the module is complete.
       </li>
       <li>
         Prestige upgrades can be bought at any time. They are grouped by play style: run start,

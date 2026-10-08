@@ -43,6 +43,8 @@ export interface MetaState {
   /** Automated Logistics switched on. */
   autoDeliver: boolean
   launches: number
+  /** Runs ended by abandoning the colony instead of launching. */
+  abandons: number
   /** Play time of all finished runs, in seconds. */
   pastPlayTime: number
   /** Radio messages received, in order. Each is sent once per game. */
@@ -139,6 +141,7 @@ export function createInitialState(): GameState {
       autoBuy: {},
       autoDeliver: false,
       launches: 0,
+      abandons: 0,
       pastPlayTime: 0,
       storyLog: [],
       storyRead: 0,
