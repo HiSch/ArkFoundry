@@ -1,5 +1,5 @@
 import { RESOURCES, type ResourceId } from '../content/resources'
-import { formatCost, formatRate } from '../core/format'
+import { formatCost, formatRate } from './format'
 import type { Amounts } from '../core/types'
 
 const names = Object.fromEntries(RESOURCES.map((r) => [r.id, r.name])) as Record<ResourceId, string>

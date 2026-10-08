@@ -1,6 +1,6 @@
 <script lang="ts">
   import { RESOURCES } from '../content/resources'
-  import { formatDuration, formatNumber } from '../core/format'
+  import { formatDuration, formatNumber } from './format'
   import { game } from './game.svelte'
 
   const report = $derived(game.offlineReport)

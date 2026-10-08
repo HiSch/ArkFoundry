@@ -9,8 +9,9 @@
     runProgress,
   } from '../core/ark'
   import { launchReward } from '../core/prestige'
-  import { formatNumber } from '../core/format'
+  import { formatNumber } from './format'
   import { game } from './game.svelte'
+  import { preferences } from './preferences.svelte'
   import { resourceName } from './names'
 
   const BAR_WIDTH = 20
@@ -30,7 +31,7 @@
       `Launch the ${name} into orbit?\n\nYou earn ${reward} Star Charts. ` +
       'Your colony starts over: resources, buildings, upgrades and research are reset. ' +
       'The Ark, Star Charts and prestige upgrades stay.'
-    if (confirm(message)) game.launch(id)
+    if (!preferences.confirmLaunch || confirm(message)) game.launch(id)
   }
 
   function supply(id: (typeof MODULES)[number]['id'], name: string): void {
@@ -38,7 +39,7 @@
     const message =
       `Send this run's deliveries for the ${name} into orbit?\n\nYou earn ${reward} Star Charts ` +
       'and start a new run. The deliveries stay in the dock; finish the module in a later run.'
-    if (confirm(message)) game.supplyLaunch(id)
+    if (!preferences.confirmLaunch || confirm(message)) game.supplyLaunch(id)
   }
 
   function canDeliver(cost: [string, number][], delivered: Record<string, number | undefined>) {

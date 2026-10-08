@@ -1,6 +1,6 @@
 <script lang="ts">
   import { clickPower } from '../core/actions'
-  import { formatNumber } from '../core/format'
+  import { formatNumber } from './format'
   import { game } from './game.svelte'
 </script>
 

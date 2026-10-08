@@ -1,6 +1,6 @@
 <script lang="ts">
   import { RESOURCES } from '../content/resources'
-  import { formatDuration, formatNumber, formatRate } from '../core/format'
+  import { formatDuration, formatNumber, formatRate } from './format'
   import { capacities, storageHours } from '../core/storage'
   import { game } from './game.svelte'
   import { preferences, type ResourceView } from './preferences.svelte'
