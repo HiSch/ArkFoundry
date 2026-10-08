@@ -6,7 +6,7 @@ import type { ResearchId } from '../content/research'
 import { RESOURCE_IDS, type ResourceId } from '../content/resources'
 import type { UpgradeId } from '../content/upgrades'
 import { buyBuilding, buyUpgrade, mine, setBuildingEnabled, type BuyAmount } from '../core/actions'
-import { deliverToModule } from '../core/ark'
+import { deliverToModule, setAutoDeliver } from '../core/ark'
 import { collectEvent, eventResources, updateEvents } from '../core/events'
 import { catchUp, REPORT_THRESHOLD_SECONDS, type OfflineReport } from '../core/offline'
 import { buyPrestigeUpgrade, launchModule, setAutoBuy, supplyLaunch } from '../core/prestige'
@@ -205,6 +205,10 @@ class Game {
 
   setAutoBuy(id: BuildingId, enabled: boolean): void {
     setAutoBuy(this.state, id, enabled)
+  }
+
+  setAutoDeliver(enabled: boolean): void {
+    setAutoDeliver(this.state, enabled)
   }
 
   startResearch(id: ResearchId): void {

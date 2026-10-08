@@ -1,7 +1,7 @@
 import { BUILDINGS, type BuildingId } from '../content/buildings'
 import { RESOURCE_IDS, type ResourceId } from '../content/resources'
 import { entries } from './amounts'
-import { activeEffects } from './effects'
+import { activeEffects, effectSum } from './effects'
 import type { GameState } from './state'
 
 /** Passive throughput bonus per spent Star Chart (see `core/prestige.ts`). */
@@ -52,6 +52,9 @@ export function multipliers(state: GameState, id: BuildingId): Multipliers {
     Math.pow(2, MILESTONES.filter((m) => count >= m).length) * globalMultiplier(state)
   let output = 1
   let input = 1
+  if (BUILDINGS.find((b) => b.id === id)?.consumes) {
+    output *= 1 + effectSum(state, 'converterOutput', 'add')
+  }
   for (const effect of activeEffects(state)) {
     if (effect.type === 'throughput' && effect.building === id) throughput *= effect.factor
     if (effect.type === 'output' && effect.building === id) output *= effect.factor

@@ -1,5 +1,5 @@
 import { EVENTS, getEvent } from '../content/events'
-import { activeEffects } from './effects'
+import { activeEffects, effectSum } from './effects'
 import type { GameState } from './state'
 import { addResources, grossRates } from './storage'
 import type { Amounts, EventDef } from './types'
@@ -36,8 +36,11 @@ export function updateEvents(
   if (events.nextIn > 0) return
   const pool = eligibleEvents(state)
   const def = pool[Math.min(pool.length - 1, Math.floor(random() * pool.length))]
-  events.active = { id: def.id, remaining: EVENT_LIFETIME }
-  events.nextIn = EVENT_INTERVAL.min + random() * (EVENT_INTERVAL.max - EVENT_INTERVAL.min)
+  const lifetime = EVENT_LIFETIME * (1 + effectSum(state, 'eventLifetime', 'add'))
+  const frequency = 1 + effectSum(state, 'eventFrequency', 'add')
+  events.active = { id: def.id, remaining: lifetime }
+  events.nextIn =
+    (EVENT_INTERVAL.min + random() * (EVENT_INTERVAL.max - EVENT_INTERVAL.min)) / frequency
 }
 
 /** Resources an event would give right now (empty for boosts). */

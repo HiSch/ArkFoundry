@@ -1,6 +1,9 @@
 <script lang="ts">
   import { getBuilding } from '../content/buildings'
-  import { PRESTIGE_UPGRADES } from '../content/prestige'
+  import { getModule } from '../content/modules'
+  import { PRESTIGE_CATEGORIES, PRESTIGE_UPGRADES } from '../content/prestige'
+  import { AUTO_DELIVER_KEEP_SHARE, autoDeliverTarget } from '../core/ark'
+  import { hasEffect } from '../core/effects'
   import {
     availableAutoBuyers,
     canBuyPrestigeUpgrade,
@@ -16,6 +19,14 @@
     meta.starChartsEarned > 0 || Object.values(game.state.ark.modules).some((m) => m.completed),
   )
   const autoBuyers = $derived(availableAutoBuyers(game.state))
+  const logistics = $derived(hasEffect(game.state, 'autoDeliver'))
+  const deliveryTarget = $derived(autoDeliverTarget(game.state))
+  const categories = $derived(
+    PRESTIGE_CATEGORIES.map((c) => ({
+      ...c,
+      upgrades: PRESTIGE_UPGRADES.filter((u) => u.category === c.id),
+    })).filter((c) => c.upgrades.length > 0),
+  )
 </script>
 
 {#if visible}
@@ -37,32 +48,53 @@
       </p>
     {/if}
 
-    {#each PRESTIGE_UPGRADES as def (def.id)}
-      {@const level = prestigeLevel(game.state, def.id)}
-      <article>
-        <h3>
-          {def.name}
-          {#if def.maxLevel > 1}<span class="level">{level}/{def.maxLevel}</span>{/if}
-        </h3>
-        <p class="detail">{def.description}</p>
-        <div class="row">
-          {#if level >= def.maxLevel}
-            <p class="owned">Owned</p>
-          {:else}
-            <button
-              class="buy"
-              disabled={!canBuyPrestigeUpgrade(game.state, def.id)}
-              onclick={() => game.buyPrestigeUpgrade(def.id)}
-            >
-              Buy <span class="cost">{def.cost} Star Charts</span>
-            </button>
-          {/if}
-        </div>
-      </article>
+    {#each categories as category (category.id)}
+      <h3 class="section">{category.name}</h3>
+      {#each category.upgrades as def (def.id)}
+        {@const level = prestigeLevel(game.state, def.id)}
+        <article>
+          <h3>
+            {def.name}
+            {#if def.maxLevel > 1}<span class="level">{level}/{def.maxLevel}</span>{/if}
+          </h3>
+          <p class="detail">{def.description}</p>
+          <div class="row">
+            {#if level >= def.maxLevel}
+              <p class="owned">Owned</p>
+            {:else}
+              <button
+                class="buy"
+                disabled={!canBuyPrestigeUpgrade(game.state, def.id)}
+                onclick={() => game.buyPrestigeUpgrade(def.id)}
+              >
+                Buy <span class="cost">{def.cost} Star Charts</span>
+              </button>
+            {/if}
+          </div>
+        </article>
+      {/each}
     {/each}
 
+    {#if autoBuyers.length || logistics}
+      <h3 class="section">Automation switches</h3>
+    {/if}
+    {#if logistics}
+      <div class="row auto">
+        <span>Automated Logistics</span>
+        <button
+          aria-pressed={meta.autoDeliver}
+          onclick={() => game.setAutoDeliver(!meta.autoDeliver)}
+        >
+          {meta.autoDeliver ? 'On' : 'Off'}
+        </button>
+      </div>
+      <p class="detail">
+        Delivers everything above {AUTO_DELIVER_KEEP_SHARE * 100} % of storage to {deliveryTarget
+          ? getModule(deliveryTarget).name
+          : 'the next module (none can be built right now)'}.
+      </p>
+    {/if}
     {#if autoBuyers.length}
-      <h3 class="section">Auto-buyers</h3>
       {#each autoBuyers as id (id)}
         <div class="row auto">
           <span>{getBuilding(id).name}</span>

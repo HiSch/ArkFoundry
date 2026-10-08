@@ -36,10 +36,12 @@ export function isMet(state: GameState, condition: UnlockCondition): boolean {
   }
 }
 
-/** Reveals every building and upgrade whose unlock condition is now met. */
+/** Reveals every owned building and every building and upgrade whose unlock condition is now met. */
 export function updateUnlocks(state: GameState): void {
   for (const def of BUILDINGS) {
-    if (!state.unlockedBuildings.includes(def.id) && isMet(state, def.unlock)) {
+    // Buildings owned from the start of a run (prestige upgrades) are always shown.
+    const owned = state.buildings[def.id].count > 0
+    if (!state.unlockedBuildings.includes(def.id) && (owned || isMet(state, def.unlock))) {
       state.unlockedBuildings.push(def.id)
     }
   }

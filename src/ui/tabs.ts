@@ -4,7 +4,7 @@ import { UPGRADES } from '../content/upgrades'
 import { canAfford } from '../core/amounts'
 import { canBuildModule, canSupplyLaunch, launchedModules } from '../core/ark'
 import { canBuyPrestigeUpgrade, canLaunch } from '../core/prestige'
-import { availableResearch, researchDiscovered } from '../core/research'
+import { availableResearch, researchCost, researchDiscovered } from '../core/research'
 import type { GameState } from '../core/state'
 import type { TabId } from './preferences.svelte'
 
@@ -41,7 +41,7 @@ export function tabNeedsAttention(state: GameState, id: TabId): boolean {
     case 'research':
       return (
         state.research.queue.length === 0 &&
-        availableResearch(state).some((def) => canAfford(state, def.cost))
+        availableResearch(state).some((def) => canAfford(state, researchCost(state, def.id)))
       )
     case 'upgrades':
       return UPGRADES.some(

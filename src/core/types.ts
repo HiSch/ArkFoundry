@@ -82,6 +82,24 @@ export type Effect =
   | { type: 'dockSynergy'; add: number }
   /** Event rewards are larger by this share. */
   | { type: 'eventRewards'; add: number }
+  /** Each manual mining click also yields this many seconds of gross ore production. */
+  | { type: 'clickProduction'; seconds: number }
+  /** Events appear more often by this share. */
+  | { type: 'eventFrequency'; add: number }
+  /** Events stay longer by this share before they disappear. */
+  | { type: 'eventLifetime'; add: number }
+  /** More slots in the research queue. */
+  | { type: 'researchQueue'; add: number }
+  /** Multiplies the cost of research projects. */
+  | { type: 'researchCost'; factor: number }
+  /** Buildings that consume inputs produce more output by this share. */
+  | { type: 'converterOutput'; add: number }
+  /** Multiplies the cost of all buildings. */
+  | { type: 'buildingCost'; factor: number }
+  /** Launches earn more Star Charts by this share. */
+  | { type: 'starChartGain'; add: number }
+  /** Allows switching on automatic deliveries of surplus to the Ark. */
+  | { type: 'autoDeliver' }
 
 export interface UpgradeDef {
   id: UpgradeId
@@ -125,8 +143,13 @@ export interface ModuleDef {
   supplyLaunchShare?: number
 }
 
+/** Groups of prestige upgrades, each serving a play style. */
+export type PrestigeCategory =
+  'start' | 'production' | 'research' | 'idle' | 'active' | 'automation' | 'ark'
+
 export interface PrestigeUpgradeDef {
   id: PrestigeUpgradeId
+  category: PrestigeCategory
   name: string
   description: string
   /** Star Charts per level. */

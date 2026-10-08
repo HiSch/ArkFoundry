@@ -65,3 +65,34 @@ export function activeEffects(state: GameState): Effect[] {
   })
   return effects
 }
+
+/** Sum of a numeric field over all active effects of one type. */
+export function effectSum<T extends Effect['type']>(
+  state: GameState,
+  type: T,
+  field: keyof Extract<Effect, { type: T }>,
+): number {
+  let sum = 0
+  for (const effect of activeEffects(state)) {
+    if (effect.type === type) sum += (effect as Record<string, unknown>)[field as string] as number
+  }
+  return sum
+}
+
+/** Product of a numeric field over all active effects of one type (1 if none). */
+export function effectProduct<T extends Effect['type']>(
+  state: GameState,
+  type: T,
+  field: keyof Extract<Effect, { type: T }>,
+): number {
+  let product = 1
+  for (const effect of activeEffects(state)) {
+    if (effect.type === type)
+      product *= (effect as Record<string, unknown>)[field as string] as number
+  }
+  return product
+}
+
+export function hasEffect(state: GameState, type: Effect['type']): boolean {
+  return activeEffects(state).some((effect) => effect.type === type)
+}

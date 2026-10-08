@@ -1,6 +1,9 @@
 import { getModule, MODULES, type ModuleId } from '../content/modules'
+import { RESOURCE_IDS } from '../content/resources'
 import { entries } from './amounts'
+import { hasEffect } from './effects'
 import type { GameState } from './state'
+import { capacities } from './storage'
 import type { Amounts } from './types'
 import { isMet } from './unlocks'
 
@@ -34,13 +37,13 @@ export function moduleRemaining(state: GameState, id: ModuleId): Amounts {
  * module. Delivered resources no longer count against storage. Completes the
  * module when everything has been delivered. Returns what was delivered.
  */
-export function deliverToModule(state: GameState, id: ModuleId): Amounts {
+export function deliverToModule(state: GameState, id: ModuleId, keep: Amounts = {}): Amounts {
   const moved: Amounts = {}
   if (!canBuildModule(state, id)) return moved
   const module = state.ark.modules[id]
   const def = getModule(id)
   for (const [r, missing] of entries(moduleRemaining(state, id))) {
-    let amount = Math.min(missing, state.resources[r])
+    let amount = Math.min(missing, state.resources[r] - (keep[r] ?? 0))
     if (def.supplyLaunchShare) {
       // Only a share of a multi-run module can be delivered per run.
       const allowed = (def.cost[r] ?? 0) * def.supplyLaunchShare - (module.deliveredThisRun[r] ?? 0)
@@ -56,6 +59,32 @@ export function deliverToModule(state: GameState, id: ModuleId): Amounts {
     module.completed = true
   }
   return moved
+}
+
+/** Share of storage Automated Logistics keeps in stock before delivering. */
+export const AUTO_DELIVER_KEEP_SHARE = 0.5
+
+/** The module Automated Logistics delivers to: the first one that can be built. */
+export function autoDeliverTarget(state: GameState): ModuleId | null {
+  return MODULES.find((m) => canBuildModule(state, m.id))?.id ?? null
+}
+
+/**
+ * Automated Logistics: delivers everything above half of the storage capacity
+ * to the module being built, if the upgrade is owned and switched on.
+ */
+export function runAutoDeliver(state: GameState): void {
+  if (!state.meta.autoDeliver || !hasEffect(state, 'autoDeliver')) return
+  const id = autoDeliverTarget(state)
+  if (!id) return
+  const caps = capacities(state)
+  const keep: Amounts = {}
+  for (const r of RESOURCE_IDS) keep[r] = caps[r] * AUTO_DELIVER_KEEP_SHARE
+  deliverToModule(state, id, keep)
+}
+
+export function setAutoDeliver(state: GameState, enabled: boolean): void {
+  state.meta.autoDeliver = enabled
 }
 
 export function completedModules(state: GameState): number {

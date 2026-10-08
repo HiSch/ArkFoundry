@@ -2,8 +2,8 @@ import { getBuilding, type BuildingId } from '../content/buildings'
 import type { ModuleId } from '../content/modules'
 import { getPrestigeUpgrade, type PrestigeUpgradeId } from '../content/prestige'
 import { canSupplyLaunch } from './ark'
-import { buildingCost } from './costs'
-import { activeEffects, prestigeEffects } from './effects'
+import { buildingCost, buildingCostFactor } from './costs'
+import { activeEffects, effectSum, prestigeEffects } from './effects'
 import { starChartMultiplier } from './production'
 import { createInitialState, type GameState } from './state'
 import { updateUnlocks } from './unlocks'
@@ -22,7 +22,8 @@ export function runStarCharts(state: GameState): number {
 
 /** Star Charts that launching the given module now would earn. */
 export function launchReward(state: GameState): number {
-  return runStarCharts(state) + LAUNCH_BONUS
+  const gain = 1 + effectSum(state, 'starChartGain', 'add')
+  return Math.floor((runStarCharts(state) + LAUNCH_BONUS) * gain)
 }
 
 /** Multiplier on all building throughput from Star Charts (spent and unspent). */
@@ -130,7 +131,7 @@ export function runAutoBuyers(state: GameState): void {
   for (const id of availableAutoBuyers(state)) {
     if (!state.meta.autoBuy[id] || !state.unlockedBuildings.includes(id)) continue
     const def = getBuilding(id)
-    const cost = buildingCost(def, state.buildings[id].count, 1)
+    const cost = buildingCost(def, state.buildings[id].count, 1, buildingCostFactor(state))
     const cheap = Object.entries(cost).every(
       ([r, amount]) => (amount ?? 0) <= state.resources[r as keyof typeof cost] * AUTO_BUY_SHARE,
     )

@@ -2,6 +2,7 @@
   import { MODULES } from '../content/modules'
   import { EVENT_INTERVAL, EVENT_LIFETIME } from '../core/events'
   import { MAX_OFFLINE_SECONDS } from '../core/offline'
+  import { AUTO_DELIVER_KEEP_SHARE } from '../core/ark'
   import { AUTO_BUY_SHARE, LAUNCH_BONUS, ALLOY_DIVISOR } from '../core/prestige'
   import {
     ACHIEVEMENT_BONUS,
@@ -75,8 +76,8 @@
         Labs turn energy into research points. Projects cost research points and take real time.
       </li>
       <li>
-        Up to {MAX_QUEUE_LENGTH} projects can be queued; only the first one progresses. Cancelling refunds
-        the full cost.
+        Up to {MAX_QUEUE_LENGTH} projects (more with Star Chart upgrades) can be queued; only the first
+        one progresses. Cancelling refunds the full cost.
       </li>
       <li>A project appears once its prerequisites are done.</li>
       <li>
@@ -137,11 +138,16 @@
         permanent upgrade.
       </li>
       <li>
-        Prestige upgrades can be bought at any time. None of them is required to progress, so no
-        choice can lock you out.
+        Prestige upgrades can be bought at any time. They are grouped by play style: run start,
+        production, research, idle play, active play, automation and the Ark. None of them is
+        required to progress, so no choice can lock you out.
       </li>
       <li>
         Auto-buyers buy a building whenever it costs at most {percent(AUTO_BUY_SHARE)} of your stock.
+      </li>
+      <li>
+        Automated Logistics delivers everything above {percent(AUTO_DELIVER_KEEP_SHARE)} of storage to
+        the first module that can be built.
       </li>
     </ul>
   </details>

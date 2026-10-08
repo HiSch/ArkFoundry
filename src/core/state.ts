@@ -40,6 +40,8 @@ export interface MetaState {
   prestigeUpgrades: Partial<Record<PrestigeUpgradeId, number>>
   /** Automatic buyers the player switched on. */
   autoBuy: Partial<Record<BuildingId, boolean>>
+  /** Automated Logistics switched on. */
+  autoDeliver: boolean
   launches: number
   /** Play time of all finished runs, in seconds. */
   pastPlayTime: number
@@ -135,6 +137,7 @@ export function createInitialState(): GameState {
       starChartsEarned: 0,
       prestigeUpgrades: {},
       autoBuy: {},
+      autoDeliver: false,
       launches: 0,
       pastPlayTime: 0,
       storyLog: [],
