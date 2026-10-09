@@ -264,6 +264,12 @@ class Game {
     updateEvents(this.state, 0, Math.random, true)
   }
 
+  /** Debug: grant Star Charts as if they were earned by a launch. */
+  addStarCharts(amount: number): void {
+    this.state.meta.starCharts += amount
+    this.state.meta.starChartsEarned += amount
+  }
+
   collectEvent(): void {
     collectEvent(this.state)
   }
