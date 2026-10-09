@@ -44,6 +44,10 @@
   <div class="row">
     <button onclick={() => game.spawnEvent()}>Spawn event</button>
   </div>
+  <p class="label">Prestige</p>
+  <div class="row">
+    <button onclick={() => game.addStarCharts(5)}>Add 5 Star Charts</button>
+  </div>
   <div class="row">
     <button class="danger" onclick={reset}>Reset game</button>
   </div>
