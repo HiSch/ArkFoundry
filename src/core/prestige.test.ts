@@ -210,3 +210,34 @@ describe('Abandoning the colony', () => {
     expect(abandonColony(state)).toBe(0)
   })
 })
+
+describe('Run history', () => {
+  it('records each finished run and sums lifetime statistics', () => {
+    const state = completedHullState()
+    state.stats.clicks = 40
+    state.stats.eventsCollected = 3
+    const reward = launchModule(state, 'hull')
+    expect(state.meta.runs).toHaveLength(1)
+    expect(state.meta.runs[0]).toMatchObject({
+      end: 'launch',
+      module: 'hull',
+      duration: 1000,
+      starCharts: reward,
+      clicks: 40,
+      eventsCollected: 3,
+      buildings: 50,
+    })
+    expect(state.meta.runs[0].produced.alloys).toBe(25 * ALLOY_DIVISOR)
+    expect(state.meta.lifetime.clicks).toBe(40)
+    expect(state.meta.lifetime.produced.alloys).toBe(25 * ALLOY_DIVISOR)
+    expect(state.stats.eventsCollected).toBe(0)
+
+    // An abandoned run records the module that was being worked on.
+    state.stats.produced.alloys = 100 * ALLOY_DIVISOR
+    state.stats.clicks = 2
+    abandonColony(state)
+    expect(state.meta.runs[1]).toMatchObject({ end: 'abandon', module: 'reactor', clicks: 2 })
+    expect(state.meta.lifetime.clicks).toBe(42)
+    expect(state.meta.lifetime.produced.alloys).toBe(125 * ALLOY_DIVISOR)
+  })
+})

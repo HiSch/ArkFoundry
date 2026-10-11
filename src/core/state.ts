@@ -31,6 +31,25 @@ export interface ModuleState {
   launched: boolean
 }
 
+/** How a run ended. */
+export type RunEnd = 'launch' | 'supply' | 'abandon'
+
+/** Summary of a finished run, kept for the statistics. */
+export interface RunRecord {
+  end: RunEnd
+  /** The module launched or supplied, or the one worked on when the colony was abandoned. */
+  module: ModuleId | null
+  /** Play time of the run in seconds. */
+  duration: number
+  starCharts: number
+  /** Resources gained during the run. */
+  produced: Record<ResourceId, number>
+  clicks: number
+  eventsCollected: number
+  /** Buildings owned at the end of the run. */
+  buildings: number
+}
+
 /** Progress that survives launches (prestige). */
 export interface MetaState {
   /** Unspent Star Charts. */
@@ -58,6 +77,10 @@ export interface MetaState {
   eventsCollected: number
   /** The ending was shown after the last module was launched. */
   endingSeen: boolean
+  /** Finished runs, oldest first. */
+  runs: RunRecord[]
+  /** Sums over all finished runs; the current run is in `stats`. */
+  lifetime: { produced: Record<ResourceId, number>; clicks: number }
 }
 
 export interface ActiveEvent {
@@ -93,6 +116,7 @@ export interface GameState {
     /** Total amount ever gained per resource in this run. */
     produced: Record<ResourceId, number>
     clicks: number
+    eventsCollected: number
   }
   events: {
     active: ActiveEvent | null
@@ -130,7 +154,7 @@ export function createInitialState(): GameState {
         ]),
       ) as Record<ModuleId, ModuleState>,
     },
-    stats: { produced: perResource(0), clicks: 0 },
+    stats: { produced: perResource(0), clicks: 0, eventsCollected: 0 },
     events: { active: null, nextIn: FIRST_EVENT_SECONDS },
     boosts: [],
     playTime: 0,
@@ -150,6 +174,8 @@ export function createInitialState(): GameState {
       achievements: [],
       eventsCollected: 0,
       endingSeen: false,
+      runs: [],
+      lifetime: { produced: perResource(0), clicks: 0 },
     },
   }
 }

@@ -1,14 +1,19 @@
 <script lang="ts">
   import { MODULES } from '../content/modules'
+  import type { ResourceId } from '../content/resources'
   import { entries } from '../core/amounts'
   import {
     canBuildModule,
     canSupplyLaunch,
     launchedModules,
+    moduleBottleneck,
     moduleProgress,
     runProgress,
   } from '../core/ark'
   import { abandonReward, canAbandon, LAUNCH_BONUS, launchReward } from '../core/prestige'
+  import { formatDuration } from '../core/format'
+  import { capacities } from '../core/storage'
+  import type { Amounts } from '../core/types'
   import { formatNumber } from './format'
   import { game } from './game.svelte'
   import { preferences } from './preferences.svelte'
@@ -42,6 +47,16 @@
       `Send this run's deliveries for the ${name} into orbit?\n\nYou earn ${reward} Star Charts ` +
       'and start a new run. The deliveries stay in the dock; finish the module in a later run.'
     if (!preferences.confirmLaunch || confirm(message)) game.supplyLaunch(id)
+  }
+
+  /** Resources the module still needs whose storage is full: production is being lost. */
+  function fullStorage(cost: [ResourceId, number][], delivered: Amounts): ResourceId[] {
+    const caps = capacities(game.state)
+    return cost
+      .filter(
+        ([r, need]) => (delivered[r] ?? 0) < need && game.state.resources[r] >= caps[r] * 0.999,
+      )
+      .map(([r]) => r)
   }
 
   function abandon(name: string): void {
@@ -105,6 +120,25 @@
               </li>
             {/each}
           </ul>
+          {@const bottleneck = moduleBottleneck(game.state, def.id, game.rates)}
+          {@const full = fullStorage(cost, module.delivered)}
+          {#if bottleneck}
+            <p class="detail hint">
+              Bottleneck: <strong>{resourceName(bottleneck.resource)}</strong> ·
+              {formatNumber(bottleneck.missing)} still missing ·
+              {bottleneck.seconds === Infinity
+                ? 'not increasing right now'
+                : `about ${formatDuration(bottleneck.seconds)} at the current rate`}
+            </p>
+          {:else if canDeliver(cost, module.delivered) && !canSupplyLaunch(game.state, def.id)}
+            <p class="detail hint">Your stock covers what is still needed – deliver now.</p>
+          {/if}
+          {#if full.length}
+            <p class="detail warning">
+              Storage full: {full.map(resourceName).join(', ')}. Deliver so that no production is
+              lost.
+            </p>
+          {/if}
           <div class="row">
             <button
               class="buy"
@@ -154,6 +188,10 @@
 <style>
   .ark {
     border-color: var(--accent);
+  }
+
+  .detail.hint strong {
+    color: var(--accent);
   }
 
   .detail.warning {

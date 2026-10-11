@@ -32,7 +32,7 @@ Design reference: `docs/GAME_DESIGN.md`.
 | 0.3 Game state & tick loop | State model, `tick(state, dt)`, fixed-timestep loop in the browser                     |
 | 0.4 Number formatting      | Plain numbers below 1,000, scientific notation above (`1.23e6`)                        |
 | 0.5 Save system            | Autosave to localStorage, versioned save format with migrations, export/import as text |
-| 0.6 Debug panel            | Time scale ×1/×10/×100, "skip +1 h", reset save                                        |
+| 0.6 Debug panel            | Time scale ×1/×10/×100, "skip +1 h", reset save (dev server only)                      |
 
 **Milestone:** A deployed page with a single ticking counter. Time controls
 work and the value survives a page reload.

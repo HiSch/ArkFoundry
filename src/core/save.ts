@@ -7,7 +7,7 @@ import { UPGRADE_IDS } from '../content/upgrades'
 import { createInitialState, type GameState } from './state'
 
 /** Current save format version. Bump it and add a migration on every format change. */
-export const SAVE_VERSION = 9
+export const SAVE_VERSION = 10
 
 export interface SaveData {
   version: number
@@ -78,6 +78,14 @@ const migrations: Record<number, (save: Record<string, unknown>) => Record<strin
     const state = (save.state ?? {}) as Record<string, unknown>
     const meta = { ...(state.meta as object), autoDeliver: false, abandons: 0 }
     return { ...save, state: { ...state, meta } }
+  },
+  // v10 adds the run history and lifetime statistics. Earlier runs are unknown.
+  9: (save) => {
+    const state = (save.state ?? {}) as Record<string, unknown>
+    const fresh = createInitialState()
+    const meta = { ...(state.meta as object), runs: [], lifetime: fresh.meta.lifetime }
+    const stats = { ...fresh.stats, ...(state.stats as object), eventsCollected: 0 }
+    return { ...save, state: { ...state, meta, stats } }
   },
 }
 
@@ -150,6 +158,11 @@ function normalize(save: SaveData): SaveData {
         ...defaults.meta,
         ...state.meta,
         storyLog: (state.meta?.storyLog ?? []).filter((id) => STORY_IDS.includes(id)),
+        lifetime: {
+          ...defaults.meta.lifetime,
+          ...state.meta?.lifetime,
+          produced: { ...defaults.meta.lifetime.produced, ...state.meta?.lifetime?.produced },
+        },
         researchCompletions: Object.fromEntries(
           Object.entries(state.meta?.researchCompletions ?? {}).filter(([id]) =>
             RESEARCH_IDS.includes(id as ResearchId),

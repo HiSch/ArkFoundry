@@ -63,6 +63,7 @@ export function collectEvent(state: GameState): EventDef | null {
   else state.boosts.push({ factor: def.reward.factor, remaining: def.reward.duration })
   state.events.active = null
   state.meta.eventsCollected += 1
+  state.stats.eventsCollected += 1
   return def
 }
 

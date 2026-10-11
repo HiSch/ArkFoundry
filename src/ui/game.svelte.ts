@@ -59,6 +59,8 @@ class Game {
   offlineReport: OfflineReport | null = $state(null)
   /** Short message shown at the top until dismissed (e.g. after a launch). */
   notice: string | null = $state(null)
+  /** Show the summary of the last finished run with the notice. */
+  runSummary = $state(false)
 
   private frameHandle = 0
   private lastFrame = 0
@@ -174,40 +176,31 @@ class Game {
   /** Launches a completed module: earns Star Charts and starts a new run. */
   launch(id: ModuleId): void {
     const reward = launchModule(this.state, id)
-    if (reward === 0) return
-    this.rates = zeroRates()
-    this.efficiency = {}
-    this.limits = {}
-    this.notice =
-      `The ${getModule(id).name} is in orbit. You earned ${reward} Star Charts. ` +
-      'A new run begins – spend them in the Ark tab.'
-    this.save()
+    if (reward > 0) this.runFinished(`The ${getModule(id).name} is in orbit.`)
   }
 
   /** Sends a supply launch for a module that spans several runs. */
   supplyLaunch(id: ModuleId): void {
     const reward = supplyLaunch(this.state, id)
-    if (reward === 0) return
-    this.rates = zeroRates()
-    this.efficiency = {}
-    this.limits = {}
-    this.notice =
-      `Supplies for the ${getModule(id).name} are in orbit. You earned ${reward} Star Charts. ` +
-      'A new run begins – spend them in the Ark tab.'
-    this.save()
+    if (reward > 0) this.runFinished(`Supplies for the ${getModule(id).name} are in orbit.`)
   }
 
   /** Gives up the current run without a launch: earns Star Charts and starts a new run. */
   abandon(): void {
     const reward = abandonColony(this.state)
-    if (reward === 0) return
+    if (reward > 0) this.runFinished('The colony is abandoned. Its survey data is safe.')
+  }
+
+  /** Clears run-specific display state and shows the summary of the finished run. */
+  private runFinished(message: string): void {
     this.rates = zeroRates()
     this.efficiency = {}
     this.limits = {}
-    this.notice =
-      `The colony is abandoned. Its survey data earned ${reward} Star Charts. ` +
-      'A new run begins – spend them in the Ark tab.'
+    this.notice = `${message} A new run begins – spend your Star Charts in the Ark tab.`
+    this.runSummary = true
     this.save()
+    // The summary is shown at the top; the launch button is usually far below.
+    window.scrollTo({ top: 0 })
   }
 
   dismissEnding(): void {
@@ -216,6 +209,7 @@ class Game {
 
   dismissNotice(): void {
     this.notice = null
+    this.runSummary = false
   }
 
   buyPrestigeUpgrade(id: PrestigeUpgradeId): void {
@@ -303,6 +297,7 @@ class Game {
     this.rates = zeroRates()
     this.offlineReport = null
     this.notice = null
+    this.runSummary = false
     this.save()
   }
 

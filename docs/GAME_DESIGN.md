@@ -152,6 +152,16 @@ and a confirmation). It ends the run without a launch and earns Star Charts
 without the launch bonus; deliveries stay in the dock. When the module is
 complete (or a supply launch is possible), the launch button replaces it.
 
+**Run statistics:** every finished run (launch, supply launch or abandoned
+colony) is recorded with its duration, Star Charts, production, buildings,
+clicks and events. The notice after a run shows the summary compared with
+the run before; More → Statistics shows totals over all runs and the run
+history.
+
+**Bottleneck hint:** the module being built names the resource that takes
+longest to gather at the current net rate (after the stock), and warns when
+a needed resource's storage is full.
+
 ### 2.4 Prestige tree (small advantages)
 
 Upgrades are grouped by play style, so every player can pick a path:
@@ -248,7 +258,7 @@ Because each later module introduces a **new mechanic**, a run is more than
 | 1   | Platform            | Browser, **mobile first** (portrait layout; desktop must also work). A native mobile app can follow later via a wrapper such as Capacitor.                                                                                                                                                                                                                                                                                               |
 | 2   | Tech stack          | TypeScript + Vite + Svelte. No game engine.                                                                                                                                                                                                                                                                                                                                                                                              |
 | 3   | Prototype scope     | Phases 0–5 of `docs/ROADMAP.md`: first run up to the Hull module plus one prestige.                                                                                                                                                                                                                                                                                                                                                      |
-| 4   | Debug time controls | Yes: time scale (×10, ×100) and "skip +1 h", needed to test the 48 h pacing.                                                                                                                                                                                                                                                                                                                                                             |
+| 4   | Debug time controls | Yes: time scale (×10, ×100) and "skip +1 h", needed to test the 48 h pacing. Only in the dev server (`npm run dev`); builds never contain the panel.                                                                                                                                                                                                                                                                                     |
 | 5   | Offline progress    | Production continues offline at 100 % until storage is full; output beyond capacity is lost. The Auto-Pause prestige upgrade (3 SC) makes buildings with full output storage pause and keep their inputs instead. Each resource's capacity is 4 h of its gross production (minimum 1,000); run upgrades raise it to 8 h. Absences up to 30 days are caught up.                                                                           |
 | 6   | Clicking            | Manual mining matters at the very start; its value diminishes as automated production takes over. Later, active play is rewarded through manually collected events instead.                                                                                                                                                                                                                                                              |
 | 7   | Saving              | Autosave to browser storage, plus export/import as text string. Every save carries a version number so old saves can be migrated.                                                                                                                                                                                                                                                                                                        |
