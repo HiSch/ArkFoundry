@@ -1,5 +1,5 @@
 import { getModule, MODULES, type ModuleId } from '../content/modules'
-import { RESOURCE_IDS } from '../content/resources'
+import { RESOURCE_IDS, type ResourceId } from '../content/resources'
 import { entries } from './amounts'
 import { hasEffect } from './effects'
 import type { GameState } from './state'
@@ -59,6 +59,49 @@ export function deliverToModule(state: GameState, id: ModuleId, keep: Amounts = 
     module.completed = true
   }
   return moved
+}
+
+/** The resource that holds up a module the longest at the current rates. */
+export interface Bottleneck {
+  resource: ResourceId
+  /** Amount still missing after delivering the current stock. */
+  missing: number
+  /** Seconds until the stock covers it at the current net rate (Infinity if not growing). */
+  seconds: number
+}
+
+/**
+ * Finds the resource that takes longest to gather for a module, given net
+ * rates per second. Only counts what can still be delivered in this run.
+ * Returns null if the current stock covers everything.
+ */
+export function moduleBottleneck(
+  state: GameState,
+  id: ModuleId,
+  rates: Record<ResourceId, number>,
+): Bottleneck | null {
+  if (!canBuildModule(state, id)) return null
+  const def = getModule(id)
+  const module = state.ark.modules[id]
+  let worst: Bottleneck | null = null
+  for (const [r, remaining] of entries(moduleRemaining(state, id))) {
+    let needed = remaining
+    if (def.supplyLaunchShare) {
+      const allowed = (def.cost[r] ?? 0) * def.supplyLaunchShare - (module.deliveredThisRun[r] ?? 0)
+      needed = Math.min(needed, Math.max(0, allowed))
+    }
+    const missing = needed - state.resources[r]
+    if (missing <= 1e-9) continue
+    const seconds = rates[r] > 0 ? missing / rates[r] : Infinity
+    if (
+      !worst ||
+      seconds > worst.seconds ||
+      (seconds === worst.seconds && missing > worst.missing)
+    ) {
+      worst = { resource: r, missing, seconds }
+    }
+  }
+  return worst
 }
 
 /** Share of storage Automated Logistics keeps in stock before delivering. */

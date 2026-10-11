@@ -1,11 +1,12 @@
 import { getBuilding, type BuildingId } from '../content/buildings'
-import type { ModuleId } from '../content/modules'
+import { MODULE_IDS, type ModuleId } from '../content/modules'
+import { RESOURCE_IDS } from '../content/resources'
 import { getPrestigeUpgrade, type PrestigeUpgradeId } from '../content/prestige'
 import { canSupplyLaunch } from './ark'
 import { buildingCost, buildingCostFactor } from './costs'
 import { activeEffects, effectSum, prestigeEffects } from './effects'
 import { starChartMultiplier } from './production'
-import { createInitialState, type GameState } from './state'
+import { createInitialState, type GameState, type RunEnd, type RunRecord } from './state'
 import { updateUnlocks } from './unlocks'
 
 /** Alloys produced in a run per Star Chart squared: SC = floor(sqrt(alloys / divisor)). */
@@ -53,7 +54,8 @@ export function canAbandon(state: GameState): boolean {
 export function abandonColony(state: GameState): number {
   if (!canAbandon(state)) return 0
   state.meta.abandons += 1
-  return finishRun(state, abandonReward(state))
+  const current = MODULE_IDS.find((m) => !state.ark.modules[m].launched) ?? null
+  return finishRun(state, abandonReward(state), 'abandon', current)
 }
 
 /** Multiplier on all building throughput from Star Charts (spent and unspent). */
@@ -76,7 +78,7 @@ export function launchModule(state: GameState, id: ModuleId): number {
   if (!canLaunch(state, id)) return 0
   state.ark.modules[id].launched = true
   state.meta.launches += 1
-  return finishRun(state, launchReward(state))
+  return finishRun(state, launchReward(state), 'launch', id)
 }
 
 /**
@@ -87,19 +89,41 @@ export function launchModule(state: GameState, id: ModuleId): number {
 export function supplyLaunch(state: GameState, id: ModuleId): number {
   if (!canSupplyLaunch(state, id)) return 0
   state.meta.launches += 1
-  return finishRun(state, launchReward(state))
+  return finishRun(state, launchReward(state), 'supply', id)
 }
 
 /** Rewards the run and starts a new one. */
-function finishRun(state: GameState, reward: number): number {
+function finishRun(state: GameState, reward: number, end: RunEnd, module: ModuleId | null): number {
   state.meta.starCharts += reward
   state.meta.starChartsEarned += reward
+  state.meta.runs.push(runRecord(state, reward, end, module))
+  for (const r of RESOURCE_IDS) state.meta.lifetime.produced[r] += state.stats.produced[r]
+  state.meta.lifetime.clicks += state.stats.clicks
   state.meta.pastPlayTime += state.playTime
   for (const id of state.research.completed) {
     state.meta.researchCompletions[id] = (state.meta.researchCompletions[id] ?? 0) + 1
   }
   startNewRun(state)
   return reward
+}
+
+/** Summary of the current run as it would be recorded now. */
+export function runRecord(
+  state: GameState,
+  starCharts: number,
+  end: RunEnd,
+  module: ModuleId | null,
+): RunRecord {
+  return {
+    end,
+    module,
+    duration: state.playTime,
+    starCharts,
+    produced: { ...state.stats.produced },
+    clicks: state.stats.clicks,
+    eventsCollected: state.stats.eventsCollected,
+    buildings: Object.values(state.buildings).reduce((sum, b) => sum + b.count, 0),
+  }
 }
 
 /** Resets the run in place and applies start-of-run prestige effects. */

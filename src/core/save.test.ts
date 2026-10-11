@@ -141,6 +141,21 @@ describe('save', () => {
     expect(loaded.state.meta.abandons).toBe(0)
   })
 
+  it('migrates version 9 saves with an empty run history', () => {
+    const state = createInitialState() as unknown as Record<string, unknown>
+    const meta = state.meta as Record<string, unknown>
+    delete meta.runs
+    delete meta.lifetime
+    state.stats = { produced: { ore: 50 }, clicks: 3 }
+    const loaded = deserialize(JSON.stringify({ version: 9, savedAt: 1, state }))
+    expect(loaded.state.meta.runs).toEqual([])
+    expect(loaded.state.meta.lifetime.clicks).toBe(0)
+    expect(loaded.state.meta.lifetime.produced.alloys).toBe(0)
+    expect(loaded.state.stats.eventsCollected).toBe(0)
+    expect(loaded.state.stats.produced.ore).toBe(50)
+    expect(loaded.state.stats.clicks).toBe(3)
+  })
+
   it('drops ids of removed content', () => {
     const state = { ...createInitialState(), upgrades: ['plasmaPick', 'removedUpgrade'] }
     const loaded = deserialize(JSON.stringify({ version: SAVE_VERSION, savedAt: 1, state }))

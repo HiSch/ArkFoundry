@@ -17,6 +17,7 @@
   import ResourcePanel from './ui/ResourcePanel.svelte'
   import SavePanel from './ui/SavePanel.svelte'
   import SettingsPanel from './ui/SettingsPanel.svelte'
+  import StatsPanel from './ui/StatsPanel.svelte'
   import TabBar from './ui/TabBar.svelte'
   import TransmissionBanner from './ui/TransmissionBanner.svelte'
   import UpgradesPanel from './ui/UpgradesPanel.svelte'
@@ -65,10 +66,14 @@
   {:else}
     <SettingsPanel />
     <HelpPanel />
+    <StatsPanel />
     <RadioLog />
     <AchievementsPanel />
     <SavePanel />
-    <DebugPanel />
+    <!-- Debug tools exist only in the dev server (npm run dev), never in a build. -->
+    {#if import.meta.env.DEV}
+      <DebugPanel />
+    {/if}
   {/if}
 </main>
 
